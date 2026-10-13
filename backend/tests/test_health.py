@@ -9,4 +9,4 @@ def test_health_check():
     data = response.json()
     assert data["status"] == "online"
     assert data["database"] == "connected"
-    assert data["service"] == "FraudScope AI"
+    assert data["service"] in ("FinGuard AI", "FraudScope AI")

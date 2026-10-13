@@ -1,0 +1,746 @@
+post_id	platform	timestamp	username	language	text	image_path	phone	upi_id	url	label	risk_level	category	cluster_id	is_hard_negative	split		
+P0001	Facebook	2026-08-08 15:35	@star_trader34	Hinglish	Fresh savings a/c bikau hai, urgent, DM karo 💳	img/P0063.png	+91 97XXXX57XX			suspicious	high	account_sale		no	train		
+P0002	Telegram	2026-09-13 01:41	@manoj_sharma4	English	Please share notes for Chapter 4 accounting, exam kal hai					safe	low	none		no	train		
+P0003	WhatsApp Group	2026-10-06 20:06	@priya_gupta10	Hinglish	Bank clerk recruitment 2026 notification out, apply before 30 Nov					safe	low	none		no	train		
+P0004	Facebook	2026-09-17 21:15	@quick_points9	English	current account with PIN + SIM + cheque book ready. Serious buyers only	img/P0022.png	+91 91XXXX32XX	seller229@fakeupi		suspicious	high	account_sale		no	train		
+P0005	Telegram	2026-08-01 01:28	@royal_deals89	Hinglish	ATM card kiraye pe dena hai, rozana earning, contact karo	img/P0055.png	+91 98XXXX12XX	seller978@fakeupi	t.me/demo_seller_567	suspicious	high	atm_card_sale		no	test		
+P0006	WhatsApp Group	2026-09-13 20:13	@amit_jain53	Hindi	Weekend pe Jaipur mein kaunsa restaurant try karein?					safe	low	none		no	test		
+P0007	Classifieds	2026-09-04 21:52	@mega_trader40	English	Account chahiye, paisa milega, DM	img/P0082.png	+91 93XXXX23XX			suspicious	medium	account_rental		no	train		
+P0008	Classifieds	2026-09-27 01:15	@mega_hub41	English	Selling verified bank account. Price negotiable. Contact on WhatsApp		+91 93XXXX49XX	seller664@fakeupi		suspicious	high	account_sale	C14	no	train		
+P0009	WhatsApp Group	2026-09-25 23:04	@desi_deals74	English	Buy ATM crd today, quick delivery, UPI accepted	img/P0029.png	+91 99XXXX83XX	seller247@fakeupi	t.me/demo_seller_101	suspicious	high	atm_card_sale		no	train		
+P0010	Classifieds	2026-08-31 01:36	@sunita_joshi63	Hinglish	Savings account kholne ke liye kaunse documents chahiye?					safe	low	none		yes	train		
+P0011	WhatsApp Group	2026-08-30 07:57	@star_trader84	Hinglish	savings account ready hai bhai, UPI se payment karo, fast		+91 96XXXX45XX	seller985@fakeupi	t.me/demo_seller_171	suspicious	high	account_sale	C07	no	train		
+P0012	X	2026-09-09 12:45	@karan_verma99	Hinglish	Best credit card for travel rewards? suggestions chahiye					safe	low	none		no	val		
+P0013	Facebook	2026-08-24 07:46	@vikram_verma74	English	Mera savings account ka KYC update kaise hoga? branch jaana padega kya?					safe	low	none		no	test		
+P0014	Classifieds	2026-08-23 04:50	@mega_deals71	Hinglish	Sasta ATM kard available, serious log hi msg karein 🔥		+91 96XXXX92XX	seller919@fakeupi	t.me/demo_seller_858	suspicious	high	atm_card_sale		no	train		
+P0015	X	2026-10-03 17:17	@sunita_rathore74	Hinglish	Fraud se bachein: agar koi account kiraye pe lene ko kahe to mana karein					safe	low	none		yes	train		
+P0016	Telegram	2026-08-24 10:54	@karan_sharma72	English	Aadhaar card update karne ka process kya hai?					safe	low	none		no	train		
+P0017	Classifieds	2026-09-21 12:17	@star_care16	Hinglish	credit card + PIN + SIM sab milega, payment instant		+91 93XXXX89XX	seller646@fakeupi	t.me/demo_seller_127	suspicious	high	credit_card_sale	C10	no	train		
+P0018	Classifieds	2026-09-26 18:17	@royal_trader14	Hinglish	Part time kaam: apna acc0unt use karne do, paisa milega 🔥					suspicious	medium	account_rental		no	train		
+P0019	Telegram	2026-09-18 10:01	@royal_care30	Rajasthani	ATM card kiraye pe chahije, paisa milsi, inbox karo	img/P0039.png	+91 95XXXX69XX			suspicious	high	atm_card_sale		no	val		
+P0020	Telegram	2026-09-02 08:38	@amit_verma17	English	Bank clerk recruitment 2026 notification out, apply before 30 Nov					safe	low	none		no	train		
+P0021	Telegram	2026-08-07 15:17	@priya_gupta58	Hinglish	ATM card kho gaya, kaise block karein? koi batao					safe	low	none		yes	train		
+P0022	Classifieds	2026-08-31 19:01	@mega_trader89	Hinglish	Part time kaam: apna acc0unt use karne do, paisa milega 📲		+91 94XXXX95XX			suspicious	medium	account_rental		no	val		
+P0023	Classifieds	2026-08-05 09:22	@quick_hub57	Rajasthani	Looking for people with savings account, earn daily	img/P0084.png				suspicious	medium	account_rental		no	test		
+P0024	X	2026-10-09 20:18	@trusted_care33	Hinglish	bank account ready hai bhai, UPI se payment karo, fast		+91 97XXXX86XX	seller309@fakeupi	t.me/demo_seller_316	suspicious	high	account_sale		no	train		
+P0025	Telegram	2026-08-30 00:11	@karan_rathore39	English	New phone launch today, camera review coming soon					safe	low	none		no	train		
+P0026	Classifieds	2026-08-30 05:41	@quick_acc42	Hinglish	bank account ready hai bhai, UPI se payment karo, fast		+91 97XXXX87XX		t.me/demo_seller_400	suspicious	high	account_sale		no	val		
+P0027	X	2026-08-28 01:46	@star_trader11	English	Buy ATM card today, quick delivery, UPI accepted	img/P0048.png	+91 98XXXX89XX	seller789@fakeupi		suspicious	high	atm_card_sale		no	train		
+P0028	Facebook	2026-10-02 21:33	@fresh_acc10	English	bank account with PIN + SIM + cheque book ready. Serious buyers only		+91 91XXXX21XX	seller749@fakeupi	t.me/demo_seller_533	suspicious	high	account_sale	C06	no	val		
+P0029	Telegram	2026-09-19 23:03	@rahul_sharma91	Hindi	Official: ExampleBank credit card offer, 5% cashback on groceries. Terms apply. examplebank.in				examplebank.in	safe	low	none		yes	train		
+P0030	Telegram	2026-08-11 22:05	@priya_meena49	Hindi	Debit card ka PIN change kaise karein? app mein option nahi mil raha					safe	low	none		yes	test		
+P0031	X	2026-08-13 03:21	@trusted_hub78	Hindi	Need bank details for easy income, msg me					suspicious	medium	account_rental		no	train		
+P0032	Instagram	2026-08-11 17:36	@neha_rathore53	Hinglish	Aadhaar card update karne ka process kya hai?					safe	low	none		no	train		
+P0033	Classifieds	2026-09-26 06:06	@trusted_trader49	English	Fresh bank account available for sale, instant payment, DM now ✅			seller444@fakeupi		suspicious	high	account_sale		no	test		
+P0034	X	2026-08-07 08:03	@anita_verma88	Hindi	Credit card bill payment ki last date kya hoti hai? late fee lagta hai kya?					safe	low	none		yes	train		
+P0035	WhatsApp Group	2026-08-04 13:16	@manoj_verma12	English	Congrats to our team for winning the inter-college cricket match!					safe	low	none		no	train		
+P0036	Telegram	2026-08-23 04:59	@royal_hub52	English	Urgent: savings account for sale, full kit available ✅	img/P0009.png	+91 98XXXX66XX		t.me/demo_seller_791	suspicious	high	account_sale	C08	no	train		
+P0037	WhatsApp Group	2026-08-31 22:40	@priya_gupta69	Hindi	RBI ne naye digital payment guidelines jaari ki hain					safe	low	none		no	val		
+P0038	X	2026-09-17 08:35	@star_trader44	Rajasthani	Account chahiye, paisa milega, DM					suspicious	medium	account_rental		no	val		
+P0039	Instagram	2026-08-07 21:24	@pooja_gupta99	English	Savings account kholne ke liye kaunse documents chahiye?					safe	low	none		yes	train		
+P0040	X	2026-09-14 14:16	@karan_meena3	English	Best credit card for travel rewards? suggestions chahiye					safe	low	none		no	train		
+P0041	WhatsApp Group	2026-09-14 15:54	@pooja_rathore52	Hindi	Debit card ka PIN change kaise karein? app mein option nahi mil raha					safe	low	none		yes	train		
+P0042	Telegram	2026-10-07 10:33	@easy_points72	English	Khata kiraye pe do, har mahine paisa	img/P0080.png				suspicious	medium	account_rental		no	test		
+P0043	Classifieds	2026-08-28 06:46	@anita_gupta56	Hindi	Official: ExampleBank credit card offer, 5% cashback on groceries. Terms apply. examplebank.in				examplebank.in	safe	low	none		yes	train		
+P0044	Telegram	2026-09-05 10:49	@fresh_deals54	English	Urgent: savings a/c for sale, full kit available		+91 98XXXX67XX	seller365@fakeupi	t.me/demo_seller_869	suspicious	high	account_sale	C09	no	val		
+P0045	Instagram	2026-09-22 23:22	@rahul_meena13	Hindi	Warning: bank account bechne ya kiraye pe dene wale fraud mein phas sakte hain, police case ho sakta hai					safe	low	none		yes	train		
+P0046	Instagram	2026-10-05 00:21	@priya_singh72	Hindi	Credit card limit badhane ke liye kya karna padta hai?					safe	low	none		yes	train		
+P0047	WhatsApp Group	2026-08-15 08:36	@vip_seller37	English	Buy debit kard today, quick delivery, UPI accepted		+91 95XXXX68XX			suspicious	high	atm_card_sale	C05	no	train		
+P0048	X	2026-10-09 23:05	@pooja_gupta81	Hinglish	Fixed deposit vs mutual fund, beginners ke liye kaunsa behtar?					safe	low	none		no	val		
+P0049	X	2026-10-06 00:20	@vikram_gupta25	Hinglish	Warning: bank account bechne ya kiraye pe dene wale fraud mein phas sakte hain, police case ho sakta hai					safe	low	none		yes	train		
+P0050	Classifieds	2026-10-02 09:17	@royal_care14	English	Khata kiraye pe do, har mahine paisa	img/P0094.png				suspicious	medium	account_rental		no	val		
+P0051	Classifieds	2026-09-25 20:55	@rahul_sharma62	English	Weekend pe Jaipur mein kaunsa restaurant try karein?					safe	low	none		no	test		
+P0052	Telegram	2026-09-16 23:32	@amit_jain93	Hinglish	Scholarship form ki last date badh gayi hai, check karein					safe	low	none		no	train		
+P0053	Telegram	2026-08-09 02:43	@anita_gupta54	Hindi	Fraud se bachein: agar koi account kiraye pe lene ko kahe to mana karein					safe	low	none		yes	test		
+P0054	Instagram	2026-10-03 15:40	@amit_verma28	Hindi	New phone launch today, camera review coming soon					safe	low	none		no	train		
+P0055	WhatsApp Group	2026-09-07 11:08	@fresh_seller84	English	Selling verified credit card. Price negotiable. Contact on WhatsApp	img/P0053.png			t.me/demo_seller_868	suspicious	high	credit_card_sale		no	train		
+P0056	Facebook	2026-08-30 12:37	@star_trader11	English	Buy savings account today, quick delivery, UPI accepted	img/P0024.png	+91 97XXXX63XX	seller261@fakeupi	t.me/demo_seller_838	suspicious	high	account_sale		no	train		
+P0057	Instagram	2026-09-29 10:12	@rahul_sharma86	English	Fraud se bachein: agar koi account kiraye pe lene ko kahe to mana karein					safe	low	none		yes	test		
+P0058	Classifieds	2026-08-30 10:29	@vikram_meena10	English	Savings account kholne ke liye kaunse documents chahiye?					safe	low	none		yes	train		
+P0059	Instagram	2026-08-02 08:54	@amit_gupta75	Hinglish	Best credit card for travel rewards? suggestions chahiye					safe	low	none		no	test		
+P0060	Classifieds	2026-09-18 11:18	@neha_rathore88	Hindi	Beware of ads offering money for your bank account. It is illegal. Report such posts.					safe	low	none		yes	train		
+P0061	Instagram	2026-08-24 21:42	@amit_rathore2	English	Cyber crime helpline 1930 par turant report karein agar kisi ne account maanga					safe	low	none		yes	val		
+P0062	WhatsApp Group	2026-08-22 18:50	@lucky_hub15	English	Selling verified credit card. Price negotiable. Contact on WhatsApp	img/P0058.png	+91 97XXXX47XX			suspicious	high	credit_card_sale		no	train		
+P0063	Instagram	2026-10-07 16:32	@mega_hub21	Hinglish	ATM card ready hai bhai, UPI se payment karo, fast		+91 98XXXX66XX		t.me/demo_seller_791	suspicious	high	atm_card_sale	C08	no	train		
+P0064	X	2026-10-04 14:32	@star_care31	Hindi	ताज़ा credit kard उपलब्ध, पिन और सिम के साथ		+91 95XXXX83XX	seller141@fakeupi	t.me/demo_seller_881	suspicious	high	credit_card_sale	C13	no	train		
+P0065	Facebook	2026-09-24 22:39	@amit_meena74	Hindi	Awareness: ATM card aur PIN kisi ko na dein, ye cyber fraud hota hai					safe	low	none		yes	train		
+P0066	X	2026-09-24 01:06	@star_seller39	Hinglish	Looking for people with savings account, earn daily					suspicious	medium	account_rental		no	train		
+P0067	Telegram	2026-09-23 06:09	@pooja_sharma56	Hinglish	Cyber crime helpline 1930 par turant report karein agar kisi ne account maanga					safe	low	none		yes	train		
+P0068	WhatsApp Group	2026-10-06 10:39	@mega_seller85	Hindi	Koi account dena chahta hai? achha commission					suspicious	medium	account_rental		no	train		
+P0069	Telegram	2026-09-22 13:20	@sunita_singh9	Hinglish	Mera savings account ka KYC update kaise hoga? branch jaana padega kya?					safe	low	none		no	train		
+P0070	X	2026-08-22 11:03	@royal_acc48	English	Fresh ATM card available for sale, instant payment, DM now 💰			seller505@fakeupi		suspicious	high	atm_card_sale		no	test		
+P0071	Classifieds	2026-08-12 11:51	@mega_seller90	Hindi	bank akaunt बिकाऊ है, तुरंत पेमेंट, संपर्क करें 🔥	img/P0015.png	+91 98XXXX29XX	seller545@fakeupi		suspicious	high	account_sale	C11	no	train		
+P0072	Instagram	2026-09-08 06:59	@sunita_sharma90	Hindi	Interview ki taiyari ke liye banking awareness notes share kar raha hoon					safe	low	none		no	val		
+P0073	Telegram	2026-08-21 04:01	@desi_care22	Hinglish	credit card kiraye pe dena hai, rozana earning, contact karo		+91 97XXXX77XX	seller991@fakeupi	t.me/demo_seller_447	suspicious	high	credit_card_sale		no	test		
+P0074	Telegram	2026-09-10 12:15	@fresh_acc90	Hinglish	Sasta savings akaunt available, serious log hi msg karein		+91 92XXXX26XX			suspicious	high	account_sale		no	train		
+P0075	Instagram	2026-08-30 13:44	@pooja_jain55	English	Fixed deposit vs mutual fund, beginners ke liye kaunsa behtar?					safe	low	none		no	train		
+P0076	Facebook	2026-09-04 11:52	@royal_acc22	English	Fresh debit card available for sale, instant payment, DM now 💳		+91 92XXXX75XX	seller343@fakeupi	t.me/demo_seller_385	suspicious	high	atm_card_sale	C04	no	test		
+P0077	Classifieds	2026-09-05 15:27	@star_acc24	English	debit card with PIN + SIM + cheque book ready. Serious buyers only		+91 93XXXX10XX			suspicious	high	atm_card_sale		no	train		
+P0078	Classifieds	2026-08-26 02:50	@manoj_meena13	Hinglish	Scholarship form ki last date badh gayi hai, check karein					safe	low	none		no	train		
+P0079	Telegram	2026-09-20 05:58	@desi_care36	Rajasthani	Need bank details for easy income, msg me		+91 99XXXX60XX			suspicious	medium	account_rental		no	test		
+P0080	Instagram	2026-09-13 07:01	@mega_deals8	Hinglish	debit card ready hai bhai, UPI se payment karo, fast	img/P0026.png			t.me/demo_seller_719	suspicious	high	atm_card_sale		no	train		
+P0081	Instagram	2026-08-20 05:24	@amit_joshi18	Hinglish	Maine apna current account band karwana hai, process kya hai?					safe	low	none		yes	train		
+P0082	X	2026-08-23 21:11	@lucky_seller40	English	Selling verified debit card. Price negotiable. Contact on WhatsApp	img/P0014.png	+91 98XXXX29XX		t.me/demo_seller_280	suspicious	high	atm_card_sale	C11	no	train		
+P0083	Classifieds	2026-08-09 06:59	@amit_joshi77	English	Bank clerk recruitment 2026 notification out, apply before 30 Nov					safe	low	none		no	train		
+P0084	Classifieds	2026-08-23 09:55	@neha_verma35	English	Interview ki taiyari ke liye banking awareness notes share kar raha hoon					safe	low	none		no	train		
+P0085	X	2026-08-29 15:04	@fresh_hub12	English	Selling verified savings account. Price negotiable. Contact on WhatsApp		+91 95XXXX83XX	seller141@fakeupi		suspicious	high	account_sale	C13	no	train		
+P0086	Telegram	2026-08-16 23:41	@vip_deals70	Rajasthani	credit card kiraye pe chahije, paisa milsi, inbox karo 🔥	img/P0019.png	+91 93XXXX21XX		t.me/demo_seller_525	suspicious	high	credit_card_sale		no	test		
+P0087	WhatsApp Group	2026-08-09 03:38	@pooja_gupta47	English	Mera savings account ka KYC update kaise hoga? branch jaana padega kya?					safe	low	none		no	test		
+P0088	Classifieds	2026-08-04 23:37	@amit_meena5	Hinglish	Aaj ka gold rate aur petrol price update					safe	low	none		no	train		
+P0089	Classifieds	2026-10-06 20:07	@anita_jain67	English	Warning: bank account bechne ya kiraye pe dene wale fraud mein phas sakte hain, police case ho sakta hai					safe	low	none		yes	train		
+P0090	Classifieds	2026-09-07 20:39	@sunita_sharma79	English	Please share notes for Chapter 4 accounting, exam kal hai					safe	low	none		no	train		
+P0091	Telegram	2026-08-11 12:19	@easy_care51	Rajasthani	Koi account dena chahta hai? achha commission					suspicious	medium	account_rental		no	train		
+P0092	WhatsApp Group	2026-08-27 05:22	@vip_seller16	Rajasthani	current account bechno hai, jaldi sampark karo 💰	img/P0028.png				suspicious	high	account_sale		no	train		
+P0093	Instagram	2026-10-01 17:06	@anita_jain54	Hinglish	Interview ki taiyari ke liye banking awareness notes share kar raha hoon					safe	low	none		no	train		
+P0094	WhatsApp Group	2026-08-05 14:48	@amit_sharma61	Hindi	Cyber crime helpline 1930 par turant report karein agar kisi ne account maanga					safe	low	none		yes	train		
+P0095	Classifieds	2026-10-06 04:23	@rahul_jain12	Hinglish	Weekend pe Jaipur mein kaunsa restaurant try karein?					safe	low	none		no	val		
+P0096	WhatsApp Group	2026-08-31 02:45	@desi_deals86	English	Need bank details for easy income, msg me					suspicious	medium	account_rental		no	train		
+P0097	Classifieds	2026-10-04 19:40	@manoj_gupta53	Hindi	Warning: bank account bechne ya kiraye pe dene wale fraud mein phas sakte hain, police case ho sakta hai					safe	low	none		yes	train		
+P0098	Instagram	2026-10-05 20:38	@lucky_hub22	English	Urgent: savings account for sale, full kit available ✅		+91 96XXXX42XX			suspicious	high	account_sale		no	val		
+P0099	X	2026-09-28 22:00	@easy_hub53	Hinglish	ATM kard + PIN + SIM sab milega, payment instant	img/P0064.png	+91 93XXXX14XX			suspicious	high	atm_card_sale		no	train		
+P0100	X	2026-10-05 22:28	@anita_sharma23	Hinglish	UPI payment fail ho gaya par paisa kat gaya, refund kab aayega?					safe	low	none		no	train		
+P0101	Classifieds	2026-08-21 10:00	@mega_hub31	Hindi	Need bank details for easy income, msg me					suspicious	medium	account_rental		no	train		
+P0102	WhatsApp Group	2026-08-17 22:11	@priya_gupta35	Hinglish	Bank clerk recruitment 2026 notification out, apply before 30 Nov					safe	low	none		no	train		
+P0103	WhatsApp Group	2026-08-15 15:59	@amit_sharma74	Hinglish	Congrats to our team for winning the inter-college cricket match!					safe	low	none		no	train		
+P0104	Telegram	2026-09-04 21:59	@rahul_verma55	English	Mera debit card expire ho gaya, naya kaise milega?					safe	low	none		yes	train		
+P0105	Classifieds	2026-08-17 19:52	@desi_hub48	English	Part time kaam: apna account use karne do, paisa milega	img/P0070.png				suspicious	medium	account_rental		no	test		
+P0106	WhatsApp Group	2026-09-20 17:59	@neha_sharma24	Hinglish	Aadhaar card update karne ka process kya hai?					safe	low	none		no	train		
+P0107	Telegram	2026-09-15 10:44	@trusted_points39	Rajasthani	savings account bechno hai, jaldi sampark karo 🔥					suspicious	high	account_sale		no	train		
+P0108	Telegram	2026-09-16 00:29	@priya_gupta33	Hinglish	Fraud se bachein: agar koi account kiraye pe lene ko kahe to mana karein					safe	low	none		yes	train		
+P0109	Facebook	2026-08-10 03:36	@mega_trader37	English	credit kard with PIN + SIM + cheque book ready. Serious buyers only		+91 98XXXX29XX	seller545@fakeupi		suspicious	high	credit_card_sale	C11	no	train		
+P0110	WhatsApp Group	2026-08-30 13:28	@trusted_care80	English	Urgent: current account for sale, full kit available 💳		+91 97XXXX91XX	seller217@fakeupi		suspicious	high	account_sale		no	train		
+P0111	WhatsApp Group	2026-09-07 12:05	@neha_meena79	Hindi	Cyber crime helpline 1930 par turant report karein agar kisi ne account maanga					safe	low	none		yes	train		
+P0112	X	2026-09-07 03:23	@quick_acc12	English	Selling verified current account. Price negotiable. Contact on WhatsApp		+91 92XXXX33XX	seller670@fakeupi		suspicious	high	account_sale		no	train		
+P0113	X	2026-09-20 14:29	@mega_deals13	English	Urgent: bank acc0unt for sale, full kit available ✅			seller514@fakeupi		suspicious	high	account_sale		no	test		
+P0114	WhatsApp Group	2026-10-07 21:53	@priya_singh87	English	UPI payment fail ho gaya par paisa kat gaya, refund kab aayega?					safe	low	none		no	test		
+P0115	Instagram	2026-08-20 03:54	@karan_singh47	English	UPI payment fail ho gaya par paisa kat gaya, refund kab aayega?					safe	low	none		no	train		
+P0116	X	2026-09-22 17:09	@royal_seller20	English	Urgent: credit card for sale, full kit available 🔥	img/P0043.png	+91 94XXXX28XX	seller666@fakeupi		suspicious	high	credit_card_sale		no	train		
+P0117	X	2026-10-04 00:23	@pooja_sharma59	English	Fraud se bachein: agar koi account kiraye pe lene ko kahe to mana karein					safe	low	none		yes	train		
+P0118	X	2026-08-17 09:20	@trusted_deals11	Hinglish	Fresh current account bikau hai, urgent, DM karo 🔥		+91 97XXXX28XX	seller521@fakeupi		suspicious	high	account_sale		no	train		
+P0119	X	2026-08-28 15:09	@rahul_sharma67	Hinglish	Kisi ko achhi home loan scheme pata hai? interest rate compare karna hai					safe	low	none		no	val		
+P0120	Instagram	2026-08-23 03:02	@rahul_sharma75	Hindi	New phone launch today, camera review coming soon					safe	low	none		no	train		
+P0121	Classifieds	2026-08-23 03:30	@vip_hub89	Hinglish	debit card + PIN + SIM sab milega, payment instant		+91 98XXXX29XX		t.me/demo_seller_280	suspicious	high	atm_card_sale	C11	no	train		
+P0122	Facebook	2026-09-26 03:43	@vikram_singh51	Hinglish	Credit card limit badhane ke liye kya karna padta hai?					safe	low	none		yes	train		
+P0123	WhatsApp Group	2026-09-02 17:39	@mega_hub60	Hinglish	savings a/c ready hai bhai, UPI se payment karo, fast	img/P0042.png	+91 95XXXX58XX	seller764@fakeupi	t.me/demo_seller_367	suspicious	high	account_sale		no	train		
+P0124	Classifieds	2026-08-18 07:25	@pooja_jain31	Hindi	Please share notes for Chapter 4 accounting, exam kal hai					safe	low	none		no	test		
+P0125	Facebook	2026-09-29 07:23	@anita_gupta34	Hindi	UPI payment fail ho gaya par paisa kat gaya, refund kab aayega?					safe	low	none		no	test		
+P0126	WhatsApp Group	2026-08-04 01:05	@rahul_joshi91	English	Official: ExampleBank credit card offer, 5% cashback on groceries. Terms apply. examplebank.in				examplebank.in	safe	low	none		yes	train		
+P0127	Telegram	2026-08-06 03:39	@vip_seller97	English	Part time kaam: apna account use karne do, paisa milega 💳		+91 91XXXX95XX			suspicious	medium	account_rental		no	val		
+P0128	Facebook	2026-08-09 23:03	@quick_hub22	Hinglish	ATM card ready hai bhai, UPI se payment karo, fast		+91 95XXXX39XX			suspicious	high	atm_card_sale		no	train		
+P0129	Telegram	2026-08-17 09:13	@pooja_verma81	English	News: police ne mule account racket ka pardafash kiya, kai giraftar					safe	low	none		yes	train		
+P0130	WhatsApp Group	2026-08-25 02:08	@vip_care74	English	Buy debit card today, quick delivery, UPI accepted	img/P0033.png	+91 91XXXX20XX	seller756@fakeupi		suspicious	high	atm_card_sale		no	train		
+P0131	Facebook	2026-08-02 01:20	@priya_sharma19	Hindi	Fraud se bachein: agar koi account kiraye pe lene ko kahe to mana karein					safe	low	none		yes	val		
+P0132	Instagram	2026-08-09 04:42	@royal_trader59	Hindi	debit kard किराए पर देना है, रोज़ कमाई, मैसेज करें	img/P0035.png		seller415@fakeupi		suspicious	high	atm_card_sale		no	train		
+P0133	WhatsApp Group	2026-09-24 21:53	@vikram_singh12	Hinglish	Scholarship form ki last date badh gayi hai, check karein					safe	low	none		no	train		
+P0134	Facebook	2026-08-27 04:20	@mega_deals10	Hinglish	ATM kard ready hai bhai, UPI se payment karo, fast		+91 95XXXX95XX	seller923@fakeupi		suspicious	high	atm_card_sale		no	test		
+P0135	X	2026-08-01 23:33	@pooja_joshi66	English	Maine apna current account band karwana hai, process kya hai?					safe	low	none		yes	val		
+P0136	Instagram	2026-10-09 20:47	@fresh_hub17	English	Khata kiraye pe do, har mahine paisa					suspicious	medium	account_rental		no	val		
+P0137	Facebook	2026-09-05 23:35	@anita_jain72	Hindi	Weekend pe Jaipur mein kaunsa restaurant try karein?					safe	low	none		no	train		
+P0138	Instagram	2026-09-27 15:41	@rahul_verma50	Hindi	Debit card ka PIN change kaise karein? app mein option nahi mil raha					safe	low	none		yes	val		
+P0139	WhatsApp Group	2026-09-22 23:09	@star_hub99	English	Khata kiraye pe do, har mahine paisa					suspicious	medium	account_rental		no	test		
+P0140	X	2026-08-25 22:30	@desi_care60	Rajasthani	Koi account dena chahta hai? achha commission					suspicious	medium	account_rental		no	train		
+P0141	Instagram	2026-08-08 06:40	@pooja_sharma47	Hindi	Please share notes for Chapter 4 accounting, exam kal hai					safe	low	none		no	train		
+P0142	WhatsApp Group	2026-10-05 05:33	@desi_points58	Hinglish	Koi account dena chahta hai? achha commission					suspicious	medium	account_rental		no	train		
+P0143	Classifieds	2026-09-28 20:26	@quick_points88	English	Looking for people with savings account, earn daily	img/P0095.png				suspicious	medium	account_rental		no	train		
+P0144	WhatsApp Group	2026-09-02 02:55	@sunita_joshi62	Hindi	UPI payment fail ho gaya par paisa kat gaya, refund kab aayega?					safe	low	none		no	train		
+P0145	Telegram	2026-08-18 05:00	@priya_sharma30	Hindi	Awareness: ATM card aur PIN kisi ko na dein, ye cyber fraud hota hai					safe	low	none		yes	train		
+P0146	X	2026-09-22 10:19	@priya_verma86	English	Aadhaar card update karne ka process kya hai?					safe	low	none		no	test		
+P0147	Telegram	2026-10-01 08:36	@neha_rathore75	Hinglish	Bank clerk recruitment 2026 notification out, apply before 30 Nov					safe	low	none		no	train		
+P0148	Telegram	2026-09-01 18:26	@rahul_meena5	Hindi	Aadhaar card update karne ka process kya hai?					safe	low	none		no	train		
+P0149	Instagram	2026-08-03 15:14	@trusted_deals26	Hinglish	Account chahiye, paisa milega, DM	img/P0077.png	+91 99XXXX82XX			suspicious	medium	account_rental		no	val		
+P0150	Classifieds	2026-09-23 16:24	@easy_care81	Hinglish	current account + PIN + SIM sab milega, payment instant		+91 92XXXX61XX	seller603@fakeupi	t.me/demo_seller_175	suspicious	high	account_sale	C12	no	train		
+P0151	Instagram	2026-10-02 15:24	@lucky_seller31	Hinglish	Need bank details for easy income, msg me					suspicious	medium	account_rental		no	val		
+P0152	Telegram	2026-08-07 06:46	@lucky_acc37	English	Selling verified ATM crd. Price negotiable. Contact on WhatsApp		+91 92XXXX15XX	seller817@fakeupi	t.me/demo_seller_161	suspicious	high	atm_card_sale		no	train		
+P0153	Instagram	2026-08-31 17:50	@mega_trader17	Hinglish	credit card kiraye pe dena hai, rozana earning, contact karo	img/P0054.png	+91 97XXXX37XX	seller430@fakeupi		suspicious	high	credit_card_sale		no	train		
+P0154	X	2026-10-03 10:47	@amit_joshi20	Hinglish	Mera debit card expire ho gaya, naya kaise milega?					safe	low	none		yes	train		
+P0155	WhatsApp Group	2026-09-06 05:10	@neha_meena7	Hindi	RBI ne naye digital payment guidelines jaari ki hain					safe	low	none		no	val		
+P0156	WhatsApp Group	2026-08-24 06:03	@amit_sharma37	Hinglish	Bank clerk recruitment 2026 notification out, apply before 30 Nov					safe	low	none		no	val		
+P0157	WhatsApp Group	2026-08-10 05:07	@neha_rathore25	Hinglish	Aaj ka gold rate aur petrol price update					safe	low	none		no	train		
+P0158	Facebook	2026-08-14 13:25	@anita_sharma54	Hinglish	News: police ne mule account racket ka pardafash kiya, kai giraftar					safe	low	none		yes	train		
+P0159	Telegram	2026-09-27 05:08	@mega_care54	Hinglish	Fresh ATM card bikau hai, urgent, DM karo 💳		+91 91XXXX17XX		t.me/demo_seller_393	suspicious	high	atm_card_sale		no	test		
+P0160	Facebook	2026-08-15 01:01	@royal_seller47	Hinglish	Fresh ATM card bikau hai, urgent, DM karo ✅		+91 92XXXX44XX	seller828@fakeupi		suspicious	high	atm_card_sale		no	train		
+P0161	X	2026-08-04 09:28	@trusted_hub23	Hinglish	Sasta ATM crd available, serious log hi msg karein		+91 94XXXX78XX			suspicious	high	atm_card_sale		no	val		
+P0162	Classifieds	2026-08-22 21:19	@star_care50	English	Fresh bank account available for sale, instant payment, DM now 💰	img/P0044.png			t.me/demo_seller_677	suspicious	high	account_sale		no	train		
+P0163	Facebook	2026-09-04 03:34	@lucky_acc82	English	savings account with PIN + SIM + cheque book ready. Serious buyers only		+91 93XXXX83XX			suspicious	high	account_sale		no	val		
+P0164	WhatsApp Group	2026-08-15 04:46	@priya_verma11	Hindi	Best credit card for travel rewards? suggestions chahiye					safe	low	none		no	test		
+P0165	WhatsApp Group	2026-10-01 22:32	@trusted_points21	Hinglish	Sasta debit kard available, serious log hi msg karein 🔥		+91 97XXXX45XX			suspicious	high	atm_card_sale	C02	no	train		
+P0166	WhatsApp Group	2026-08-23 20:34	@easy_trader63	Hindi	credit card किराए पर देना है, रोज़ कमाई, मैसेज करें		+91 95XXXX68XX	seller423@fakeupi		suspicious	high	credit_card_sale	C05	no	train		
+P0167	X	2026-08-18 08:06	@fresh_seller49	Hinglish	ATM kard ready hai bhai, UPI se payment karo, fast	img/P0040.png	+91 92XXXX67XX		t.me/demo_seller_841	suspicious	high	atm_card_sale		no	train		
+P0168	WhatsApp Group	2026-08-04 06:17	@priya_gupta42	English	Best credit card for travel rewards? suggestions chahiye					safe	low	none		no	train		
+P0169	WhatsApp Group	2026-08-26 13:42	@fresh_care61	Hinglish	Sasta debit card available, serious log hi msg karein 🔥	img/P0065.png	+91 95XXXX33XX	seller711@fakeupi	t.me/demo_seller_930	suspicious	high	atm_card_sale		no	val		
+P0170	Telegram	2026-09-24 02:14	@priya_singh60	Hinglish	Aadhaar card update karne ka process kya hai?					safe	low	none		no	train		
+P0171	WhatsApp Group	2026-08-09 04:47	@neha_rathore38	English	Interview ki taiyari ke liye banking awareness notes share kar raha hoon					safe	low	none		no	train		
+P0172	Classifieds	2026-08-14 14:43	@anita_verma23	English	UPI payment fail ho gaya par paisa kat gaya, refund kab aayega?					safe	low	none		no	val		
+P0173	X	2026-08-17 08:58	@anita_meena74	Hindi	Weekend pe Jaipur mein kaunsa restaurant try karein?					safe	low	none		no	test		
+P0174	Facebook	2026-10-09 12:02	@quick_deals79	Rajasthani	Koi account dena chahta hai? achha commission					suspicious	medium	account_rental		no	test		
+P0175	Classifieds	2026-09-16 05:22	@mega_deals8	English	Buy current account today, quick delivery, UPI accepted	img/P0007.png	+91 92XXXX75XX	seller343@fakeupi	t.me/demo_seller_385	suspicious	high	account_sale	C04	no	test		
+P0176	Instagram	2026-09-03 06:45	@anita_gupta88	English	Congrats to our team for winning the inter-college cricket match!					safe	low	none		no	train		
+P0177	Telegram	2026-08-08 12:37	@lucky_care56	Hindi	current account किराए पर देना है, रोज़ कमाई, मैसेज करें		+91 97XXXX80XX	seller752@fakeupi	t.me/demo_seller_275	suspicious	high	account_rental		no	train		
+P0178	Instagram	2026-08-27 12:47	@karan_joshi26	Hinglish	Maine apna current account band karwana hai, process kya hai?					safe	low	none		yes	val		
+P0179	X	2026-08-05 07:22	@amit_singh37	English	Awareness: ATM card aur PIN kisi ko na dein, ye cyber fraud hota hai					safe	low	none		yes	train		
+P0180	Telegram	2026-09-05 11:37	@vikram_jain32	Hindi	Aadhaar card update karne ka process kya hai?					safe	low	none		no	train		
+P0181	Instagram	2026-08-08 11:05	@star_acc80	English	Fresh savings a/c available for sale, instant payment, DM now ✅		+91 92XXXX75XX		t.me/demo_seller_385	suspicious	high	account_sale	C04	no	test		
+P0182	Facebook	2026-09-21 12:02	@trusted_points94	Rajasthani	Looking for people with savings account, earn daily					suspicious	medium	account_rental		no	train		
+P0183	Telegram	2026-08-25 13:30	@karan_jain96	Hindi	Please share notes for Chapter 4 accounting, exam kal hai					safe	low	none		no	train		
+P0184	Telegram	2026-08-18 10:35	@priya_sharma74	Hindi	Weekend pe Jaipur mein kaunsa restaurant try karein?					safe	low	none		no	val		
+P0185	Classifieds	2026-09-30 15:40	@amit_meena31	Hinglish	Debit card ka PIN change kaise karein? app mein option nahi mil raha					safe	low	none		yes	val		
+P0186	Facebook	2026-10-01 23:21	@trusted_points13	Hindi	bank account बिकाऊ है, तुरंत पेमेंट, संपर्क करें ✅		+91 95XXXX96XX			suspicious	high	account_sale		no	train		
+P0187	X	2026-08-15 14:12	@easy_hub66	Hindi	debit crd बिकाऊ है, तुरंत पेमेंट, संपर्क करें 🔥		+91 92XXXX76XX		t.me/demo_seller_881	suspicious	high	atm_card_sale		no	train		
+P0188	Classifieds	2026-09-27 02:11	@trusted_care77	Hindi	Koi akaunt dena chahta hai? achha commission	img/P0073.png				suspicious	medium	account_rental		no	test		
+P0189	X	2026-08-26 12:25	@lucky_care90	Hinglish	Khata kiraye pe do, har mahine paisa		+91 95XXXX49XX			suspicious	medium	account_rental		no	train		
+P0190	Telegram	2026-08-19 22:54	@anita_rathore56	Hindi	Official: ExampleBank credit card offer, 5% cashback on groceries. Terms apply. examplebank.in				examplebank.in	safe	low	none		yes	test		
+P0191	Telegram	2026-09-04 00:14	@neha_rathore72	English	Interview ki taiyari ke liye banking awareness notes share kar raha hoon					safe	low	none		no	train		
+P0192	X	2026-09-26 06:57	@royal_trader77	Hinglish	current account + PIN + SIM sab milega, payment instant		+91 92XXXX61XX	seller603@fakeupi	t.me/demo_seller_175	suspicious	high	account_sale	C12	no	train		
+P0193	X	2026-08-08 00:02	@desi_seller32	English	ATM card with PIN + SIM + cheque book ready. Serious buyers only		+91 92XXXX31XX	seller531@fakeupi	t.me/demo_seller_901	suspicious	high	atm_card_sale		no	train		
+P0194	WhatsApp Group	2026-08-18 02:13	@sunita_sharma20	Hinglish	Weekend pe Jaipur mein kaunsa restaurant try karein?					safe	low	none		no	train		
+P0195	Instagram	2026-10-03 09:51	@priya_joshi64	Hinglish	Cyber crime helpline 1930 par turant report karein agar kisi ne account maanga					safe	low	none		yes	train		
+P0196	Telegram	2026-08-16 18:54	@sunita_verma16	English	News: police ne mule account racket ka pardafash kiya, kai giraftar					safe	low	none		yes	train		
+P0197	Instagram	2026-08-31 11:04	@vikram_singh47	Hindi	Fixed deposit vs mutual fund, beginners ke liye kaunsa behtar?					safe	low	none		no	test		
+P0198	Instagram	2026-09-13 12:44	@royal_points22	Hinglish	Part time kaam: apna account use karne do, paisa milega 📲					suspicious	medium	account_rental		no	test		
+P0199	Classifieds	2026-08-08 02:34	@manoj_gupta79	Hinglish	Savings account kholne ke liye kaunse documents chahiye?					safe	low	none		yes	train		
+P0200	Facebook	2026-08-11 22:56	@manoj_joshi41	Hindi	Weekend pe Jaipur mein kaunsa restaurant try karein?					safe	low	none		no	train		
+P0201	Telegram	2026-09-21 17:38	@royal_seller70	English	Buy credit card today, quick delivery, UPI accepted				t.me/demo_seller_981	suspicious	high	credit_card_sale		no	test		
+P0202	Classifieds	2026-09-20 21:24	@anita_singh45	English	Scholarship form ki last date badh gayi hai, check karein					safe	low	none		no	train		
+P0203	Facebook	2026-08-13 23:01	@easy_acc6	Hindi	ATM card किराए पर देना है, रोज़ कमाई, मैसेज करें		+91 94XXXX63XX	seller161@fakeupi		suspicious	high	atm_card_sale		no	val		
+P0204	Facebook	2026-09-23 00:48	@amit_gupta22	Hindi	New phone launch today, camera review coming soon					safe	low	none		no	train		
+P0205	WhatsApp Group	2026-09-14 06:16	@vip_deals18	Hindi	credit crd किराए पर देना है, रोज़ कमाई, मैसेज करें		+91 96XXXX49XX	seller319@fakeupi	t.me/demo_seller_884	suspicious	high	credit_card_sale		no	train		
+P0206	X	2026-08-30 01:11	@pooja_verma35	Hinglish	Interview ki taiyari ke liye banking awareness notes share kar raha hoon					safe	low	none		no	train		
+P0207	Facebook	2026-08-20 14:41	@vikram_joshi81	Hinglish	Bank clerk recruitment 2026 notification out, apply before 30 Nov					safe	low	none		no	test		
+P0208	WhatsApp Group	2026-08-24 10:59	@sunita_sharma53	Hinglish	Please share notes for Chapter 4 accounting, exam kal hai					safe	low	none		no	train		
+P0209	Facebook	2026-09-20 06:05	@manoj_joshi23	English	UPI payment fail ho gaya par paisa kat gaya, refund kab aayega?					safe	low	none		no	train		
+P0210	Facebook	2026-09-14 18:54	@priya_meena70	English	Savings account kholne ke liye kaunse documents chahiye?					safe	low	none		yes	train		
+P0211	Classifieds	2026-08-30 21:34	@trusted_points90	Hinglish	savings account kiraye pe dena hai, rozana earning, contact karo		+91 92XXXX49XX			suspicious	high	account_rental		no	test		
+P0212	Classifieds	2026-08-28 17:53	@amit_singh79	English	Bank clerk recruitment 2026 notification out, apply before 30 Nov					safe	low	none		no	train		
+P0213	Facebook	2026-09-12 16:47	@lucky_trader1	English	Fresh bank account available for sale, instant payment, DM now		+91 95XXXX70XX		t.me/demo_seller_822	suspicious	high	account_sale		no	train		
+P0214	WhatsApp Group	2026-10-01 15:33	@desi_acc71	English	Koi account dena chahta hai? achha commission		+91 93XXXX48XX			suspicious	medium	account_rental		no	val		
+P0215	Telegram	2026-09-07 16:26	@lucky_hub45	English	Fresh savings account available for sale, instant payment, DM now 🔥	img/P0069.png	+91 91XXXX59XX	seller529@fakeupi		suspicious	high	account_sale		no	train		
+P0216	Classifieds	2026-08-09 21:27	@karan_meena33	English	Congrats to our team for winning the inter-college cricket match!					safe	low	none		no	train		
+P0217	X	2026-08-22 18:14	@priya_sharma62	Hindi	Awareness: ATM card aur PIN kisi ko na dein, ye cyber fraud hota hai					safe	low	none		yes	test		
+P0218	X	2026-09-06 07:00	@trusted_care48	English	Urgent: ATM card for sale, full kit available 📲		+91 96XXXX50XX			suspicious	high	atm_card_sale		no	test		
+P0219	Facebook	2026-08-07 18:40	@trusted_deals95	Hinglish	Khata kiraye pe do, har mahine paisa	img/P0091.png				suspicious	medium	account_rental		no	train		
+P0220	Telegram	2026-08-26 12:29	@mega_trader85	Hinglish	bank account ready hai bhai, UPI se payment karo, fast		+91 98XXXX44XX	seller176@fakeupi		suspicious	high	account_sale		no	train		
+P0221	Instagram	2026-09-09 18:03	@amit_verma18	Hindi	Savings account kholne ke liye kaunse documents chahiye?					safe	low	none		yes	test		
+P0222	Telegram	2026-09-13 23:34	@lucky_acc1	Hinglish	credit card + PIN + SIM sab milega, payment instant		+91 91XXXX89XX			suspicious	high	credit_card_sale		no	train		
+P0223	Classifieds	2026-09-18 03:30	@priya_joshi93	Hindi	Aadhaar card update karne ka process kya hai?					safe	low	none		no	train		
+P0224	Telegram	2026-08-16 22:53	@pooja_joshi2	Hinglish	New phone launch today, camera review coming soon					safe	low	none		no	train		
+P0225	Telegram	2026-09-10 15:29	@lucky_care20	Hindi	ताज़ा ATM card उपलब्ध, पिन और सिम के साथ		+91 93XXXX49XX	seller664@fakeupi	t.me/demo_seller_114	suspicious	high	atm_card_sale	C14	no	train		
+P0226	Instagram	2026-08-20 21:24	@royal_acc95	English	Buy ATM card today, quick delivery, UPI accepted	img/P0052.png	+91 99XXXX15XX			suspicious	high	atm_card_sale		no	train		
+P0227	WhatsApp Group	2026-08-30 01:10	@easy_points89	Hindi	credit card किराए पर देना है, रोज़ कमाई, मैसेज करें			seller421@fakeupi	t.me/demo_seller_507	suspicious	high	credit_card_sale		no	train		
+P0228	Instagram	2026-08-31 17:18	@amit_joshi46	English	Interview ki taiyari ke liye banking awareness notes share kar raha hoon					safe	low	none		no	train		
+P0229	Instagram	2026-09-28 00:01	@royal_acc76	Rajasthani	debit card bechno hai, jaldi sampark karo			seller197@fakeupi		suspicious	high	atm_card_sale		no	test		
+P0230	X	2026-09-07 01:23	@manoj_verma72	Hinglish	Kisi ko achhi home loan scheme pata hai? interest rate compare karna hai					safe	low	none		no	val		
+P0231	Classifieds	2026-08-20 02:24	@sunita_jain25	English	Please share notes for Chapter 4 accounting, exam kal hai					safe	low	none		no	train		
+P0232	X	2026-09-04 19:57	@neha_jain41	English	Aaj ka gold rate aur petrol price update					safe	low	none		no	train		
+P0233	Telegram	2026-09-26 16:09	@vip_trader47	English	Urgent: current account for sale, full kit available ✅		+91 95XXXX83XX	seller141@fakeupi	t.me/demo_seller_881	suspicious	high	account_sale	C13	no	train		
+P0234	Instagram	2026-09-27 18:05	@fresh_acc58	Hindi	Khata kiraye pe do, har mahine paisa	img/P0081.png	+91 93XXXX50XX			suspicious	medium	account_rental		no	train		
+P0235	WhatsApp Group	2026-08-13 20:46	@rahul_rathore75	Hindi	Fixed deposit vs mutual fund, beginners ke liye kaunsa behtar?					safe	low	none		no	train		
+P0236	Telegram	2026-08-05 00:46	@star_points87	Hindi	bank account किराए पर देना है, रोज़ कमाई, मैसेज करें		+91 94XXXX94XX		t.me/demo_seller_727	suspicious	high	account_rental		no	train		
+P0237	Classifieds	2026-09-30 09:11	@desi_trader41	Hinglish	current account ready hai bhai, UPI se payment karo, fast		+91 96XXXX45XX	seller985@fakeupi	t.me/demo_seller_171	suspicious	high	account_sale	C07	no	train		
+P0238	WhatsApp Group	2026-08-09 10:58	@pooja_verma59	English	Fraud se bachein: agar koi account kiraye pe lene ko kahe to mana karein					safe	low	none		yes	train		
+P0239	Facebook	2026-08-09 21:53	@quick_hub71	Hindi	current accnt बिकाऊ है, तुरंत पेमेंट, संपर्क करें 💰	img/P0006.png	+91 92XXXX75XX	seller343@fakeupi	t.me/demo_seller_385	suspicious	high	account_sale	C04	no	test		
+P0240	Telegram	2026-08-07 05:53	@desi_deals84	English	Selling verified ATM card. Price negotiable. Contact on WhatsApp		+91 93XXXX89XX		t.me/demo_seller_127	suspicious	high	atm_card_sale	C10	no	train		
+P0241	X	2026-08-15 07:11	@fresh_acc43	English	ATM kard with PIN + SIM + cheque book ready. Serious buyers only		+91 98XXXX13XX	seller769@fakeupi	t.me/demo_seller_544	suspicious	high	atm_card_sale		no	train		
+P0242	X	2026-08-01 09:59	@manoj_jain25	Hinglish	Credit card bill payment ki last date kya hoti hai? late fee lagta hai kya?					safe	low	none		yes	train		
+P0243	WhatsApp Group	2026-09-16 06:28	@trusted_points75	English	Looking for people with savings accnt, earn daily					suspicious	medium	account_rental		no	val		
+P0244	Instagram	2026-08-07 18:22	@fresh_care1	Hinglish	bank account + PIN + SIM sab milega, payment instant		+91 99XXXX92XX			suspicious	high	account_sale		no	train		
+P0245	Telegram	2026-09-05 23:08	@fresh_hub21	English	Need bank details for easy income, msg me	img/P0096.png	+91 98XXXX58XX			suspicious	medium	account_rental		no	train		
+P0246	Classifieds	2026-10-07 02:49	@anita_sharma37	English	Awareness: ATM card aur PIN kisi ko na dein, ye cyber fraud hota hai					safe	low	none		yes	train		
+P0247	X	2026-09-17 12:17	@desi_points14	Hinglish	Account chahiye, paisa milega, DM		+91 95XXXX80XX			suspicious	medium	account_rental		no	train		
+P0248	Classifieds	2026-09-19 08:58	@anita_jain88	Hinglish	News: police ne mule account racket ka pardafash kiya, kai giraftar					safe	low	none		yes	train		
+P0249	X	2026-08-09 22:41	@vikram_rathore60	Hindi	Beware of ads offering money for your bank account. It is illegal. Report such posts.					safe	low	none		yes	train		
+P0250	Instagram	2026-09-01 16:53	@neha_singh45	Hindi	Best credit card for travel rewards? suggestions chahiye					safe	low	none		no	train		
+P0251	Instagram	2026-08-19 16:44	@sunita_rathore47	Hinglish	Aadhaar card update karne ka process kya hai?					safe	low	none		no	train		
+P0252	X	2026-08-16 08:23	@fresh_seller32	English	Looking for people with savings account, earn daily					suspicious	medium	account_rental		no	test		
+P0253	Instagram	2026-08-28 17:18	@vikram_joshi22	English	Please share notes for Chapter 4 accounting, exam kal hai					safe	low	none		no	train		
+P0254	WhatsApp Group	2026-08-10 16:17	@priya_joshi77	Hindi	Mera debit card expire ho gaya, naya kaise milega?					safe	low	none		yes	val		
+P0255	X	2026-08-28 15:54	@star_deals60	Rajasthani	ATM card kiraye pe chahije, paisa milsi, inbox karo 📲	img/P0061.png	+91 99XXXX68XX	seller305@fakeupi	t.me/demo_seller_903	suspicious	high	atm_card_sale		no	train		
+P0256	Instagram	2026-08-11 09:13	@easy_care62	Hinglish	Fresh ATM card bikau hai, urgent, DM karo 💳		+91 98XXXX29XX	seller545@fakeupi		suspicious	high	atm_card_sale	C11	no	train		
+P0257	X	2026-09-23 00:59	@rahul_rathore17	English	Mera debit card expire ho gaya, naya kaise milega?					safe	low	none		yes	train		
+P0258	Classifieds	2026-10-04 15:29	@pooja_joshi30	Hinglish	Savings account kholne ke liye kaunse documents chahiye?					safe	low	none		yes	train		
+P0259	Classifieds	2026-08-10 04:38	@quick_care30	Hinglish	credit card ready hai bhai, UPI se payment karo, fast		+91 92XXXX13XX	seller859@fakeupi		suspicious	high	credit_card_sale	C01	no	train		
+P0260	X	2026-08-13 05:23	@desi_hub60	Rajasthani	Khata kiraye pe do, har mahine paisa	img/P0097.png				suspicious	medium	account_rental		no	test		
+P0261	Facebook	2026-08-11 08:04	@pooja_jain97	Hindi	Maine apna current account band karwana hai, process kya hai?					safe	low	none		yes	val		
+P0262	Facebook	2026-09-24 14:47	@royal_points41	English	Koi account dena chahta hai? achha commission					suspicious	medium	account_rental		no	train		
+P0263	Classifieds	2026-08-28 00:10	@lucky_deals25	English	Selling verified ATM card. Price negotiable. Contact on WhatsApp				t.me/demo_seller_385	suspicious	high	atm_card_sale	C04	no	test		
+P0264	Facebook	2026-08-30 23:53	@lucky_seller56	Hinglish	ATM kard ready hai bhai, UPI se payment karo, fast		+91 97XXXX52XX		t.me/demo_seller_982	suspicious	high	atm_card_sale		no	train		
+P0265	Instagram	2026-10-02 18:26	@anita_verma77	Hindi	Scholarship form ki last date badh gayi hai, check karein					safe	low	none		no	test		
+P0266	Telegram	2026-09-24 14:56	@rahul_jain71	English	Congrats to our team for winning the inter-college cricket match!					safe	low	none		no	train		
+P0267	Telegram	2026-08-07 09:52	@star_care30	Hindi	Account chahiye, paisa milega, DM		+91 95XXXX81XX			suspicious	medium	account_rental		no	train		
+P0268	Instagram	2026-09-13 21:12	@karan_singh76	Hindi	Mera savings account ka KYC update kaise hoga? branch jaana padega kya?					safe	low	none		no	train		
+P0269	X	2026-09-01 17:33	@anita_meena66	Hinglish	Beware of ads offering money for your bank account. It is illegal. Report such posts.					safe	low	none		yes	train		
+P0270	X	2026-10-02 15:16	@pooja_meena65	Hindi	Aaj ka gold rate aur petrol price update					safe	low	none		no	val		
+P0271	WhatsApp Group	2026-09-14 00:47	@vikram_gupta74	English	Interview ki taiyari ke liye banking awareness notes share kar raha hoon					safe	low	none		no	train		
+P0272	Instagram	2026-10-01 18:11	@sunita_sharma13	Hindi	Credit card bill payment ki last date kya hoti hai? late fee lagta hai kya?					safe	low	none		yes	train		
+P0273	Telegram	2026-09-12 08:58	@pooja_rathore22	English	Credit card limit badhane ke liye kya karna padta hai?					safe	low	none		yes	train		
+P0274	Instagram	2026-09-27 13:13	@priya_singh69	English	ATM card kho gaya, kaise block karein? koi batao					safe	low	none		yes	train		
+P0275	Instagram	2026-08-19 03:37	@desi_acc42	English	Khata kiraye pe do, har mahine paisa		+91 91XXXX78XX			suspicious	medium	account_rental		no	train		
+P0276	WhatsApp Group	2026-09-10 02:12	@rahul_jain26	Hindi	Kisi ko achhi home loan scheme pata hai? interest rate compare karna hai					safe	low	none		no	train		
+P0277	Instagram	2026-08-11 23:53	@anita_meena42	Hinglish	Official: ExampleBank credit card offer, 5% cashback on groceries. Terms apply. examplebank.in				examplebank.in	safe	low	none		yes	train		
+P0278	Instagram	2026-10-02 23:03	@royal_trader5	English	credit card with PIN + SIM + cheque book ready. Serious buyers only		+91 98XXXX84XX	seller618@fakeupi		suspicious	high	credit_card_sale		no	train		
+P0279	WhatsApp Group	2026-08-18 03:12	@lucky_trader40	English	Selling verified debit card. Price negotiable. Contact on WhatsApp	img/P0067.png	+91 96XXXX82XX			suspicious	high	atm_card_sale		no	train		
+P0280	WhatsApp Group	2026-09-17 07:18	@pooja_joshi24	Hindi	Weekend pe Jaipur mein kaunsa restaurant try karein?					safe	low	none		no	train		
+P0281	Instagram	2026-09-20 19:43	@star_acc2	English	Part time kaam: apna account use karne do, paisa milega		+91 97XXXX29XX			suspicious	medium	account_rental		no	val		
+P0282	WhatsApp Group	2026-09-06 13:20	@royal_points14	Hinglish	bank a/c ready hai bhai, UPI se payment karo, fast		+91 99XXXX48XX	seller131@fakeupi	t.me/demo_seller_590	suspicious	high	account_sale		no	val		
+P0283	Facebook	2026-08-18 18:15	@royal_trader65	Hinglish	credit crd + PIN + SIM sab milega, payment instant	img/P0050.png	+91 91XXXX55XX			suspicious	high	credit_card_sale		no	train		
+P0284	Instagram	2026-09-20 22:19	@vip_trader67	Hinglish	current account ready hai bhai, UPI se payment karo, fast		+91 97XXXX59XX			suspicious	high	account_sale		no	val		
+P0285	Classifieds	2026-08-20 06:50	@neha_gupta71	English	Interview ki taiyari ke liye banking awareness notes share kar raha hoon					safe	low	none		no	test		
+P0286	X	2026-09-04 04:07	@royal_deals88	English	Buy debit card today, quick delivery, UPI accepted	img/P0045.png	+91 95XXXX67XX	seller464@fakeupi		suspicious	high	atm_card_sale		no	train		
+P0287	X	2026-08-28 08:05	@neha_jain41	Hinglish	Bank clerk recruitment 2026 notification out, apply before 30 Nov					safe	low	none		no	test		
+P0288	Telegram	2026-10-09 17:44	@vikram_sharma74	English	Interview ki taiyari ke liye banking awareness notes share kar raha hoon					safe	low	none		no	train		
+P0289	Classifieds	2026-08-31 21:13	@fresh_hub94	Hinglish	Sasta bank account available, serious log hi msg karein 📲		+91 92XXXX75XX	seller343@fakeupi		suspicious	high	account_sale	C04	no	test		
+P0290	X	2026-09-21 00:14	@neha_sharma82	Hinglish	Best credit card for travel rewards? suggestions chahiye					safe	low	none		no	train		
+P0291	X	2026-08-08 08:01	@desi_seller70	Hindi	bank account किराए पर देना है, रोज़ कमाई, मैसेज करें		+91 98XXXX67XX		t.me/demo_seller_869	suspicious	high	account_rental	C09	no	val		
+P0292	Telegram	2026-09-15 07:05	@pooja_sharma78	English	Weekend pe Jaipur mein kaunsa restaurant try karein?					safe	low	none		no	train		
+P0293	Classifieds	2026-09-13 19:53	@pooja_joshi27	Hindi	Aaj ka gold rate aur petrol price update					safe	low	none		no	train		
+P0294	X	2026-08-22 13:36	@vip_care95	Hindi	ताज़ा savings account उपलब्ध, पिन और सिम के साथ			seller986@fakeupi		suspicious	high	account_sale		no	train		
+P0295	Instagram	2026-08-06 14:39	@trusted_care90	Hinglish	Part time kaam: apna account use karne do, paisa milega 💳		+91 95XXXX82XX			suspicious	medium	account_rental		no	train		
+P0296	WhatsApp Group	2026-09-22 03:01	@mega_seller10	Hindi	Account chahiye, paisa milega, DM		+91 95XXXX72XX			suspicious	medium	account_rental		no	train		
+P0297	X	2026-10-06 12:26	@anita_rathore11	Hinglish	Bank clerk recruitment 2026 notification out, apply before 30 Nov					safe	low	none		no	train		
+P0298	Facebook	2026-08-12 19:58	@mega_seller23	Hindi	savings a/c बिकाऊ है, तुरंत पेमेंट, संपर्क करें ✅		+91 93XXXX86XX	seller979@fakeupi		suspicious	high	account_sale		no	val		
+P0299	Classifieds	2026-09-04 12:55	@vip_deals60	English	bank account with PIN + SIM + cheque book ready. Serious buyers only	img/P0003.png	+91 97XXXX45XX	seller564@fakeupi	t.me/demo_seller_750	suspicious	high	account_sale	C02	no	train		
+P0300	Instagram	2026-08-15 21:47	@neha_jain5	English	Kisi ko achhi home loan scheme pata hai? interest rate compare karna hai					safe	low	none		no	train		
+P0301	Instagram	2026-09-14 14:13	@manoj_gupta7	English	Aadhaar card update karne ka process kya hai?					safe	low	none		no	train		
+P0302	Telegram	2026-10-09 11:52	@easy_deals28	English	Buy savings acc0unt today, quick delivery, UPI accepted		+91 92XXXX13XX	seller859@fakeupi	t.me/demo_seller_381	suspicious	high	account_sale	C01	no	train		
+P0303	Classifieds	2026-09-07 19:39	@mega_points35	Hinglish	Fresh savings account bikau hai, urgent, DM karo 📲		+91 93XXXX49XX	seller664@fakeupi		suspicious	high	account_sale	C14	no	train		
+P0304	Instagram	2026-08-05 04:03	@neha_meena2	Hinglish	News: police ne mule account racket ka pardafash kiya, kai giraftar					safe	low	none		yes	train		
+P0305	Telegram	2026-08-22 10:01	@pooja_singh54	Hinglish	Mera debit card expire ho gaya, naya kaise milega?					safe	low	none		yes	train		
+P0306	X	2026-09-05 08:31	@desi_care23	Hinglish	debit kard + PIN + SIM sab milega, payment instant	img/P0066.png	+91 91XXXX38XX			suspicious	high	atm_card_sale		no	train		
+P0307	Facebook	2026-09-24 06:14	@anita_joshi79	English	Debit card ka PIN change kaise karein? app mein option nahi mil raha					safe	low	none		yes	train		
+P0308	Telegram	2026-08-17 00:13	@amit_sharma63	Hindi	Maine apna current account band karwana hai, process kya hai?					safe	low	none		yes	train		
+P0309	X	2026-09-04 17:34	@rahul_verma99	Hindi	Scholarship form ki last date badh gayi hai, check karein					safe	low	none		no	train		
+P0310	Facebook	2026-09-07 09:37	@rahul_jain6	Hinglish	Aadhaar card update karne ka process kya hai?					safe	low	none		no	test		
+P0311	Telegram	2026-08-13 17:50	@mega_deals34	Hinglish	Need bank details for easy income, msg me		+91 92XXXX45XX			suspicious	medium	account_rental		no	train		
+P0312	Telegram	2026-08-13 15:34	@pooja_meena30	Hinglish	Interview ki taiyari ke liye banking awareness notes share kar raha hoon					safe	low	none		no	train		
+P0313	WhatsApp Group	2026-09-26 21:48	@sunita_rathore52	English	Credit card bill payment ki last date kya hoti hai? late fee lagta hai kya?					safe	low	none		yes	train		
+P0314	WhatsApp Group	2026-08-03 01:34	@vikram_rathore88	Hindi	Savings account kholne ke liye kaunse documents chahiye?					safe	low	none		yes	train		
+P0315	WhatsApp Group	2026-08-23 15:25	@anita_meena72	Hindi	Aadhaar card update karne ka process kya hai?					safe	low	none		no	train		
+P0316	X	2026-09-10 07:14	@karan_joshi99	Hinglish	Fixed deposit vs mutual fund, beginners ke liye kaunsa behtar?					safe	low	none		no	val		
+P0317	X	2026-09-22 08:25	@anita_singh17	Hindi	Interview ki taiyari ke liye banking awareness notes share kar raha hoon					safe	low	none		no	train		
+P0318	Instagram	2026-09-26 12:19	@neha_meena62	English	Warning: bank account bechne ya kiraye pe dene wale fraud mein phas sakte hain, police case ho sakta hai					safe	low	none		yes	train		
+P0319	X	2026-08-05 19:03	@trusted_deals67	Hinglish	ATM crd + PIN + SIM sab milega, payment instant				t.me/demo_seller_789	suspicious	high	atm_card_sale		no	val		
+P0320	WhatsApp Group	2026-08-30 14:47	@manoj_verma57	Hinglish	Cyber crime helpline 1930 par turant report karein agar kisi ne account maanga					safe	low	none		yes	train		
+P0321	Classifieds	2026-08-28 23:23	@priya_joshi79	Hinglish	ATM card kho gaya, kaise block karein? koi batao					safe	low	none		yes	train		
+P0322	Instagram	2026-08-18 16:08	@sunita_gupta26	English	Debit card ka PIN change kaise karein? app mein option nahi mil raha					safe	low	none		yes	train		
+P0323	X	2026-09-26 03:27	@pooja_sharma14	Hindi	Official: ExampleBank credit card offer, 5% cashback on groceries. Terms apply. examplebank.in				examplebank.in	safe	low	none		yes	test		
+P0324	Telegram	2026-08-21 13:22	@rahul_rathore89	English	Maine apna current account band karwana hai, process kya hai?					safe	low	none		yes	val		
+P0325	Facebook	2026-08-15 15:15	@manoj_gupta24	Hinglish	News: police ne mule account racket ka pardafash kiya, kai giraftar					safe	low	none		yes	train		
+P0326	Classifieds	2026-09-21 16:20	@vip_deals79	Hinglish	Fresh savings accnt bikau hai, urgent, DM karo 🔥		+91 93XXXX11XX			suspicious	high	account_sale		no	train		
+P0327	Telegram	2026-08-14 09:53	@vip_care26	Hinglish	credit crd + PIN + SIM sab milega, payment instant		+91 98XXXX66XX			suspicious	high	credit_card_sale	C08	no	train		
+P0328	Instagram	2026-09-17 14:49	@vip_seller91	Rajasthani	Need bank details for easy income, msg me	img/P0085.png	+91 94XXXX43XX			suspicious	medium	account_rental		no	test		
+P0329	Facebook	2026-09-07 11:21	@manoj_joshi28	Hindi	Mera debit card expire ho gaya, naya kaise milega?					safe	low	none		yes	test		
+P0330	Facebook	2026-09-12 15:05	@quick_deals97	Hindi	bank account किराए पर देना है, रोज़ कमाई, मैसेज करें	img/P0020.png	+91 98XXXX47XX		t.me/demo_seller_217	suspicious	high	account_rental		no	train		
+P0331	Telegram	2026-08-20 18:27	@sunita_rathore40	English	Weekend pe Jaipur mein kaunsa restaurant try karein?					safe	low	none		no	train		
+P0332	Classifieds	2026-10-05 15:26	@star_care49	Hindi	credit card बिकाऊ है, तुरंत पेमेंट, संपर्क करें ✅		+91 94XXXX16XX		t.me/demo_seller_744	suspicious	high	credit_card_sale		no	train		
+P0333	Classifieds	2026-09-17 00:18	@desi_care8	English	Koi accnt dena chahta hai? achha commission					suspicious	medium	account_rental		no	train		
+P0334	Facebook	2026-08-22 22:14	@desi_seller7	English	Looking for people with savings account, earn daily		+91 98XXXX51XX			suspicious	medium	account_rental		no	test		
+P0335	WhatsApp Group	2026-09-24 20:37	@trusted_seller11	Hinglish	current account kiraye pe dena hai, rozana earning, contact karo		+91 95XXXX42XX			suspicious	high	account_rental		no	train		
+P0336	Facebook	2026-09-25 20:39	@star_deals6	Hindi	Account chahiye, paisa milega, DM					suspicious	medium	account_rental		no	val		
+P0337	Facebook	2026-09-09 18:50	@vip_care10	Hinglish	debit card kiraye pe dena hai, rozana earning, contact karo		+91 92XXXX74XX		t.me/demo_seller_200	suspicious	high	atm_card_sale		no	train		
+P0338	Classifieds	2026-09-10 22:06	@star_hub50	English	Urgent: debit crd for sale, full kit available 📲	img/P0047.png	+91 97XXXX60XX	seller728@fakeupi		suspicious	high	atm_card_sale		no	train		
+P0339	Telegram	2026-08-24 16:36	@lucky_deals79	Hinglish	bank account kiraye pe dena hai, rozana earning, contact karo		+91 98XXXX76XX	seller675@fakeupi	t.me/demo_seller_893	suspicious	high	account_rental		no	train		
+P0340	WhatsApp Group	2026-09-27 21:39	@rahul_meena85	Hinglish	Beware of ads offering money for your bank account. It is illegal. Report such posts.					safe	low	none		yes	train		
+P0341	WhatsApp Group	2026-09-18 20:25	@fresh_care14	Rajasthani	savings accnt bechno hai, jaldi sampark karo 💳					suspicious	high	account_sale		no	val		
+P0342	Instagram	2026-09-14 16:29	@trusted_acc47	Hinglish	Need bank details for easy income, msg me					suspicious	medium	account_rental		no	train		
+P0343	Classifieds	2026-08-25 16:37	@rahul_joshi84	Hinglish	Congrats to our team for winning the inter-college cricket match!					safe	low	none		no	train		
+P0344	Classifieds	2026-09-07 11:21	@anita_singh84	Hindi	Official: ExampleBank credit card offer, 5% cashback on groceries. Terms apply. examplebank.in				examplebank.in	safe	low	none		yes	val		
+P0345	WhatsApp Group	2026-09-19 04:04	@royal_trader96	English	Selling verified current a/c. Price negotiable. Contact on WhatsApp		+91 98XXXX57XX			suspicious	high	account_sale		no	train		
+P0346	WhatsApp Group	2026-09-26 03:36	@easy_deals15	English	Koi account dena chahta hai? achha commission		+91 93XXXX38XX			suspicious	medium	account_rental		no	train		
+P0347	Classifieds	2026-09-01 09:57	@trusted_seller6	Hinglish	ATM card kiraye pe dena hai, rozana earning, contact karo	img/P0036.png	+91 92XXXX83XX		t.me/demo_seller_504	suspicious	high	atm_card_sale		no	val		
+P0348	Facebook	2026-10-03 00:09	@anita_sharma36	Hinglish	ATM card kho gaya, kaise block karein? koi batao					safe	low	none		yes	train		
+P0349	Facebook	2026-09-29 09:20	@amit_jain18	English	Mera savings account ka KYC update kaise hoga? branch jaana padega kya?					safe	low	none		no	val		
+P0350	WhatsApp Group	2026-09-24 19:07	@vip_deals65	English	Fresh credit card available for sale, instant payment, DM now	img/P0001.png	+91 92XXXX13XX	seller859@fakeupi	t.me/demo_seller_381	suspicious	high	credit_card_sale	C01	no	train		
+P0351	X	2026-09-28 18:07	@royal_deals86	Hinglish	debit card ready hai bhai, UPI se payment karo, fast		+91 92XXXX75XX		t.me/demo_seller_385	suspicious	high	atm_card_sale	C04	no	test		
+P0352	Facebook	2026-09-09 10:14	@royal_hub4	Rajasthani	current accnt kiraye pe chahije, paisa milsi, inbox karo 💳		+91 96XXXX25XX	seller572@fakeupi	t.me/demo_seller_687	suspicious	high	account_rental		no	test		
+P0353	Classifieds	2026-08-23 10:49	@neha_singh56	Hindi	Credit card limit badhane ke liye kya karna padta hai?					safe	low	none		yes	train		
+P0354	WhatsApp Group	2026-10-09 11:17	@quick_seller90	Hinglish	Fresh ATM card bikau hai, urgent, DM karo		+91 94XXXX29XX		t.me/demo_seller_749	suspicious	high	atm_card_sale		no	train		
+P0355	Facebook	2026-08-31 03:46	@desi_seller75	Hindi	Khata kiraye pe do, har mahine paisa		+91 95XXXX63XX			suspicious	medium	account_rental		no	test		
+P0356	Facebook	2026-09-20 19:44	@sunita_joshi94	Hinglish	Best credit card for travel rewards? suggestions chahiye					safe	low	none		no	train		
+P0357	Classifieds	2026-09-14 08:56	@pooja_verma49	Hindi	Interview ki taiyari ke liye banking awareness notes share kar raha hoon					safe	low	none		no	train		
+P0358	Facebook	2026-09-25 03:08	@karan_meena77	Hinglish	Congrats to our team for winning the inter-college cricket match!					safe	low	none		no	test		
+P0359	Facebook	2026-09-10 13:49	@desi_hub60	Hinglish	Sasta bank acc0unt available, serious log hi msg karein 💳		+91 99XXXX81XX			suspicious	high	account_sale		no	train		
+P0360	Facebook	2026-09-12 21:40	@anita_singh47	Hinglish	RBI ne naye digital payment guidelines jaari ki hain					safe	low	none		no	train		
+P0361	WhatsApp Group	2026-09-27 11:16	@easy_care36	Hinglish	ATM card ready hai bhai, UPI se payment karo, fast		+91 96XXXX90XX	seller550@fakeupi	t.me/demo_seller_552	suspicious	high	atm_card_sale		no	train		
+P0362	WhatsApp Group	2026-08-11 05:48	@royal_deals19	Hinglish	Account chahiye, paisa milega, DM	img/P0074.png				suspicious	medium	account_rental		no	train		
+P0363	Telegram	2026-09-16 18:37	@quick_acc22	Hinglish	Looking for people with savings account, earn daily		+91 94XXXX51XX			suspicious	medium	account_rental		no	train		
+P0364	Instagram	2026-09-12 13:01	@royal_points22	Hinglish	debit crd + PIN + SIM sab milega, payment instant	img/P0010.png	+91 98XXXX67XX	seller365@fakeupi		suspicious	high	atm_card_sale	C09	no	val		
+P0365	X	2026-08-30 20:04	@trusted_acc92	English	Fresh current account available for sale, instant payment, DM now 💰				t.me/demo_seller_955	suspicious	high	account_sale		no	test		
+P0366	Instagram	2026-08-12 13:12	@neha_meena82	English	Debit card ka PIN change kaise karein? app mein option nahi mil raha					safe	low	none		yes	train		
+P0367	Classifieds	2026-09-17 14:46	@pooja_meena95	Hindi	Savings account kholne ke liye kaunse documents chahiye?					safe	low	none		yes	val		
+P0368	WhatsApp Group	2026-10-06 23:17	@rahul_singh7	Hinglish	Official: ExampleBank credit card offer, 5% cashback on groceries. Terms apply. examplebank.in				examplebank.in	safe	low	none		yes	train		
+P0369	Classifieds	2026-09-30 23:55	@royal_seller42	Hinglish	Sasta credit crd available, serious log hi msg karein 🔥		+91 95XXXX83XX		t.me/demo_seller_881	suspicious	high	credit_card_sale	C13	no	train		
+P0370	WhatsApp Group	2026-10-09 19:36	@rahul_verma88	English	Best credit card for travel rewards? suggestions chahiye					safe	low	none		no	train		
+P0371	Telegram	2026-09-28 06:48	@easy_care69	Hinglish	Koi a/c dena chahta hai? achha commission	img/P0083.png	+91 91XXXX58XX			suspicious	medium	account_rental		no	train		
+P0372	Telegram	2026-09-18 17:23	@sunita_singh88	English	News: police ne mule account racket ka pardafash kiya, kai giraftar					safe	low	none		yes	train		
+P0373	Classifieds	2026-10-05 13:01	@vip_acc31	Hinglish	bank account kiraye pe dena hai, rozana earning, contact karo		+91 98XXXX29XX	seller545@fakeupi	t.me/demo_seller_280	suspicious	high	account_rental	C11	no	train		
+P0374	Classifieds	2026-09-17 16:16	@amit_rathore99	Hinglish	Fixed deposit vs mutual fund, beginners ke liye kaunsa behtar?					safe	low	none		no	train		
+P0375	Instagram	2026-09-02 04:18	@neha_gupta24	Hindi	Best credit card for travel rewards? suggestions chahiye					safe	low	none		no	train		
+P0376	X	2026-08-26 16:29	@rahul_jain56	Hindi	Mera debit card expire ho gaya, naya kaise milega?					safe	low	none		yes	train		
+P0377	Facebook	2026-08-18 16:56	@pooja_rathore74	Hinglish	Congrats to our team for winning the inter-college cricket match!					safe	low	none		no	train		
+P0378	WhatsApp Group	2026-10-03 08:03	@neha_sharma14	Hindi	Mera savings account ka KYC update kaise hoga? branch jaana padega kya?					safe	low	none		no	train		
+P0379	Telegram	2026-09-16 04:55	@mega_acc50	Hinglish	Fresh credit card bikau hai, urgent, DM karo ✅					suspicious	high	credit_card_sale		no	val		
+P0380	WhatsApp Group	2026-08-03 05:58	@mega_care99	Hindi	Part time kaam: apna account use karne do, paisa milega 💳	img/P0093.png				suspicious	medium	account_rental		no	val		
+P0381	Facebook	2026-10-05 08:09	@priya_sharma27	Hindi	Congrats to our team for winning the inter-college cricket match!					safe	low	none		no	test		
+P0382	WhatsApp Group	2026-08-09 19:44	@royal_deals13	Hinglish	debit card + PIN + SIM sab milega, payment instant		+91 92XXXX75XX	seller343@fakeupi	t.me/demo_seller_385	suspicious	high	atm_card_sale	C04	no	test		
+P0383	WhatsApp Group	2026-08-26 01:13	@vikram_sharma95	Hinglish	Awareness: ATM card aur PIN kisi ko na dein, ye cyber fraud hota hai					safe	low	none		yes	train		
+P0384	Classifieds	2026-09-09 07:15	@anita_gupta43	English	Official: ExampleBank credit card offer, 5% cashback on groceries. Terms apply. examplebank.in				examplebank.in	safe	low	none		yes	train		
+P0385	Instagram	2026-09-25 17:36	@anita_rathore10	Hinglish	Aadhaar card update karne ka process kya hai?					safe	low	none		no	train		
+P0386	Instagram	2026-09-06 17:13	@fresh_deals29	English	Khata kiraye pe do, har mahine paisa		+91 94XXXX31XX			suspicious	medium	account_rental		no	train		
+P0387	Telegram	2026-09-01 00:23	@trusted_care42	English	Fresh current a/c available for sale, instant payment, DM now 💳		+91 91XXXX52XX		t.me/demo_seller_233	suspicious	high	account_sale		no	train		
+P0388	X	2026-09-12 16:58	@manoj_sharma89	English	RBI ne naye digital payment guidelines jaari ki hain					safe	low	none		no	train		
+P0389	X	2026-08-05 00:57	@star_deals33	English	Urgent: debit card for sale, full kit available 🔥		+91 96XXXX45XX		t.me/demo_seller_171	suspicious	high	atm_card_sale	C07	no	train		
+P0390	X	2026-09-08 01:25	@vip_care21	Hinglish	current account kiraye pe dena hai, rozana earning, contact karo	img/P0034.png	+91 93XXXX22XX	seller493@fakeupi		suspicious	high	account_rental		no	train		
+P0391	WhatsApp Group	2026-09-23 18:41	@anita_joshi81	Hindi	Kisi ko achhi home loan scheme pata hai? interest rate compare karna hai					safe	low	none		no	test		
+P0392	X	2026-10-03 18:51	@neha_joshi24	Hindi	Beware of ads offering money for your bank account. It is illegal. Report such posts.					safe	low	none		yes	train		
+P0393	Facebook	2026-09-06 00:37	@desi_points31	Hinglish	Looking for people with savings account, earn daily	img/P0076.png	+91 97XXXX14XX			suspicious	medium	account_rental		no	val		
+P0394	Classifieds	2026-08-17 19:37	@priya_meena33	English	News: police ne mule account racket ka pardafash kiya, kai giraftar					safe	low	none		yes	train		
+P0395	Classifieds	2026-08-30 04:56	@easy_points54	Hinglish	Koi account dena chahta hai? achha commission					suspicious	medium	account_rental		no	test		
+P0396	WhatsApp Group	2026-09-13 05:16	@star_deals61	Hindi	Part time kaam: apna account use karne do, paisa milega ✅	img/P0071.png				suspicious	medium	account_rental		no	train		
+P0397	Telegram	2026-08-17 05:23	@amit_gupta79	Hindi	UPI payment fail ho gaya par paisa kat gaya, refund kab aayega?					safe	low	none		no	train		
+P0398	Facebook	2026-09-10 18:53	@quick_care64	Rajasthani	Looking for people with savings account, earn daily		+91 98XXXX83XX			suspicious	medium	account_rental		no	val		
+P0399	Instagram	2026-09-08 14:30	@manoj_joshi50	English	Maine apna current account band karwana hai, process kya hai?					safe	low	none		yes	test		
+P0400	X	2026-09-29 14:54	@rahul_meena12	English	Mera savings account ka KYC update kaise hoga? branch jaana padega kya?					safe	low	none		no	train		
+P0401	WhatsApp Group	2026-08-27 01:01	@desi_care7	English	Fresh savings account available for sale, instant payment, DM now 🔥		+91 99XXXX70XX	seller871@fakeupi		suspicious	high	account_sale		no	train		
+P0402	X	2026-08-14 21:56	@quick_deals99	English	Fresh credit card available for sale, instant payment, DM now ✅		+91 93XXXX40XX	seller362@fakeupi	t.me/demo_seller_716	suspicious	high	credit_card_sale		no	train		
+P0403	Facebook	2026-10-02 01:59	@fresh_seller27	Rajasthani	debit card kiraye pe chahije, paisa milsi, inbox karo 🔥		+91 91XXXX21XX	seller749@fakeupi	t.me/demo_seller_533	suspicious	high	atm_card_sale	C06	no	val		
+P0404	Classifieds	2026-10-09 16:46	@manoj_meena79	English	Weekend pe Jaipur mein kaunsa restaurant try karein?					safe	low	none		no	train		
+P0405	Instagram	2026-08-19 19:54	@mega_hub45	Hindi	debit kard किराए पर देना है, रोज़ कमाई, मैसेज करें	img/P0046.png	+91 92XXXX28XX	seller451@fakeupi		suspicious	high	atm_card_sale		no	train		
+P0406	Telegram	2026-09-16 01:21	@rahul_joshi65	Hinglish	Weekend pe Jaipur mein kaunsa restaurant try karein?					safe	low	none		no	train		
+P0407	Classifieds	2026-10-01 02:34	@royal_care68	English	Buy debit card today, quick delivery, UPI accepted		+91 99XXXX73XX	seller452@fakeupi		suspicious	high	atm_card_sale		no	test		
+P0408	Facebook	2026-09-26 01:50	@lucky_care28	English	Buy debit card today, quick delivery, UPI accepted	img/P0057.png	+91 94XXXX90XX			suspicious	high	atm_card_sale		no	test		
+P0409	Classifieds	2026-08-12 11:47	@trusted_hub5	Hindi	ATM card बिकाऊ है, तुरंत पेमेंट, संपर्क करें 🔥			seller664@fakeupi		suspicious	high	atm_card_sale	C14	no	train		
+P0410	Telegram	2026-09-12 05:39	@karan_joshi39	English	Fraud se bachein: agar koi account kiraye pe lene ko kahe to mana karein					safe	low	none		yes	val		
+P0411	X	2026-08-03 20:05	@sunita_rathore81	Hindi	Scholarship form ki last date badh gayi hai, check karein					safe	low	none		no	test		
+P0412	Instagram	2026-08-26 00:25	@vip_trader37	Hinglish	Sasta ATM card available, serious log hi msg karein 📲	img/P0051.png	+91 92XXXX82XX	seller879@fakeupi	t.me/demo_seller_133	suspicious	high	atm_card_sale		no	train		
+P0413	Classifieds	2026-08-29 17:07	@pooja_verma24	Hinglish	Aaj ka gold rate aur petrol price update					safe	low	none		no	train		
+P0414	X	2026-09-06 06:27	@fresh_points25	Hinglish	Sasta current accnt available, serious log hi msg karein 💰	img/P0008.png	+91 91XXXX21XX		t.me/demo_seller_533	suspicious	high	account_sale	C06	no	val		
+P0415	Classifieds	2026-09-24 22:18	@manoj_sharma87	Hindi	Kisi ko achhi home loan scheme pata hai? interest rate compare karna hai					safe	low	none		no	test		
+P0416	WhatsApp Group	2026-08-31 01:49	@vip_acc5	English	Fresh savings a/c available for sale, instant payment, DM now 🔥		+91 99XXXX44XX	seller887@fakeupi		suspicious	high	account_sale	C03	no	train		
+P0417	Telegram	2026-09-26 22:02	@neha_gupta37	Hindi	UPI payment fail ho gaya par paisa kat gaya, refund kab aayega?					safe	low	none		no	train		
+P0418	X	2026-08-31 18:14	@pooja_joshi5	Hindi	Scholarship form ki last date badh gayi hai, check karein					safe	low	none		no	train		
+P0419	Telegram	2026-08-27 20:44	@vip_care70	Hinglish	Need bank details for easy income, msg me					suspicious	medium	account_rental		no	train		
+P0420	Instagram	2026-09-12 02:55	@vikram_sharma94	English	Credit card limit badhane ke liye kya karna padta hai?					safe	low	none		yes	train		
+P0421	WhatsApp Group	2026-09-16 23:29	@rahul_jain38	English	UPI payment fail ho gaya par paisa kat gaya, refund kab aayega?					safe	low	none		no	train		
+P0422	Telegram	2026-09-10 23:10	@pooja_sharma43	Hinglish	RBI ne naye digital payment guidelines jaari ki hain					safe	low	none		no	train		
+P0423	X	2026-08-05 17:07	@royal_points40	Rajasthani	credit card bechno hai, jaldi sampark karo 💰		+91 92XXXX57XX			suspicious	high	credit_card_sale		no	test		
+P0424	Telegram	2026-09-19 20:21	@mega_deals74	Hindi	savings account किराए पर देना है, रोज़ कमाई, मैसेज करें		+91 99XXXX56XX	seller677@fakeupi	t.me/demo_seller_948	suspicious	high	account_rental		no	train		
+P0425	Instagram	2026-08-10 16:59	@vip_hub74	Hinglish	bank account ready hai bhai, UPI se payment karo, fast		+91 98XXXX48XX	seller493@fakeupi		suspicious	high	account_sale		no	train		
+P0426	Classifieds	2026-09-17 10:18	@vikram_singh72	Hindi	Bank clerk recruitment 2026 notification out, apply before 30 Nov					safe	low	none		no	train		
+P0427	X	2026-09-11 18:22	@pooja_sharma62	Hinglish	New phone launch today, camera review coming soon					safe	low	none		no	train		
+P0428	Classifieds	2026-08-24 03:47	@priya_gupta39	Hindi	RBI ne naye digital payment guidelines jaari ki hain					safe	low	none		no	test		
+P0429	Facebook	2026-10-07 18:34	@desi_care17	English	Selling verified ATM card. Price negotiable. Contact on WhatsApp		+91 98XXXX18XX	seller187@fakeupi	t.me/demo_seller_198	suspicious	high	atm_card_sale		no	train		
+P0430	Instagram	2026-08-15 01:12	@trusted_hub84	Hinglish	debit card kiraye pe dena hai, rozana earning, contact karo		+91 93XXXX49XX		t.me/demo_seller_114	suspicious	high	atm_card_sale	C14	no	train		
+P0431	X	2026-08-05 23:09	@manoj_meena60	Hindi	Congrats to our team for winning the inter-college cricket match!					safe	low	none		no	train		
+P0432	Facebook	2026-08-07 07:36	@pooja_jain79	English	Cyber crime helpline 1930 par turant report karein agar kisi ne account maanga					safe	low	none		yes	train		
+P0433	Classifieds	2026-09-08 20:57	@priya_meena24	Hindi	Aadhaar card update karne ka process kya hai?					safe	low	none		no	val		
+P0434	WhatsApp Group	2026-08-20 07:22	@desi_deals63	Hindi	ताज़ा current accnt उपलब्ध, पिन और सिम के साथ		+91 98XXXX29XX	seller545@fakeupi	t.me/demo_seller_280	suspicious	high	account_sale	C11	no	train		
+P0435	X	2026-10-07 08:44	@star_acc79	English	Urgent: debit card for sale, full kit available 📲		+91 92XXXX61XX		t.me/demo_seller_175	suspicious	high	atm_card_sale	C12	no	train		
+P0436	Facebook	2026-09-04 03:52	@easy_trader87	Rajasthani	ATM kard bechno hai, jaldi sampark karo 🔥	img/P0012.png		seller646@fakeupi	t.me/demo_seller_127	suspicious	high	atm_card_sale	C10	no	train		
+P0437	Telegram	2026-08-07 17:06	@trusted_seller83	Hinglish	Sasta bank akaunt available, serious log hi msg karein ✅		+91 98XXXX77XX	seller519@fakeupi		suspicious	high	account_sale		no	val		
+P0438	Telegram	2026-08-24 21:07	@lucky_trader82	English	savings account with PIN + SIM + cheque book ready. Serious buyers only		+91 99XXXX33XX	seller301@fakeupi		suspicious	high	account_sale		no	val		
+P0439	Telegram	2026-08-02 10:10	@vip_deals9	English	bank akaunt with PIN + SIM + cheque book ready. Serious buyers only			seller884@fakeupi		suspicious	high	account_sale		no	test		
+P0440	X	2026-08-29 15:02	@rahul_gupta53	Hinglish	Fixed deposit vs mutual fund, beginners ke liye kaunsa behtar?					safe	low	none		no	train		
+P0441	Classifieds	2026-08-13 07:34	@karan_rathore42	English	Interview ki taiyari ke liye banking awareness notes share kar raha hoon					safe	low	none		no	train		
+P0442	Instagram	2026-09-24 14:44	@star_seller89	English	current account with PIN + SIM + cheque book ready. Serious buyers only		+91 93XXXX41XX	seller186@fakeupi	t.me/demo_seller_715	suspicious	high	account_sale		no	train		
+P0443	Facebook	2026-08-27 21:54	@vikram_singh59	Hinglish	Weekend pe Jaipur mein kaunsa restaurant try karein?					safe	low	none		no	train		
+P0444	Facebook	2026-10-03 02:53	@fresh_seller1	Hinglish	ATM card + PIN + SIM sab milega, payment instant		+91 97XXXX13XX	seller454@fakeupi		suspicious	high	atm_card_sale		no	train		
+P0445	X	2026-09-09 04:36	@trusted_acc13	Hinglish	Fresh ATM card bikau hai, urgent, DM karo 💳		+91 95XXXX12XX			suspicious	high	atm_card_sale		no	train		
+P0446	Telegram	2026-08-25 03:01	@lucky_trader22	English	Fresh debit card available for sale, instant payment, DM now 💳	img/P0005.png		seller887@fakeupi	t.me/demo_seller_756	suspicious	high	atm_card_sale	C03	no	train		
+P0447	Instagram	2026-08-15 20:40	@karan_rathore29	English	Mera savings account ka KYC update kaise hoga? branch jaana padega kya?					safe	low	none		no	val		
+P0448	Instagram	2026-09-12 08:34	@anita_sharma47	English	Official: ExampleBank credit card offer, 5% cashback on groceries. Terms apply. examplebank.in				examplebank.in	safe	low	none		yes	val		
+P0449	X	2026-10-08 23:17	@priya_verma95	Hinglish	Kisi ko achhi home loan scheme pata hai? interest rate compare karna hai					safe	low	none		no	test		
+P0450	Telegram	2026-09-11 07:04	@anita_jain59	Hinglish	Kisi ko achhi home loan scheme pata hai? interest rate compare karna hai					safe	low	none		no	train		
+P0451	Classifieds	2026-10-06 16:39	@quick_points59	Hindi	ताज़ा current account उपलब्ध, पिन और सिम के साथ			seller599@fakeupi	t.me/demo_seller_102	suspicious	high	account_sale		no	train		
+P0452	Classifieds	2026-09-17 10:41	@vip_hub39	English	Buy credit card today, quick delivery, UPI accepted			seller997@fakeupi	t.me/demo_seller_776	suspicious	high	credit_card_sale		no	train		
+P0453	X	2026-10-02 23:04	@amit_verma12	Hinglish	Best credit card for travel rewards? suggestions chahiye					safe	low	none		no	test		
+P0454	Classifieds	2026-09-13 07:15	@desi_trader39	English	Need bank details for easy income, msg me	img/P0079.png				suspicious	medium	account_rental		no	train		
+P0455	Classifieds	2026-08-22 16:58	@pooja_rathore9	Hindi	News: police ne mule account racket ka pardafash kiya, kai giraftar					safe	low	none		yes	train		
+P0456	X	2026-09-24 00:12	@manoj_joshi59	English	Cyber crime helpline 1930 par turant report karein agar kisi ne account maanga					safe	low	none		yes	train		
+P0457	Facebook	2026-08-19 21:35	@lucky_seller60	English	savings akaunt with PIN + SIM + cheque book ready. Serious buyers only	img/P0062.png	+91 96XXXX62XX	seller466@fakeupi		suspicious	high	account_sale		no	val		
+P0458	Telegram	2026-09-11 20:05	@vikram_jain23	Hindi	Credit card limit badhane ke liye kya karna padta hai?					safe	low	none		yes	train		
+P0459	Classifieds	2026-08-30 09:44	@amit_sharma96	Hindi	RBI ne naye digital payment guidelines jaari ki hain					safe	low	none		no	train		
+P0460	Facebook	2026-09-07 18:55	@amit_singh71	Hinglish	Beware of ads offering money for your bank account. It is illegal. Report such posts.					safe	low	none		yes	train		
+P0461	Classifieds	2026-09-11 06:37	@anita_verma30	English	Best credit card for travel rewards? suggestions chahiye					safe	low	none		no	train		
+P0462	Telegram	2026-09-01 10:09	@pooja_joshi65	Hindi	Official: ExampleBank credit card offer, 5% cashback on groceries. Terms apply. examplebank.in				examplebank.in	safe	low	none		yes	train		
+P0463	Telegram	2026-08-12 23:25	@neha_sharma80	English	Please share notes for Chapter 4 accounting, exam kal hai					safe	low	none		no	train		
+P0464	Instagram	2026-08-09 05:15	@star_trader65	Hinglish	bank account ready hai bhai, UPI se payment karo, fast		+91 96XXXX46XX	seller984@fakeupi		suspicious	high	account_sale		no	train		
+P0465	Telegram	2026-09-28 16:43	@sunita_gupta27	English	ATM card kho gaya, kaise block karein? koi batao					safe	low	none		yes	val		
+P0466	Instagram	2026-09-10 23:48	@mega_seller80	Hinglish	bank account kiraye pe dena hai, rozana earning, contact karo		+91 99XXXX34XX	seller395@fakeupi	t.me/demo_seller_616	suspicious	high	account_rental		no	train		
+P0467	Classifieds	2026-09-02 08:20	@vikram_jain65	English	Best credit card for travel rewards? suggestions chahiye					safe	low	none		no	val		
+P0468	Classifieds	2026-09-11 06:41	@royal_hub94	English	Buy debit kard today, quick delivery, UPI accepted		+91 99XXXX37XX	seller333@fakeupi		suspicious	high	atm_card_sale		no	test		
+P0469	Telegram	2026-08-17 06:37	@vikram_verma14	Hinglish	Credit card bill payment ki last date kya hoti hai? late fee lagta hai kya?					safe	low	none		yes	test		
+P0470	Facebook	2026-09-26 02:25	@easy_points75	English	Account chahiye, paisa milega, DM		+91 98XXXX52XX			suspicious	medium	account_rental		no	test		
+P0471	WhatsApp Group	2026-08-31 04:12	@karan_singh38	English	Debit card ka PIN change kaise karein? app mein option nahi mil raha					safe	low	none		yes	test		
+P0472	WhatsApp Group	2026-09-16 05:00	@easy_care82	English	ATM crd with PIN + SIM + cheque book ready. Serious buyers only		+91 99XXXX44XX	seller887@fakeupi	t.me/demo_seller_756	suspicious	high	atm_card_sale	C03	no	train		
+P0473	WhatsApp Group	2026-08-09 01:12	@neha_joshi81	Hindi	News: police ne mule account racket ka pardafash kiya, kai giraftar					safe	low	none		yes	train		
+P0474	X	2026-09-01 07:11	@royal_seller50	Rajasthani	Account chahiye, paisa milega, DM	img/P0075.png				suspicious	medium	account_rental		no	val		
+P0475	Classifieds	2026-08-30 00:14	@easy_acc10	Hinglish	Sasta current account available, serious log hi msg karein ✅		+91 98XXXX19XX		t.me/demo_seller_120	suspicious	high	account_sale		no	test		
+P0476	WhatsApp Group	2026-10-03 13:47	@neha_meena87	Hinglish	Interview ki taiyari ke liye banking awareness notes share kar raha hoon					safe	low	none		no	train		
+P0477	Classifieds	2026-08-29 02:59	@desi_seller1	Hinglish	credit card ready hai bhai, UPI se payment karo, fast	img/P0023.png		seller284@fakeupi	t.me/demo_seller_880	suspicious	high	credit_card_sale		no	train		
+P0478	Classifieds	2026-09-28 12:05	@easy_hub49	Hindi	Looking for people with savings acc0unt, earn daily					suspicious	medium	account_rental		no	train		
+P0479	Instagram	2026-09-14 23:48	@rahul_verma28	Hinglish	Official: ExampleBank credit card offer, 5% cashback on groceries. Terms apply. examplebank.in				examplebank.in	safe	low	none		yes	train		
+P0480	Instagram	2026-08-17 02:46	@vip_care21	English	Selling verified current account. Price negotiable. Contact on WhatsApp					suspicious	high	account_sale	C06	no	val		
+P0481	WhatsApp Group	2026-10-07 01:50	@priya_verma71	English	Bank clerk recruitment 2026 notification out, apply before 30 Nov					safe	low	none		no	train		
+P0482	Facebook	2026-10-01 17:58	@lucky_deals79	Rajasthani	Koi account dena chahta hai? achha commission		+91 98XXXX82XX			suspicious	medium	account_rental		no	train		
+P0483	Instagram	2026-09-07 05:53	@star_hub19	Hindi	Khata kiraye pe do, har mahine paisa		+91 94XXXX53XX			suspicious	medium	account_rental		no	test		
+P0484	Instagram	2026-08-05 21:31	@fresh_points33	English	Khata kiraye pe do, har mahine paisa	img/P0089.png	+91 96XXXX80XX			suspicious	medium	account_rental		no	train		
+P0485	X	2026-08-20 14:55	@mega_acc45	Hindi	savings akaunt बिकाऊ है, तुरंत पेमेंट, संपर्क करें ✅		+91 97XXXX72XX			suspicious	high	account_sale		no	train		
+P0486	Facebook	2026-08-30 18:00	@desi_deals59	Hinglish	Fresh credit card bikau hai, urgent, DM karo 💳	img/P0011.png	+91 93XXXX89XX	seller646@fakeupi	t.me/demo_seller_127	suspicious	high	credit_card_sale	C10	no	train		
+P0487	Facebook	2026-08-04 08:33	@amit_joshi84	Hinglish	Mera debit card expire ho gaya, naya kaise milega?					safe	low	none		yes	val		
+P0488	Instagram	2026-08-02 12:53	@royal_points16	Hinglish	Part time kaam: apna account use karne do, paisa milega 📲					suspicious	medium	account_rental		no	val		
+P0489	WhatsApp Group	2026-08-16 14:09	@priya_gupta79	English	Warning: bank account bechne ya kiraye pe dene wale fraud mein phas sakte hain, police case ho sakta hai					safe	low	none		yes	test		
+P0490	Instagram	2026-10-03 12:31	@amit_meena62	Hindi	New phone launch today, camera review coming soon					safe	low	none		no	train		
+P0491	Instagram	2026-08-10 13:11	@mega_points80	Hinglish	Looking for people with savings account, earn daily					suspicious	medium	account_rental		no	train		
+P0492	Classifieds	2026-09-16 17:12	@royal_hub73	Hinglish	savings account kiraye pe dena hai, rozana earning, contact karo	img/P0038.png	+91 99XXXX67XX			suspicious	high	account_rental		no	val		
+P0493	Classifieds	2026-08-14 22:39	@rahul_rathore58	Hindi	Mera savings account ka KYC update kaise hoga? branch jaana padega kya?					safe	low	none		no	train		
+P0494	X	2026-09-18 18:08	@rahul_gupta32	English	Interview ki taiyari ke liye banking awareness notes share kar raha hoon					safe	low	none		no	train		
+P0495	X	2026-09-25 18:38	@vikram_meena71	English	Best credit card for travel rewards? suggestions chahiye					safe	low	none		no	train		
+P0496	Telegram	2026-10-07 03:38	@karan_jain49	Hinglish	Warning: bank account bechne ya kiraye pe dene wale fraud mein phas sakte hain, police case ho sakta hai					safe	low	none		yes	train		
+P0497	X	2026-10-07 05:21	@quick_acc98	Hinglish	Account chahiye, paisa milega, DM		+91 96XXXX64XX			suspicious	medium	account_rental		no	test		
+P0498	Classifieds	2026-09-11 02:17	@desi_hub67	Hinglish	Sasta debit card available, serious log hi msg karein 💰		+91 99XXXX44XX		t.me/demo_seller_756	suspicious	high	atm_card_sale	C03	no	train		
+P0499	WhatsApp Group	2026-10-08 07:40	@vikram_joshi67	Hinglish	Credit card limit badhane ke liye kya karna padta hai?					safe	low	none		yes	train		
+P0500	WhatsApp Group	2026-08-28 12:08	@royal_acc18	Rajasthani	current acc0unt kiraye pe chahije, paisa milsi, inbox karo 📲		+91 92XXXX91XX			suspicious	high	account_rental		no	test		
+P0501	Classifieds	2026-08-25 11:15	@karan_jain9	Hinglish	Interview ki taiyari ke liye banking awareness notes share kar raha hoon					safe	low	none		no	train		
+P0502	X	2026-10-03 04:21	@neha_meena85	Hindi	Maine apna current account band karwana hai, process kya hai?					safe	low	none		yes	test		
+P0503	Classifieds	2026-10-03 19:06	@quick_seller65	Hinglish	Khata kiraye pe do, har mahine paisa					suspicious	medium	account_rental		no	train		
+P0504	X	2026-10-07 07:04	@easy_trader44	Hinglish	ATM kard ready hai bhai, UPI se payment karo, fast			seller502@fakeupi		suspicious	high	atm_card_sale		no	train		
+P0505	Classifieds	2026-10-06 23:20	@amit_verma96	Hinglish	UPI payment fail ho gaya par paisa kat gaya, refund kab aayega?					safe	low	none		no	train		
+P0506	X	2026-08-29 22:48	@lucky_seller30	Hinglish	ATM card + PIN + SIM sab milega, payment instant			seller951@fakeupi		suspicious	high	atm_card_sale		no	train		
+P0507	WhatsApp Group	2026-08-24 01:22	@pooja_gupta26	English	Aaj ka gold rate aur petrol price update					safe	low	none		no	train		
+P0508	Telegram	2026-09-30 07:38	@vip_care79	English	Koi account dena chahta hai? achha commission		+91 99XXXX11XX			suspicious	medium	account_rental		no	train		
+P0509	Instagram	2026-08-15 05:01	@amit_gupta47	Hindi	Best credit card for travel rewards? suggestions chahiye					safe	low	none		no	train		
+P0510	Classifieds	2026-09-01 09:49	@rahul_gupta97	Hinglish	Credit card limit badhane ke liye kya karna padta hai?					safe	low	none		yes	train		
+P0511	Classifieds	2026-09-26 11:50	@quick_hub25	Hinglish	Part time kaam: apna account use karne do, paisa milega 💳					suspicious	medium	account_rental		no	train		
+P0512	X	2026-08-31 17:45	@rahul_rathore16	Hinglish	ATM card kho gaya, kaise block karein? koi batao					safe	low	none		yes	val		
+P0513	Instagram	2026-08-22 15:08	@sunita_joshi39	Hinglish	Please share notes for Chapter 4 accounting, exam kal hai					safe	low	none		no	train		
+P0514	Telegram	2026-09-04 00:07	@royal_trader13	English	Buy savings account today, quick delivery, UPI accepted					suspicious	high	account_sale		no	val		
+P0515	Telegram	2026-10-01 07:42	@sunita_verma71	Hinglish	UPI payment fail ho gaya par paisa kat gaya, refund kab aayega?					safe	low	none		no	train		
+P0516	Telegram	2026-10-08 13:07	@rahul_rathore28	Hinglish	Maine apna current account band karwana hai, process kya hai?					safe	low	none		yes	val		
+P0517	Facebook	2026-08-30 14:22	@royal_trader68	Hinglish	Fresh ATM card bikau hai, urgent, DM karo 💳		+91 95XXXX89XX			suspicious	high	atm_card_sale		no	train		
+P0518	WhatsApp Group	2026-08-28 17:36	@vip_points95	Hindi	Account chahiye, paisa milega, DM		+91 99XXXX20XX			suspicious	medium	account_rental		no	val		
+P0519	Telegram	2026-09-14 22:58	@trusted_care65	Rajasthani	current acc0unt bechno hai, jaldi sampark karo 📲		+91 92XXXX52XX	seller756@fakeupi		suspicious	high	account_sale		no	train		
+P0520	Facebook	2026-09-08 15:55	@anita_sharma74	English	Fraud se bachein: agar koi account kiraye pe lene ko kahe to mana karein					safe	low	none		yes	train		
+P0521	Facebook	2026-09-15 12:05	@priya_singh98	Hindi	Kisi ko achhi home loan scheme pata hai? interest rate compare karna hai					safe	low	none		no	test		
+P0522	X	2026-09-28 08:04	@sunita_verma13	Hindi	UPI payment fail ho gaya par paisa kat gaya, refund kab aayega?					safe	low	none		no	train		
+P0523	Telegram	2026-09-30 02:36	@vikram_singh14	Hinglish	UPI payment fail ho gaya par paisa kat gaya, refund kab aayega?					safe	low	none		no	val		
+P0524	Facebook	2026-10-04 00:01	@karan_meena48	Hindi	Credit card limit badhane ke liye kya karna padta hai?					safe	low	none		yes	train		
+P0525	WhatsApp Group	2026-08-28 01:45	@lucky_acc89	Hinglish	Fresh credit card bikau hai, urgent, DM karo 📲		+91 95XXXX71XX	seller926@fakeupi		suspicious	high	credit_card_sale		no	train		
+P0526	Classifieds	2026-09-02 18:27	@pooja_joshi51	Hinglish	RBI ne naye digital payment guidelines jaari ki hain					safe	low	none		no	train		
+P0527	Telegram	2026-10-04 19:11	@anita_joshi15	Hindi	Debit card ka PIN change kaise karein? app mein option nahi mil raha					safe	low	none		yes	train		
+P0528	X	2026-08-20 22:01	@pooja_jain9	English	Bank clerk recruitment 2026 notification out, apply before 30 Nov					safe	low	none		no	test		
+P0529	Telegram	2026-09-04 09:14	@sunita_meena33	Hinglish	Fixed deposit vs mutual fund, beginners ke liye kaunsa behtar?					safe	low	none		no	train		
+P0530	Classifieds	2026-09-28 22:46	@desi_care76	English	Looking for people with savings account, earn daily	img/P0090.png				suspicious	medium	account_rental		no	train		
+P0531	WhatsApp Group	2026-08-20 18:59	@priya_singh62	Hinglish	Please share notes for Chapter 4 accounting, exam kal hai					safe	low	none		no	train		
+P0532	Classifieds	2026-08-20 04:00	@amit_rathore14	Hinglish	Aaj ka gold rate aur petrol price update					safe	low	none		no	test		
+P0533	Facebook	2026-09-21 08:00	@lucky_points15	Hindi	credit card बिकाऊ है, तुरंत पेमेंट, संपर्क करें 💳		+91 93XXXX89XX	seller646@fakeupi	t.me/demo_seller_127	suspicious	high	credit_card_sale	C10	no	train		
+P0534	Instagram	2026-08-26 03:28	@trusted_care9	Hindi	ATM card बिकाऊ है, तुरंत पेमेंट, संपर्क करें 📲	img/P0017.png	+91 93XXXX49XX	seller664@fakeupi		suspicious	high	atm_card_sale	C14	no	train		
+P0535	Telegram	2026-08-24 12:10	@amit_rathore77	Hindi	Kisi ko achhi home loan scheme pata hai? interest rate compare karna hai					safe	low	none		no	val		
+P0536	Facebook	2026-09-25 23:09	@royal_seller82	Hinglish	Sasta bank account available, serious log hi msg karein ✅		+91 96XXXX67XX	seller990@fakeupi		suspicious	high	account_sale		no	train		
+P0537	X	2026-08-08 04:08	@mega_acc49	English	Urgent: current account for sale, full kit available 💳	img/P0002.png	+91 92XXXX13XX			suspicious	high	account_sale	C01	no	train		
+P0538	Facebook	2026-08-31 14:22	@priya_joshi74	Hindi	Kisi ko achhi home loan scheme pata hai? interest rate compare karna hai					safe	low	none		no	train		
+P0539	Instagram	2026-09-20 01:42	@fresh_points60	Hinglish	debit card + PIN + SIM sab milega, payment instant		+91 94XXXX85XX		t.me/demo_seller_886	suspicious	high	atm_card_sale		no	val		
+P0540	Facebook	2026-08-04 05:15	@mega_care92	Hinglish	savings akaunt ready hai bhai, UPI se payment karo, fast	img/P0060.png	+91 96XXXX59XX		t.me/demo_seller_978	suspicious	high	account_sale		no	test		
+P0541	Telegram	2026-09-07 10:23	@priya_verma88	English	ATM card kho gaya, kaise block karein? koi batao					safe	low	none		yes	train		
+P0542	Instagram	2026-09-16 13:45	@anita_meena49	Hindi	Fixed deposit vs mutual fund, beginners ke liye kaunsa behtar?					safe	low	none		no	train		
+P0543	WhatsApp Group	2026-08-23 08:17	@star_seller42	Hinglish	credit card kiraye pe dena hai, rozana earning, contact karo	img/P0013.png	+91 98XXXX29XX	seller545@fakeupi		suspicious	high	credit_card_sale	C11	no	train		
+P0544	X	2026-08-03 23:27	@vikram_rathore97	English	Maine apna current account band karwana hai, process kya hai?					safe	low	none		yes	train		
+P0545	Classifieds	2026-08-19 13:24	@royal_trader79	English	credit card with PIN + SIM + cheque book ready. Serious buyers only		+91 91XXXX66XX	seller255@fakeupi		suspicious	high	credit_card_sale		no	val		
+P0546	WhatsApp Group	2026-09-18 12:38	@desi_trader46	Rajasthani	credit kard kiraye pe chahije, paisa milsi, inbox karo		+91 97XXXX50XX			suspicious	high	credit_card_sale		no	train		
+P0547	Instagram	2026-09-30 03:14	@pooja_meena27	Hindi	Warning: bank account bechne ya kiraye pe dene wale fraud mein phas sakte hain, police case ho sakta hai					safe	low	none		yes	train		
+P0548	WhatsApp Group	2026-08-30 01:33	@manoj_meena42	Hindi	Bank clerk recruitment 2026 notification out, apply before 30 Nov					safe	low	none		no	test		
+P0549	Classifieds	2026-08-10 08:13	@royal_hub5	Hinglish	Need bank details for easy income, msg me					suspicious	medium	account_rental		no	val		
+P0550	Classifieds	2026-09-20 09:19	@vip_deals27	Hindi	Khata kiraye pe do, har mahine paisa					suspicious	medium	account_rental		no	train		
+P0551	Classifieds	2026-09-17 03:55	@vikram_jain5	Hindi	Please share notes for Chapter 4 accounting, exam kal hai					safe	low	none		no	train		
+P0552	WhatsApp Group	2026-09-21 22:34	@royal_points96	Hindi	Khata kiraye pe do, har mahine paisa	img/P0088.png				suspicious	medium	account_rental		no	train		
+P0553	Telegram	2026-08-24 22:43	@neha_singh11	Hindi	Aaj ka gold rate aur petrol price update					safe	low	none		no	train		
+P0554	WhatsApp Group	2026-10-04 08:02	@vikram_rathore78	English	Please share notes for Chapter 4 accounting, exam kal hai					safe	low	none		no	train		
+P0555	Instagram	2026-10-08 22:27	@mega_care86	Hinglish	bank a/c kiraye pe dena hai, rozana earning, contact karo		+91 96XXXX63XX			suspicious	high	account_rental		no	train		
+P0556	Instagram	2026-09-29 03:00	@sunita_meena50	English	Fixed deposit vs mutual fund, beginners ke liye kaunsa behtar?					safe	low	none		no	train		
+P0557	Telegram	2026-10-06 20:49	@royal_trader96	Rajasthani	debit card kiraye pe chahije, paisa milsi, inbox karo ✅			seller365@fakeupi	t.me/demo_seller_869	suspicious	high	atm_card_sale	C09	no	val		
+P0558	Classifieds	2026-10-06 04:45	@trusted_hub63	Hinglish	Need bank details for easy income, msg me	img/P0087.png				suspicious	medium	account_rental		no	train		
+P0559	Classifieds	2026-09-24 03:43	@anita_meena59	Hindi	Fixed deposit vs mutual fund, beginners ke liye kaunsa behtar?					safe	low	none		no	train		
+P0560	Instagram	2026-09-05 04:38	@desi_deals64	Hindi	ताज़ा bank account उपलब्ध, पिन और सिम के साथ					suspicious	high	account_sale		no	train		
+P0561	Telegram	2026-09-10 20:41	@vip_trader31	English	Buy savings account today, quick delivery, UPI accepted		+91 94XXXX66XX			suspicious	high	account_sale		no	train		
+P0562	X	2026-10-01 20:34	@anita_jain74	Hindi	Scholarship form ki last date badh gayi hai, check karein					safe	low	none		no	train		
+P0563	Classifieds	2026-08-06 17:50	@lucky_acc38	English	Selling verified current account. Price negotiable. Contact on WhatsApp	img/P0030.png	+91 98XXXX99XX	seller286@fakeupi		suspicious	high	account_sale		no	train		
+P0564	Instagram	2026-10-04 23:03	@manoj_verma1	English	UPI payment fail ho gaya par paisa kat gaya, refund kab aayega?					safe	low	none		no	train		
+P0565	Instagram	2026-08-13 02:31	@desi_acc23	Hinglish	Sasta savings account available, serious log hi msg karein 🔥		+91 97XXXX58XX	seller777@fakeupi		suspicious	high	account_sale		no	train		
+P0566	Instagram	2026-09-04 12:15	@vip_hub86	Hindi	ताज़ा credit card उपलब्ध, पिन और सिम के साथ		+91 96XXXX45XX	seller985@fakeupi	t.me/demo_seller_171	suspicious	high	credit_card_sale	C07	no	train		
+P0567	WhatsApp Group	2026-09-03 20:02	@karan_rathore93	English	Best credit card for travel rewards? suggestions chahiye					safe	low	none		no	train		
+P0568	Instagram	2026-09-24 11:50	@manoj_meena9	Hindi	RBI ne naye digital payment guidelines jaari ki hain					safe	low	none		no	train		
+P0569	Telegram	2026-08-16 23:42	@quick_acc91	Hinglish	Fresh savings accnt bikau hai, urgent, DM karo 💰		+91 91XXXX49XX			suspicious	high	account_sale		no	train		
+P0570	X	2026-08-10 10:27	@star_points97	Hindi	current account किराए पर देना है, रोज़ कमाई, मैसेज करें		+91 96XXXX18XX	seller850@fakeupi		suspicious	high	account_rental		no	train		
+P0571	Classifieds	2026-09-24 01:11	@manoj_sharma67	Hinglish	Congrats to our team for winning the inter-college cricket match!					safe	low	none		no	train		
+P0572	WhatsApp Group	2026-09-08 19:37	@vikram_singh58	Hindi	Kisi ko achhi home loan scheme pata hai? interest rate compare karna hai					safe	low	none		no	train		
+P0573	Facebook	2026-08-30 08:51	@vip_seller67	English	Buy ATM kard today, quick delivery, UPI accepted		+91 91XXXX25XX		t.me/demo_seller_265	suspicious	high	atm_card_sale		no	val		
+P0574	Classifieds	2026-09-04 12:01	@amit_sharma80	English	Interview ki taiyari ke liye banking awareness notes share kar raha hoon					safe	low	none		no	test		
+P0575	Classifieds	2026-09-24 19:44	@rahul_rathore7	English	Aadhaar card update karne ka process kya hai?					safe	low	none		no	val		
+P0576	Classifieds	2026-08-22 13:09	@lucky_acc47	Hinglish	bank account kiraye pe dena hai, rozana earning, contact karo		+91 96XXXX75XX	seller305@fakeupi		suspicious	high	account_rental		no	val		
+P0577	X	2026-09-27 06:43	@pooja_meena74	Hinglish	ATM card kho gaya, kaise block karein? koi batao					safe	low	none		yes	val		
+P0578	Facebook	2026-08-27 07:20	@vip_points91	Hinglish	credit card kiraye pe dena hai, rozana earning, contact karo		+91 95XXXX38XX			suspicious	high	credit_card_sale		no	train		
+P0579	Facebook	2026-08-14 03:20	@lucky_acc72	English	Urgent: ATM card for sale, full kit available 💰		+91 98XXXX40XX		t.me/demo_seller_824	suspicious	high	atm_card_sale		no	val		
+P0580	Telegram	2026-10-06 05:50	@neha_gupta96	Hindi	Kisi ko achhi home loan scheme pata hai? interest rate compare karna hai					safe	low	none		no	val		
+P0581	Telegram	2026-09-06 08:02	@vikram_verma52	Hindi	Interview ki taiyari ke liye banking awareness notes share kar raha hoon					safe	low	none		no	train		
+P0582	Telegram	2026-09-05 17:15	@priya_joshi24	Hinglish	RBI ne naye digital payment guidelines jaari ki hain					safe	low	none		no	test		
+P0583	WhatsApp Group	2026-08-25 19:05	@manoj_joshi18	Hindi	Please share notes for Chapter 4 accounting, exam kal hai					safe	low	none		no	train		
+P0584	Facebook	2026-08-14 10:36	@vikram_sharma44	Hindi	Congrats to our team for winning the inter-college cricket match!					safe	low	none		no	test		
+P0585	X	2026-08-26 04:51	@easy_points92	Hindi	Part time kaam: apna account use karne do, paisa milega 💳					suspicious	medium	account_rental		no	test		
+P0586	Instagram	2026-09-19 05:19	@rahul_singh51	Hindi	Weekend pe Jaipur mein kaunsa restaurant try karein?					safe	low	none		no	train		
+P0587	Classifieds	2026-09-27 23:12	@vikram_meena25	Hinglish	Please share notes for Chapter 4 accounting, exam kal hai					safe	low	none		no	train		
+P0588	Facebook	2026-08-27 10:34	@neha_sharma16	Hinglish	Fixed deposit vs mutual fund, beginners ke liye kaunsa behtar?					safe	low	none		no	train		
+P0589	Instagram	2026-08-14 06:36	@amit_joshi2	Hinglish	Mera savings account ka KYC update kaise hoga? branch jaana padega kya?					safe	low	none		no	train		
+P0590	Facebook	2026-08-19 14:52	@priya_meena57	Hindi	New phone launch today, camera review coming soon					safe	low	none		no	train		
+P0591	Instagram	2026-08-31 19:19	@manoj_sharma21	English	New phone launch today, camera review coming soon					safe	low	none		no	train		
+P0592	Classifieds	2026-08-05 11:08	@star_points64	Hinglish	bank account kiraye pe dena hai, rozana earning, contact karo	img/P0018.png	+91 91XXXX82XX			suspicious	high	account_rental		no	train		
+P0593	Instagram	2026-08-18 05:53	@amit_sharma25	Hinglish	Debit card ka PIN change kaise karein? app mein option nahi mil raha					safe	low	none		yes	val		
+P0594	Instagram	2026-08-24 05:18	@quick_trader87	English	Selling verified ATM kard. Price negotiable. Contact on WhatsApp		+91 96XXXX17XX	seller680@fakeupi	t.me/demo_seller_261	suspicious	high	atm_card_sale		no	train		
+P0595	Classifieds	2026-08-26 21:27	@anita_sharma67	Hinglish	Bank clerk recruitment 2026 notification out, apply before 30 Nov					safe	low	none		no	train		
+P0596	WhatsApp Group	2026-08-16 08:23	@star_trader20	Hindi	ताज़ा current account उपलब्ध, पिन और सिम के साथ	img/P0032.png	+91 95XXXX88XX			suspicious	high	account_sale		no	train		
+P0597	X	2026-08-19 00:51	@manoj_verma97	English	Official: ExampleBank credit card offer, 5% cashback on groceries. Terms apply. examplebank.in				examplebank.in	safe	low	none		yes	test		
+P0598	Telegram	2026-10-01 04:37	@star_acc98	Hindi	ताज़ा credit card उपलब्ध, पिन और सिम के साथ		+91 92XXXX61XX	seller603@fakeupi		suspicious	high	credit_card_sale	C12	no	train		
+P0599	Telegram	2026-09-02 00:10	@quick_trader65	Hinglish	debit card ready hai bhai, UPI se payment karo, fast		+91 97XXXX16XX			suspicious	high	atm_card_sale		no	train		
+P0600	Instagram	2026-08-24 20:42	@star_hub82	Rajasthani	credit card bechno hai, jaldi sampark karo ✅		+91 99XXXX25XX	seller788@fakeupi		suspicious	high	credit_card_sale		no	train		
+P0601	X	2026-09-27 11:59	@amit_meena82	English	Weekend pe Jaipur mein kaunsa restaurant try karein?					safe	low	none		no	train		
+P0602	Classifieds	2026-09-21 08:02	@karan_gupta45	English	Please share notes for Chapter 4 accounting, exam kal hai					safe	low	none		no	train		
+P0603	Facebook	2026-09-20 20:41	@priya_jain18	English	Savings account kholne ke liye kaunse documents chahiye?					safe	low	none		yes	test		
+P0604	Facebook	2026-09-02 05:41	@quick_hub95	English	Fresh current account available for sale, instant payment, DM now 📲	img/P0025.png	+91 99XXXX39XX			suspicious	high	account_sale		no	train		
+P0605	Instagram	2026-09-21 13:58	@amit_singh42	Hindi	Mera savings account ka KYC update kaise hoga? branch jaana padega kya?					safe	low	none		no	test		
+P0606	Facebook	2026-09-02 02:30	@vikram_rathore36	Hinglish	Official: ExampleBank credit card offer, 5% cashback on groceries. Terms apply. examplebank.in				examplebank.in	safe	low	none		yes	train		
+P0607	Facebook	2026-09-08 12:08	@trusted_hub82	Hinglish	Fresh bank account bikau hai, urgent, DM karo 💰	img/P0049.png	+91 93XXXX75XX	seller710@fakeupi	t.me/demo_seller_492	suspicious	high	account_sale		no	train		
+P0608	X	2026-08-29 23:44	@vikram_meena91	English	Maine apna current account band karwana hai, process kya hai?					safe	low	none		yes	test		
+P0609	Telegram	2026-10-06 18:18	@manoj_sharma55	Hindi	Cyber crime helpline 1930 par turant report karein agar kisi ne account maanga					safe	low	none		yes	train		
+P0610	WhatsApp Group	2026-09-20 00:45	@quick_seller86	Hinglish	Khata kiraye pe do, har mahine paisa					suspicious	medium	account_rental		no	train		
+P0611	Telegram	2026-09-05 06:19	@royal_care44	Hinglish	Fresh bank account bikau hai, urgent, DM karo ✅	img/P0027.png	+91 99XXXX76XX		t.me/demo_seller_389	suspicious	high	account_sale		no	train		
+P0612	Classifieds	2026-10-08 22:06	@lucky_deals22	English	Account chahiye, paisa milega, DM	img/P0072.png	+91 93XXXX25XX			suspicious	medium	account_rental		no	test		
+P0613	Telegram	2026-10-02 16:47	@sunita_joshi11	Hindi	Savings account kholne ke liye kaunse documents chahiye?					safe	low	none		yes	test		
+P0614	Instagram	2026-09-30 22:53	@karan_rathore76	Hinglish	Best credit card for travel rewards? suggestions chahiye					safe	low	none		no	train		
+P0615	X	2026-09-23 03:07	@easy_care93	Hinglish	debit card ready hai bhai, UPI se payment karo, fast		+91 91XXXX57XX	seller212@fakeupi		suspicious	high	atm_card_sale		no	train		
+P0616	Instagram	2026-09-11 12:12	@anita_rathore80	Hinglish	Credit card limit badhane ke liye kya karna padta hai?					safe	low	none		yes	train		
+P0617	X	2026-09-11 13:47	@easy_seller60	Hinglish	Khata kiraye pe do, har mahine paisa	img/P0086.png				suspicious	medium	account_rental		no	train		
+P0618	Instagram	2026-09-23 15:22	@mega_deals64	Hinglish	Khata kiraye pe do, har mahine paisa		+91 98XXXX94XX			suspicious	medium	account_rental		no	val		
+P0619	Classifieds	2026-10-05 11:52	@vikram_verma28	English	Bank clerk recruitment 2026 notification out, apply before 30 Nov					safe	low	none		no	train		
+P0620	Instagram	2026-10-03 03:06	@star_care46	English	bank account with PIN + SIM + cheque book ready. Serious buyers only		+91 98XXXX93XX	seller824@fakeupi		suspicious	high	account_sale		no	train		
+P0621	Telegram	2026-08-28 11:59	@manoj_joshi52	Hindi	Beware of ads offering money for your bank account. It is illegal. Report such posts.					safe	low	none		yes	train		
+P0622	Instagram	2026-10-05 18:38	@manoj_verma24	Hindi	Aaj ka gold rate aur petrol price update					safe	low	none		no	train		
+P0623	Facebook	2026-08-15 03:26	@pooja_singh60	English	Weekend pe Jaipur mein kaunsa restaurant try karein?					safe	low	none		no	train		
+P0624	Facebook	2026-08-11 10:02	@rahul_verma27	Hindi	Awareness: ATM card aur PIN kisi ko na dein, ye cyber fraud hota hai					safe	low	none		yes	train		
+P0625	Instagram	2026-10-04 12:45	@desi_hub2	Hinglish	debit card + PIN + SIM sab milega, payment instant	img/P0068.png	+91 92XXXX40XX	seller427@fakeupi	t.me/demo_seller_190	suspicious	high	atm_card_sale		no	train		
+P0626	Instagram	2026-08-05 05:26	@rahul_singh14	Hindi	Please share notes for Chapter 4 accounting, exam kal hai					safe	low	none		no	train		
+P0627	Instagram	2026-09-09 19:44	@manoj_gupta70	Hindi	Fixed deposit vs mutual fund, beginners ke liye kaunsa behtar?					safe	low	none		no	train		
+P0628	Telegram	2026-09-21 15:01	@easy_acc28	English	Buy credit card today, quick delivery, UPI accepted		+91 97XXXX45XX	seller564@fakeupi	t.me/demo_seller_750	suspicious	high	credit_card_sale	C02	no	train		
+P0629	WhatsApp Group	2026-08-16 22:19	@priya_singh5	Hinglish	RBI ne naye digital payment guidelines jaari ki hain					safe	low	none		no	val		
+P0630	Telegram	2026-08-11 23:46	@royal_deals59	English	Koi accnt dena chahta hai? achha commission		+91 94XXXX34XX			suspicious	medium	account_rental		no	train		
+P0631	Instagram	2026-09-24 06:26	@amit_singh99	Hinglish	Fixed deposit vs mutual fund, beginners ke liye kaunsa behtar?					safe	low	none		no	train		
+P0632	WhatsApp Group	2026-08-07 23:57	@star_deals68	English	Selling verified credit card. Price negotiable. Contact on WhatsApp		+91 93XXXX96XX	seller479@fakeupi	t.me/demo_seller_881	suspicious	high	credit_card_sale		no	train		
+P0633	Telegram	2026-09-02 23:12	@lucky_acc56	Hindi	bank account किराए पर देना है, रोज़ कमाई, मैसेज करें		+91 93XXXX89XX	seller646@fakeupi		suspicious	high	account_rental	C10	no	train		
+P0634	X	2026-09-09 21:12	@fresh_deals9	Rajasthani	current account kiraye pe chahije, paisa milsi, inbox karo		+91 93XXXX13XX	seller722@fakeupi		suspicious	high	account_rental		no	train		
+P0635	Instagram	2026-08-10 21:10	@rahul_jain67	Hindi	Kisi ko achhi home loan scheme pata hai? interest rate compare karna hai					safe	low	none		no	train		
+P0636	WhatsApp Group	2026-09-21 00:50	@rahul_sharma32	Hindi	Weekend pe Jaipur mein kaunsa restaurant try karein?					safe	low	none		no	train		
+P0637	Classifieds	2026-09-22 02:07	@vip_care29	English	Koi account dena chahta hai? achha commission		+91 91XXXX30XX			suspicious	medium	account_rental		no	train		
+P0638	X	2026-10-01 06:51	@priya_jain59	Hinglish	Beware of ads offering money for your bank account. It is illegal. Report such posts.					safe	low	none		yes	test		
+P0639	Classifieds	2026-09-24 03:53	@fresh_deals40	Hinglish	Sasta savings account available, serious log hi msg karein 💳	img/P0016.png	+91 92XXXX61XX	seller603@fakeupi	t.me/demo_seller_175	suspicious	high	account_sale	C12	no	train		
+P0640	WhatsApp Group	2026-09-15 18:36	@mega_hub21	English	ATM card with PIN + SIM + cheque book ready. Serious buyers only			seller388@fakeupi		suspicious	high	atm_card_sale		no	train		
+P0641	Facebook	2026-09-01 13:22	@karan_joshi95	Hindi	Cyber crime helpline 1930 par turant report karein agar kisi ne account maanga					safe	low	none		yes	train		
+P0642	Telegram	2026-09-30 09:32	@sunita_singh61	English	Bank clerk recruitment 2026 notification out, apply before 30 Nov					safe	low	none		no	train		
+P0643	Facebook	2026-08-19 10:40	@karan_singh95	Hindi	Mera debit card expire ho gaya, naya kaise milega?					safe	low	none		yes	train		
+P0644	Classifieds	2026-09-13 17:17	@vip_acc4	English	Part time kaam: apna account use karne do, paisa milega 💳					suspicious	medium	account_rental		no	train		
+P0645	Facebook	2026-09-13 04:44	@star_trader45	Hindi	Khata kiraye pe do, har mahine paisa	img/P0078.png	+91 98XXXX32XX			suspicious	medium	account_rental		no	test		
+P0646	Telegram	2026-08-11 06:36	@sunita_joshi60	Hinglish	Cyber crime helpline 1930 par turant report karein agar kisi ne account maanga					safe	low	none		yes	train		
+P0647	Instagram	2026-10-09 22:17	@amit_singh73	Hindi	Bank clerk recruitment 2026 notification out, apply before 30 Nov					safe	low	none		no	train		
+P0648	Instagram	2026-08-10 20:08	@easy_deals90	Hindi	current account बिकाऊ है, तुरंत पेमेंट, संपर्क करें		+91 91XXXX21XX			suspicious	high	account_sale	C06	no	val		
+P0649	Classifieds	2026-08-11 12:09	@quick_deals34	Hinglish	debit card kiraye pe dena hai, rozana earning, contact karo		+91 95XXXX68XX	seller423@fakeupi	t.me/demo_seller_869	suspicious	high	atm_card_sale	C05	no	train		
+P0650	Telegram	2026-08-06 03:18	@trusted_trader38	English	Urgent: current account for sale, full kit available ✅		+91 91XXXX61XX	seller652@fakeupi	t.me/demo_seller_984	suspicious	high	account_sale		no	train		
+P0651	WhatsApp Group	2026-08-25 21:27	@vikram_meena49	Hindi	Aadhaar card update karne ka process kya hai?					safe	low	none		no	val		
+P0652	WhatsApp Group	2026-09-24 06:46	@neha_jain88	Hinglish	Mera savings account ka KYC update kaise hoga? branch jaana padega kya?					safe	low	none		no	val		
+P0653	WhatsApp Group	2026-08-24 05:05	@fresh_seller60	English	Part time kaam: apna account use karne do, paisa milega 💳	img/P0092.png	+91 93XXXX84XX			suspicious	medium	account_rental		no	train		
+P0654	Instagram	2026-08-07 03:49	@karan_verma38	English	Scholarship form ki last date badh gayi hai, check karein					safe	low	none		no	train		
+P0655	Facebook	2026-09-01 02:38	@karan_meena12	Hindi	Kisi ko achhi home loan scheme pata hai? interest rate compare karna hai					safe	low	none		no	train		
+P0656	X	2026-09-09 01:24	@mega_care80	English	Urgent: credit card for sale, full kit available 💰			seller880@fakeupi	t.me/demo_seller_331	suspicious	high	credit_card_sale		no	train		
+P0657	WhatsApp Group	2026-08-25 11:07	@quick_care4	English	current account with PIN + SIM + cheque book ready. Serious buyers only	img/P0059.png	+91 95XXXX31XX	seller867@fakeupi		suspicious	high	account_sale		no	train		
+P0658	Telegram	2026-09-30 21:30	@lucky_deals12	Hinglish	Account chahiye, paisa milega, DM					suspicious	medium	account_rental		no	train		
+P0659	Facebook	2026-08-14 03:53	@amit_sharma54	English	Kisi ko achhi home loan scheme pata hai? interest rate compare karna hai					safe	low	none		no	test		
+P0660	WhatsApp Group	2026-08-15 08:37	@rahul_joshi11	Hinglish	Credit card bill payment ki last date kya hoti hai? late fee lagta hai kya?					safe	low	none		yes	train		
+P0661	Instagram	2026-08-30 02:09	@desi_points9	English	ATM kard with PIN + SIM + cheque book ready. Serious buyers only	img/P0031.png	+91 98XXXX21XX			suspicious	high	atm_card_sale		no	train		
+P0662	Facebook	2026-08-25 03:47	@neha_jain26	Hinglish	Scholarship form ki last date badh gayi hai, check karein					safe	low	none		no	test		
+P0663	WhatsApp Group	2026-08-14 12:41	@desi_hub29	Hindi	Account chahiye, paisa milega, DM					suspicious	medium	account_rental		no	test		
+P0664	Classifieds	2026-09-27 17:09	@sunita_verma68	Hindi	Weekend pe Jaipur mein kaunsa restaurant try karein?					safe	low	none		no	train		
+P0665	Classifieds	2026-09-13 04:22	@pooja_meena21	Hindi	Credit card limit badhane ke liye kya karna padta hai?					safe	low	none		yes	train		
+P0666	Facebook	2026-09-11 09:56	@amit_rathore48	Hinglish	News: police ne mule account racket ka pardafash kiya, kai giraftar					safe	low	none		yes	train		
+P0667	Classifieds	2026-08-30 07:04	@mega_hub54	English	Khata kiraye pe do, har mahine paisa					suspicious	medium	account_rental		no	train		
+P0668	WhatsApp Group	2026-09-18 10:47	@easy_trader69	Hinglish	bank account ready hai bhai, UPI se payment karo, fast		+91 94XXXX36XX			suspicious	high	account_sale		no	train		
+P0669	X	2026-09-21 16:27	@rahul_rathore13	Hindi	Interview ki taiyari ke liye banking awareness notes share kar raha hoon					safe	low	none		no	train		
+P0670	Telegram	2026-09-05 08:53	@sunita_sharma34	English	Credit card bill payment ki last date kya hoti hai? late fee lagta hai kya?					safe	low	none		yes	train		
+P0671	X	2026-10-05 06:58	@priya_jain54	English	Congrats to our team for winning the inter-college cricket match!					safe	low	none		no	train		
+P0672	Facebook	2026-09-10 07:39	@neha_sharma26	English	UPI payment fail ho gaya par paisa kat gaya, refund kab aayega?					safe	low	none		no	train		
+P0673	Facebook	2026-09-28 13:23	@priya_joshi92	English	News: police ne mule account racket ka pardafash kiya, kai giraftar					safe	low	none		yes	train		
+P0674	Telegram	2026-09-13 19:55	@priya_meena94	Hindi	News: police ne mule account racket ka pardafash kiya, kai giraftar					safe	low	none		yes	val		
+P0675	Facebook	2026-10-03 06:21	@anita_gupta94	Hindi	ATM card kho gaya, kaise block karein? koi batao					safe	low	none		yes	val		
+P0676	Facebook	2026-09-23 14:23	@pooja_joshi53	English	Mera savings account ka KYC update kaise hoga? branch jaana padega kya?					safe	low	none		no	train		
+P0677	Facebook	2026-10-08 13:17	@trusted_points87	English	Urgent: current akaunt for sale, full kit available	img/P0056.png	+91 92XXXX23XX	seller406@fakeupi	t.me/demo_seller_892	suspicious	high	account_sale		no	train		
+P0678	Telegram	2026-08-09 08:50	@rahul_jain77	Hindi	News: police ne mule account racket ka pardafash kiya, kai giraftar					safe	low	none		yes	train		
+P0679	Telegram	2026-09-30 16:25	@neha_verma31	Hindi	Scholarship form ki last date badh gayi hai, check karein					safe	low	none		no	val		
+P0680	Instagram	2026-08-13 05:45	@manoj_singh63	English	Weekend pe Jaipur mein kaunsa restaurant try karein?					safe	low	none		no	train		
+P0681	Classifieds	2026-08-13 12:18	@fresh_trader21	Hinglish	debit kard + PIN + SIM sab milega, payment instant		+91 92XXXX62XX	seller583@fakeupi	t.me/demo_seller_889	suspicious	high	atm_card_sale		no	train		
+P0682	WhatsApp Group	2026-09-02 19:03	@karan_meena37	Hindi	Credit card bill payment ki last date kya hoti hai? late fee lagta hai kya?					safe	low	none		yes	train		
+P0683	Telegram	2026-10-06 22:21	@karan_singh51	Hindi	Congrats to our team for winning the inter-college cricket match!					safe	low	none		no	train		
+P0684	Classifieds	2026-09-08 07:24	@quick_points67	Hindi	Account chahiye, paisa milega, DM		+91 91XXXX48XX			suspicious	medium	account_rental		no	test		
+P0685	Instagram	2026-08-11 10:14	@fresh_points93	Hinglish	Sasta current account available, serious log hi msg karein 📲		+91 97XXXX45XX			suspicious	high	account_sale	C02	no	train		
+P0686	WhatsApp Group	2026-08-26 13:26	@neha_meena24	Hinglish	Aadhaar card update karne ka process kya hai?					safe	low	none		no	train		
+P0687	WhatsApp Group	2026-09-07 20:36	@mega_trader52	Hinglish	Looking for people with savings account, earn daily		+91 99XXXX30XX			suspicious	medium	account_rental		no	test		
+P0688	Facebook	2026-09-29 04:08	@trusted_trader70	Hindi	Khata kiraye pe do, har mahine paisa					suspicious	medium	account_rental		no	train		
+P0689	Facebook	2026-10-03 05:25	@vikram_singh68	English	Aaj ka gold rate aur petrol price update					safe	low	none		no	train		
+P0690	Classifieds	2026-08-30 15:28	@neha_verma42	Hinglish	Savings account kholne ke liye kaunse documents chahiye?					safe	low	none		yes	train		
+P0691	WhatsApp Group	2026-08-08 13:51	@priya_gupta80	Hinglish	New phone launch today, camera review coming soon					safe	low	none		no	test		
+P0692	Classifieds	2026-10-01 02:51	@lucky_seller47	Hinglish	Account chahiye, paisa milega, DM		+91 94XXXX93XX			suspicious	medium	account_rental		no	train		
+P0693	Facebook	2026-08-03 09:13	@anita_gupta78	Hindi	Kisi ko achhi home loan scheme pata hai? interest rate compare karna hai					safe	low	none		no	train		
+P0694	Classifieds	2026-08-26 03:51	@rahul_jain15	Hinglish	Warning: bank account bechne ya kiraye pe dene wale fraud mein phas sakte hain, police case ho sakta hai					safe	low	none		yes	train		
+P0695	Telegram	2026-08-08 16:22	@amit_meena64	English	Official: ExampleBank credit card offer, 5% cashback on groceries. Terms apply. examplebank.in				examplebank.in	safe	low	none		yes	train		
+P0696	Facebook	2026-09-24 01:12	@royal_hub89	English	savings account with PIN + SIM + cheque book ready. Serious buyers only		+91 92XXXX61XX	seller603@fakeupi	t.me/demo_seller_175	suspicious	high	account_sale	C12	no	train		
+P0697	Facebook	2026-09-14 00:09	@manoj_gupta42	Hinglish	Best credit card for travel rewards? suggestions chahiye					safe	low	none		no	test		
+P0698	Instagram	2026-08-22 10:30	@lucky_care35	Hindi	ताज़ा ATM card उपलब्ध, पिन और सिम के साथ		+91 93XXXX27XX	seller354@fakeupi	t.me/demo_seller_492	suspicious	high	atm_card_sale		no	train		
+P0699	Classifieds	2026-08-17 09:02	@sunita_sharma87	Hinglish	Debit card ka PIN change kaise karein? app mein option nahi mil raha					safe	low	none		yes	test		
+P0700	Telegram	2026-09-30 03:23	@neha_gupta90	English	Credit card bill payment ki last date kya hoti hai? late fee lagta hai kya?					safe	low	none		yes	val		
+P0701	Facebook	2026-08-12 01:06	@fresh_trader32	English	Fresh credit card available for sale, instant payment, DM now 💳		+91 98XXXX66XX		t.me/demo_seller_791	suspicious	high	credit_card_sale	C08	no	train		
+P0702	WhatsApp Group	2026-09-14 19:32	@anita_gupta63	Hinglish	Best credit card for travel rewards? suggestions chahiye					safe	low	none		no	train		
+P0703	Classifieds	2026-08-04 15:04	@lucky_acc77	Hinglish	debit crd kiraye pe dena hai, rozana earning, contact karo		+91 92XXXX61XX	seller603@fakeupi	t.me/demo_seller_175	suspicious	high	atm_card_sale	C12	no	train		
+P0704	Facebook	2026-08-11 01:04	@pooja_joshi35	Hindi	RBI ne naye digital payment guidelines jaari ki hain					safe	low	none		no	train		
+P0705	Instagram	2026-10-07 11:46	@quick_points97	Hinglish	Fresh debit kard bikau hai, urgent, DM karo 💳	img/P0041.png	+91 96XXXX48XX		t.me/demo_seller_294	suspicious	high	atm_card_sale		no	test		
+P0706	Facebook	2026-08-10 02:10	@vikram_jain72	English	Scholarship form ki last date badh gayi hai, check karein					safe	low	none		no	train		
+P0707	Classifieds	2026-08-20 21:12	@star_trader61	Hinglish	Need bank details for easy income, msg me		+91 96XXXX47XX			suspicious	medium	account_rental		no	val		
+P0708	X	2026-08-04 21:30	@neha_singh50	English	Mera savings account ka KYC update kaise hoga? branch jaana padega kya?					safe	low	none		no	test		
+P0709	X	2026-08-10 01:02	@desi_trader83	Hinglish	Fresh ATM card bikau hai, urgent, DM karo 📲	img/P0021.png	+91 96XXXX37XX	seller341@fakeupi		suspicious	high	atm_card_sale		no	train		
+P0710	Instagram	2026-08-22 06:13	@vip_trader50	Hinglish	bank account kiraye pe dena hai, rozana earning, contact karo		+91 93XXXX49XX	seller664@fakeupi	t.me/demo_seller_114	suspicious	high	account_rental	C14	no	train		
+P0711	WhatsApp Group	2026-08-11 18:37	@amit_singh19	Hindi	Fixed deposit vs mutual fund, beginners ke liye kaunsa behtar?					safe	low	none		no	test		
+P0712	WhatsApp Group	2026-08-22 19:05	@quick_seller40	Hinglish	savings account kiraye pe dena hai, rozana earning, contact karo			seller887@fakeupi	t.me/demo_seller_756	suspicious	high	account_rental	C03	no	train		
+P0713	Classifieds	2026-10-03 08:48	@easy_deals14	English	Fresh credit card available for sale, instant payment, DM now 🔥	img/P0037.png	+91 98XXXX37XX	seller651@fakeupi	t.me/demo_seller_675	suspicious	high	credit_card_sale		no	train		
+P0714	Classifieds	2026-08-09 13:15	@manoj_jain61	English	New phone launch today, camera review coming soon					safe	low	none		no	val		
+P0715	WhatsApp Group	2026-08-25 03:55	@easy_deals75	Hinglish	Sasta debit card available, serious log hi msg karein		+91 96XXXX45XX	seller985@fakeupi		suspicious	high	atm_card_sale	C07	no	train		
+P0716	Telegram	2026-10-07 16:31	@rahul_verma67	Hinglish	Fixed deposit vs mutual fund, beginners ke liye kaunsa behtar?					safe	low	none		no	test		
+P0717	WhatsApp Group	2026-09-26 08:03	@sunita_jain60	Hindi	Mera debit card expire ho gaya, naya kaise milega?					safe	low	none		yes	test		
+P0718	Classifieds	2026-09-21 09:55	@amit_singh9	Hindi	Please share notes for Chapter 4 accounting, exam kal hai					safe	low	none		no	train		
+P0719	WhatsApp Group	2026-08-30 04:34	@priya_rathore25	Hindi	Mera savings account ka KYC update kaise hoga? branch jaana padega kya?					safe	low	none		no	train		
+P0720	Classifieds	2026-09-19 00:14	@amit_gupta46	English	Aadhaar card update karne ka process kya hai?					safe	low	none		no	train		
+P0721	Facebook	2026-08-21 18:32	@sunita_singh84	English	Best credit card for travel rewards? suggestions chahiye					safe	low	none		no	train		
+P0722	Instagram	2026-08-01 19:57	@karan_gupta77	Hinglish	RBI ne naye digital payment guidelines jaari ki hain					safe	low	none		no	test		
+P0723	X	2026-08-04 15:56	@fresh_acc18	Hinglish	current account + PIN + SIM sab milega, payment instant		+91 96XXXX28XX	seller621@fakeupi		suspicious	high	account_sale		no	val		
+P0724	Facebook	2026-08-02 18:39	@royal_care92	Hindi	ATM card बिकाऊ है, तुरंत पेमेंट, संपर्क करें 💳		+91 99XXXX41XX			suspicious	high	atm_card_sale		no	train		
+P0725	X	2026-09-27 00:34	@amit_meena68	Hinglish	Weekend pe Jaipur mein kaunsa restaurant try karein?					safe	low	none		no	val		
+P0726	Instagram	2026-08-04 20:39	@neha_rathore95	Hinglish	Weekend pe Jaipur mein kaunsa restaurant try karein?					safe	low	none		no	train		
+P0727	Classifieds	2026-10-04 00:56	@easy_points16	Rajasthani	bank account kiraye pe chahije, paisa milsi, inbox karo 🔥		+91 92XXXX69XX	seller515@fakeupi		suspicious	high	account_rental		no	train		
+P0728	WhatsApp Group	2026-08-28 21:32	@amit_gupta30	English	Fraud se bachein: agar koi account kiraye pe lene ko kahe to mana karein					safe	low	none		yes	train		
+P0729	Classifieds	2026-09-15 11:34	@manoj_joshi3	Hinglish	Awareness: ATM card aur PIN kisi ko na dein, ye cyber fraud hota hai					safe	low	none		yes	val		
+P0730	WhatsApp Group	2026-09-23 20:44	@amit_joshi48	Hinglish	Fraud se bachein: agar koi account kiraye pe lene ko kahe to mana karein					safe	low	none		yes	train		
+P0731	Facebook	2026-08-08 15:06	@vikram_rathore33	Hinglish	Please share notes for Chapter 4 accounting, exam kal hai					safe	low	none		no	train		
+P0732	Classifieds	2026-09-25 02:29	@karan_gupta57	English	RBI ne naye digital payment guidelines jaari ki hain					safe	low	none		no	test		
+P0733	Telegram	2026-10-04 14:38	@manoj_gupta58	Hindi	Cyber crime helpline 1930 par turant report karein agar kisi ne account maanga					safe	low	none		yes	train		
+P0734	Telegram	2026-09-04 23:34	@karan_gupta92	Hindi	Fixed deposit vs mutual fund, beginners ke liye kaunsa behtar?					safe	low	none		no	test		
+P0735	X	2026-09-05 08:11	@fresh_trader91	English	Khata kiraye pe do, har mahine paisa		+91 97XXXX61XX			suspicious	medium	account_rental		no	val		
+P0736	Instagram	2026-08-05 14:29	@desi_deals17	Hinglish	ATM card kiraye pe dena hai, rozana earning, contact karo		+91 94XXXX92XX			suspicious	high	atm_card_sale		no	train		
+P0737	X	2026-08-23 03:17	@vip_seller88	Hinglish	savings account + PIN + SIM sab milega, payment instant		+91 97XXXX20XX	seller515@fakeupi		suspicious	high	account_sale		no	train		
+P0738	X	2026-09-29 02:39	@karan_jain49	Hindi	Scholarship form ki last date badh gayi hai, check karein					safe	low	none		no	train		
+P0739	Facebook	2026-09-03 22:00	@desi_deals15	Rajasthani	Account chahiye, paisa milega, DM		+91 95XXXX21XX			suspicious	medium	account_rental		no	val		
+P0740	Instagram	2026-09-23 11:48	@priya_gupta49	Hinglish	Best credit card for travel rewards? suggestions chahiye					safe	low	none		no	train		
+P0741	WhatsApp Group	2026-09-21 06:12	@manoj_jain49	Hindi	Mera savings account ka KYC update kaise hoga? branch jaana padega kya?					safe	low	none		no	val		
+P0742	WhatsApp Group	2026-10-08 20:30	@star_deals71	Hinglish	Account chahiye, paisa milega, DM					suspicious	medium	account_rental		no	train		
+P0743	Classifieds	2026-10-07 23:52	@mega_trader34	Hindi	bank account बिकाऊ है, तुरंत पेमेंट, संपर्क करें	img/P0004.png	+91 97XXXX45XX	seller564@fakeupi	t.me/demo_seller_750	suspicious	high	account_sale	C02	no	train		
+P0744	Classifieds	2026-09-17 10:00	@pooja_rathore22	Hinglish	Congrats to our team for winning the inter-college cricket match!					safe	low	none		no	val		
+P0745	X	2026-10-03 10:28	@rahul_singh11	Hinglish	Weekend pe Jaipur mein kaunsa restaurant try karein?					safe	low	none		no	test		

@@ -1,223 +1,172 @@
-# FraudScope AI
+# FraudScope AI — Detect. Analyze. Investigate.
 
-> **Detect. Analyze. Investigate.**  
-> *Follow the Signal. Find the Fraud.*
-
-**FraudScope AI** is an explainable AI-assisted financial advertisement threat intelligence and cyber-forensics investigation platform. It empowers financial crime analysts, compliance investigators, and security teams to rapidly triage large volumes of suspicious advertisements, extract forensic evidence, uncover hidden campaign clusters, and manage structured cases.
+> **AI-Powered Financial Advertisement Fraud Detection & Threat Intelligence Platform**  
+> Combines statistical natural language processing, rule-based forensic heuristics, and graph entity correlation to detect, analyze, and investigate illicit financial advertisements across social media channels (Telegram, WhatsApp, Instagram, Facebook, Classifieds, and X).
 
 ---
 
-## 1. Problem Statement
-Suspicious advertisements across social channels, messaging apps, and forums frequently advertise illicit access to unauthorized bank accounts ("mule accounts"), pre-loaded ATM cards with stolen PINs, credential-harvesting phishing portals, and advance-fee loan schemes. 
+## 🌟 Overview: What is FraudScope AI?
 
-Reviewing high volumes of unstructured advertisements manually is slow and prone to oversight. **FraudScope AI** bridges this gap by providing:
-- Automated natural-language heuristic parsing and baseline machine learning inference.
-- Multi-channel entity extraction (Telegrams, WhatsApp, phone numbers, crypto tags, URL domains).
-- An explainable, calibrated **0–100 Risk Index** with transparent signal attribution.
-- False-positive suppression for benign educational, journalistic, and regulatory advisories.
-- Near-duplicate clustering and an interactive **React Flow Threat Network**.
-- Complete case management with an immutable audit trail.
+Cybercrime networks, illegal betting rings, and money mule syndicates routinely recruit proxies and purchase illicit banking infrastructure via social media advertisements:
+- **Bank & Current Account Rental / Sale:** Pre-activated personal and corporate checking accounts offered to bypass KYC verification and route illicit cash flows.
+- **ATM Cards & Pre-loaded Payment Cards:** Active debit cards with PINs advertised for immediate ATM cash-outs.
+- **SIM-Linked Banking Services:** Mule bank accounts bundled with active operational SIM cards to intercept one-time passwords (OTP).
+- **UPI & Merchant Handle Rentals:** Renting personal and merchant UPI handles for rapid transaction laundering.
+- **Urgency & Pressure Language:** Solicitations offering unrealistic payouts with pressure language ("urgent buyers only", "rozana earning").
 
-> **Investigative Philosophy:** A risk score is an investigative triage signal, **not** legal proof of fraud or verified criminal conduct. All dispositions are subject to human analyst review.
+**FraudScope AI** inspects suspicious financial advertisements in English, Hindi, and Hinglish, extracts technical indicators (Phone numbers, UPI IDs, URLs, Telegram handles), computes a transparent **0–100 Risk Score**, highlights red-flag phrases, links related records into an interactive **Threat Cluster Network**, and generates court- and compliance-ready **Forensic Case Report PDFs**.
 
 ---
 
-## 2. Core Capabilities & Key Features
-- **Cinematic Dark Cyber Forensics UI:** Designed in palette `#08090D`, Space Grotesk, Inter, and JetBrains Mono with scanning reticles and aperture branding.
-- **Multimodal Scanner:**
-  - Raw Text Input with live character counter.
-  - Safe URL String parsing (extracted without initiating outbound network requests).
-  - Screenshot Ingestion with Optical Character Recognition (PyTesseract) and offline fallback.
-  - CSV Bulk Ingestion with per-row parsing and validation.
-- **Explainable AI Risk Engine:**
-  - Context-aware heuristic rules (Account Takeover, Card Fraud, Phishing, Mule Recruitment, Advance Fee).
-  - Benign Context Mitigation preventing false positives on consumer scam alerts and legitimate disclosures.
-  - TF-IDF + Logistic Regression baseline probabilistic text classification.
-- **Evidence Explorer:** Interactive character highlight of triggered phrases, evidence inventory, related campaign matches, and human review disposition workflow (`NEW`, `NEEDS_REVIEW`, `UNDER_INVESTIGATION`, `ESCALATED`, `CLOSED`, `FALSE_POSITIVE`).
-- **Threat Network Visualization:** Interactive React Flow graph linking advertisements, syndicated cases, and shared communication channels.
-- **Case Management:** Create prioritized cases (`LOW`, `MEDIUM`, `HIGH`, `CRITICAL`), assign analysts, append investigation notes, and link candidate ads.
-- **Security Alert Center:** Persistent triage alerts with severity ratings and review toggles.
-- **Forensic Reports & Exports:** Executive summaries, printable report layouts, and sanitized CSV exports immune to spreadsheet formula injection (CWE-1236).
+## 🔬 Dataset Preparation, Cleaning & Leakage Prevention
 
----
+FraudScope AI includes a reproducible end-to-end dataset preparation and leakage-safe splitting pipeline designed to benchmark financial advertisement fraud.
 
-## 3. Technology Stack
+### 1. Raw Dataset Audit & Leakage Diagnosis
+- **Raw Dataset Source:** `data/uploaded_dataset.csv` (745 records, preserved verbatim).
+- **Unique Normalized Text Groups:** 209 groups across 745 records.
+- **Data Leakage Audit of Original CSV:**
+  > [!WARNING]
+  > In the original CSV split assignments, **59 out of the 209 unique text groups (28.2%)** appeared across multiple splits simultaneously, affecting **557 out of 745 rows**. This caused identical ad texts to appear in both training and test sets, artificially inflating test metrics through memorization.
 
-### Frontend
-- **Framework:** React 19 + TypeScript + Vite
-- **Styling:** Tailwind CSS + PostCSS + Cyber Forensics tokens
-- **Routing:** React Router v7
-- **Graph Visualization:** `@xyflow/react` (React Flow v12)
-- **Charts:** Recharts
-- **Icons:** Lucide React
+### 2. Leakage-Safe Stratified Group Splitting
+To eliminate data leakage, we implemented **Stratified Group Splitting**:
+- Records are grouped by `normalized_text` (all occurrences of identical or near-equivalent text belong to exactly ONE split).
+- Stratification target: `label + is_hard_negative`.
+- Target distribution: ~70% Train, 15% Validation, 15% Test.
 
-### Backend
-- **Framework:** Python 3.12 + FastAPI + Uvicorn
-- **Validation:** Pydantic v2
-- **Database ORM:** SQLAlchemy 2.0 + SQLite
-- **Machine Learning & NLP:** scikit-learn (TF-IDF + Logistic Regression), Pandas, NumPy
-- **Text Similarity:** RapidFuzz (Token Sort Ratio)
-- **Computer Vision:** PyTesseract + Pillow
-- **Testing:** Pytest + FastAPI TestClient
+| Split | Rows | Unique Text Groups | Suspicious Rows | Safe Rows |
+| :--- | :---: | :---: | :---: | :---: |
+| **Train (`data/train.csv`)** | 544 | 146 | 275 | 269 |
+| **Validation (`data/val.csv`)** | 98 | 31 | 39 | 59 |
+| **Test (`data/test.csv`)** | 103 | 32 | 31 | 72 |
+| **Total** | **745** | **209** | **345** | **400** |
 
----
+- **Cross-Split Overlap:** **0 text groups** (100% disjoint, zero leakage verified).
+- **Detailed Cleaning Reports:** Saved to [`data/cleaning_report.json`](file:///c:/Users/Yash%20Srivastava/Desktop/FraudScope%20AI/data/cleaning_report.json) and [`data/cleaning_report.md`](file:///c:/Users/Yash%20Srivastava/Desktop/FraudScope%20AI/data/cleaning_report.md).
 
-## 4. Repository Structure
-
-```
-FraudScope-AI/
-├── backend/
-│   ├── app/
-│   │   ├── api/             # FastAPI routers (ads, dashboard, cases, network, alerts, reports, settings)
-│   │   ├── core/            # Core settings & environment config
-│   │   ├── database/        # SQLite engine & SQLAlchemy session
-│   │   ├── models/          # Relational ORM models (Advertisement, AnalysisResult, Evidence, Case, Alert)
-│   │   ├── schemas/         # Pydantic v2 schemas
-│   │   ├── services/        # AI Pipeline (preprocessing, entity_extraction, rule_engine, model_service, risk_scoring)
-│   │   └── main.py          # Application entrypoint & lifespan lifecycle
-│   ├── tests/               # Pytest automated test suite
-│   ├── models_cache/        # Serialized ML pipeline artifacts
-│   └── requirements.txt     # Python dependencies
-├── frontend/
-│   ├── src/
-│   │   ├── components/      # Reusable UI (Logo, RiskBadge, StatusBadge, Navbar, AppShell)
-│   │   ├── pages/           # LandingPage, Dashboard, Scanner, Investigation, Ads, Network, Cases, Alerts, Reports, Settings
-│   │   ├── services/        # Frontend API client
-│   │   ├── types/           # TypeScript interfaces
-│   │   ├── index.css        # Cyber grid & scanning animations
-│   │   └── App.tsx          # Client-side router
-│   ├── index.html           # Fonts and metadata
-│   ├── package.json
-│   ├── vite.config.ts
-│   └── tailwind.config.js
-├── data/
-│   └── sample_ads.csv       # Deterministic synthetic test dataset
-├── docs/
-│   ├── architecture.md      # Detailed system architecture
-│   └── risk_scoring.md      # Mathematical scoring formulation
-├── pytest.ini               # Pytest configuration
-├── .gitignore
-└── README.md
+### How to Run Dataset Preparation
+```powershell
+# Windows PowerShell
+.\backend\venv\Scripts\python backend/app/ml/dataset_pipeline.py
 ```
 
 ---
 
-## 5. Prerequisites
-- **Node.js**: v18.0.0 or later (v20+ recommended)
-- **Python**: 3.10, 3.11, or 3.12
-- *(Optional)* **Tesseract-OCR**: For screenshot OCR processing. If not installed, the platform automatically provides graceful fallback notices.
+## 🧠 Real Machine Learning Model Training & Evaluation
+
+FraudScope AI trains a reproducible **TF-IDF + Logistic Regression** baseline model fitted strictly on the training split, and evaluates it independently on validation and test sets.
+
+- **Feature Pipeline:** Sublinear TF-IDF Vectorizer with unigrams and bigrams (`ngram_range=(1, 2)`), `min_df=2`, `max_features=3000`.
+- **Classifier:** `LogisticRegression(class_weight='balanced', C=1.0, random_state=42, max_iter=1000)`.
+- **Vocabulary Size:** 572 learned n-gram tokens.
+- **Top Suspicious Signals:** `"karo" (+1.30)`, `"dm" (+1.19)`, `"account" (+1.09)`, `"paisa" (+0.99)`, `"kiraye pe" (+0.95)`, `"urgent" (+0.83)`.
+- **Top Benign / Protective Signals:** `"kya" (-1.47)`, `"kaise" (-1.14)`, `"update" (-0.98)`, `"process" (-0.80)`, `"apply" (-0.78)`.
+
+### Validation Split Metrics (n = 98)
+- **Accuracy:** 69.39%
+- **Precision:** 56.52%
+- **Recall (Suspicious):** **100.0%**
+- **F1-Score:** 0.7222
+- **ROC-AUC:** **1.0000**
+- **PR-AUC:** **1.0000**
+
+### Held-Out Test Split Metrics (n = 103)
+- **Accuracy:** 63.11%
+- **Precision:** 44.93%
+- **Recall (Suspicious):** **100.0%**
+- **F1-Score:** 0.6200
+- **ROC-AUC:** **0.9713**
+- **PR-AUC:** **0.9420**
+
+> [!NOTE]
+> High ranking power (ROC-AUC 0.9713) reflects strong statistical separation between fraud patterns and inquiries on the benchmark. Synthetic dataset performance does not establish identical real-world operational accuracy. In production, FraudScope AI pairs this statistical model with a rule engine and contextual benign mitigation.
+
+### Model Artifact Locations
+- **Serialized Model Pipeline:** [`backend/models_cache/baseline_model.joblib`](file:///c:/Users/Yash%20Srivastava/Desktop/FraudScope%20AI/backend/models_cache/baseline_model.joblib)
+- **Model Metadata & Metrics:** [`backend/models_cache/model_metadata.json`](file:///c:/Users/Yash%20Srivastava/Desktop/FraudScope%20AI/backend/models_cache/model_metadata.json)
+- **Detailed Evaluation Report:** [`backend/models_cache/evaluation_report.md`](file:///c:/Users/Yash%20Srivastava/Desktop/FraudScope%20AI/backend/models_cache/evaluation_report.md)
+
+### How to Train and Evaluate the Model
+```powershell
+.\backend\venv\Scripts\python backend/app/ml/train_model.py
+```
 
 ---
 
-## 6. Installation & Setup
+## 🏷️ Separation of Demo Data from Real Scans
 
-### A. Backend Setup
-1. Open terminal in the project root:
-   ```bash
-   cd "c:\Users\Yash Srivastava\Desktop\FraudScope AI"
-   ```
-2. Create and activate a Python virtual environment:
-   ```bash
-   python -m venv backend/venv
-   # Windows PowerShell:
-   .\backend\venv\Scripts\Activate.ps1
-   # Linux / macOS:
-   source backend/venv/bin/activate
-   ```
-3. Install dependencies:
-   ```bash
-   pip install -r backend/requirements.txt
-   ```
+FraudScope AI strictly isolates benchmark records from live user investigations:
+- **Provenance Tagging:** All 745 benchmark records are marked with `is_demo=True` and `data_source="SYNTHETIC_DATASET"`.
+- **Live User Scans:** Newly submitted scans from `/scanner` are persisted with `is_demo=False` and `data_source="LIVE_SCAN"`.
+- **Dashboard Provenance Toggle:** The intelligence dashboard provides a toggle between **"All Records"** (Benchmark + Live) and **"Live Scans Only"**.
+- **Visual Indicators:** Prominent purple `DEMO BENCHMARK` and emerald `LIVE SCAN` badges are rendered on the Dashboard, Flagged Posts Hub, Evidence Drawer, and Dossier views.
+- **Idempotent Importer:** Running the import script repeatedly is idempotent (`0 duplicates created`).
 
-### B. Frontend Setup
-1. In a separate terminal, navigate to `frontend`:
-   ```bash
-   cd frontend
-   npm install
-   ```
+### How to Import the Dataset Idempotently
+```powershell
+cd backend
+..\backend\venv\Scripts\python -m app.ml.import_dataset_to_db
+```
 
 ---
 
-## 7. Running the Application
+## 🧭 Navigation & Core Workspaces
 
-### 1. Start Backend Server
-From the project root:
-```bash
+1. **Dashboard** (`/console`):
+   - Welcome header, Data Provenance selector (`All Records` vs `Live Scans Only`), and real-time database sync.
+   - **Active ML Forensic Engine Card**: Live model status, version (`fraudscope-tfidf-lr-v1.0`), vocabulary size, and test ROC-AUC.
+   - KPI metrics: Total Analyzed, High-Risk Alerts, Active Clusters, Entities Extracted.
+   - Recharts Visualizations: Posts scanned over time, Risk distribution, Platform comparison.
+   - Recent Flagged Advertisements table with provenance badges and Evidence Drawer action.
+2. **Advertisement Scanner** (`/scanner`):
+   - Multilingual detection presets, text input, platform selector, optional URL, OCR screenshot upload.
+   - Displays Composite Risk Score (0-100), Risk Level badge, plain-language triage explanation, and recommended action.
+   - **Machine Learning Classifier Evaluation Card**: Predicted class (`SUSPICIOUS` / `SAFE`), statistical probability, and token-level TF-IDF feature contributions.
+   - Triggered heuristic rules and extracted technical indicators (Phone, UPI, URLs).
+   - Instant PDF case report generation.
+3. **Flagged Posts Hub** (`/flagged-posts`):
+   - Comprehensive searchable index with pagination, risk filters, status filters, and **Provenance Filter** (`All`, `Live Only`, `Demo Only`).
+   - Snippets with highlighted red-flag keywords in English, Hindi, and Hinglish.
+4. **Threat Clusters & Networks** (`/network`):
+   - Interactive React Flow threat intelligence graph connecting advertisements, phone numbers, UPI IDs, and domains.
+5. **Reports Archive** (`/reports`):
+   - Downloadable case reports with export capabilities.
+
+---
+
+## 🚀 Running the Application Locally
+
+### 1. Backend Server (FastAPI)
+```powershell
+# From project root
 .\backend\venv\Scripts\python -m uvicorn app.main:app --app-dir backend --host 127.0.0.1 --port 8000 --reload
 ```
-- API Base URL: `http://127.0.0.1:8000`
-- Interactive OpenAPI Docs: `http://127.0.0.1:8000/docs`
+- **API Base:** `http://127.0.0.1:8000`
+- **Swagger Documentation:** `http://127.0.0.1:8000/docs`
 
-### 2. Start Frontend Dev Server
-From `frontend` directory:
-```bash
+### 2. Frontend Server (Vite + React + Tailwind)
+```powershell
+cd frontend
 npm run dev
 ```
-- Access application: `http://localhost:5173/`
+- **Web Application:** `http://localhost:5173`
 
 ---
 
-## 8. Database Initialization & Seeding
-The backend initializes the SQLite database schema automatically on startup through FastAPI's lifespan event. 
-
-If the database is empty, it automatically ingests the synthetic dataset from `data/sample_ads.csv`, computes initial risk scores, creates demonstration cases, and generates security alerts.
-
-To reset the database cleanly:
-```powershell
-Remove-Item fraudscope.db
-# Restart backend to regenerate tables and seed data automatically
-```
-
----
-
-## 9. Running Tests
+## 🧪 Testing and Verification
 
 ### Backend Automated Test Suite
-From the project root with the virtual environment:
-```bash
+Runs all 29 automated unit and integration tests (including dataset cleaning, zero leakage verification, model inference, provenance tags, and API endpoints):
+```powershell
 .\backend\venv\Scripts\python -m pytest backend/tests
 ```
-Tests verify:
-- Health check endpoint.
-- Suspicious advertisement analysis and entity extraction.
-- **Benign warning context mitigation (confirming zero false positives on educational advisories).**
-- Input validation (empty text rejection).
-- Duplicate and near-duplicate detection.
-- Case lifecycle, status updates, and note appending.
-- Alert review state transitions.
-- CSV export formatting and formula injection sanitization.
-- Threshold boundary validation.
+**Result:** `29 passed in 23.51s` with 0 failures.
 
-### Frontend Typecheck & Production Build
-```bash
+### Frontend Production Build
+Validates TypeScript types and packages the production bundle:
+```powershell
 cd frontend
 npm run build
 ```
-
----
-
-## 10. AI Risk Scoring Engine Details
-
-The risk index is a calibrated composite score between **0 and 100**:
-- **0–34 (LOW RISK):** Standard promotional language, verified disclosures, or recognized educational scam alerts.
-- **35–64 (MEDIUM RISK):** Speculative return claims (e.g. "35% weekly ROI"), unverified trading bots, or high urgency.
-- **65–100 (HIGH RISK):** Pre-loaded ATM cards, KYC bypass / bank account sales, sensitive credential requests, or money mule recruitment.
-
-$$S = \min\left(100, \max\left(0, W_{rules} + W_{ml} - C_{benign}\right)\right)$$
-
-Where $W_{rules}$ aggregates triggered heuristic weights, $W_{ml}$ reflects Logistic Regression prediction probability ($P(\text{suspicious}) \times 35$), and $C_{benign}$ deducts up to 65 points when educational/warning markers are detected.
-
----
-
-## 11. Security & Responsible Use
-
-1. **Safe URL Evaluation:** Submitted URLs are analyzed as static strings without visiting or fetching remote endpoints.
-2. **Formula Injection Sanitization:** Spreadsheet cells starting with `=`, `+`, `-`, or `@` are neutralized with single quotes.
-3. **No Scraping:** System operates purely on analyst-submitted text or authorized test fixtures.
-4. **Local Demo Authentication:** Analyst login is simplified for demonstration purposes; production deployments should integrate enterprise SSO.
-5. **No Production Claims:** Machine learning signals are trained on synthetic baseline demonstration fixtures.
-
----
-
-## 12. License
-Created for hackathon demonstration. Open source under the MIT License.
+**Result:** `✓ built in 2.88s` with 0 compilation errors.

@@ -1,66 +1,170 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+@config "../tailwind.config.js";
 
-@layer base {
-  body {
-    background-color: #08090D;
-    color: #F5F5F7;
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-  }
-
-  h1, h2, h3, h4, h5, h6 {
-    font-family: 'Space Grotesk', sans-serif;
-  }
-
-  code, pre, .font-mono {
-    font-family: 'JetBrains Mono', monospace;
-  }
+/* Guarantee zero unstyled browser underlines or button border artifacts */
+*, ::before, ::after {
+  box-sizing: border-box;
 }
 
-/* Custom Cyber Forensics Scrollbar */
+body {
+  background-color: #0B1220;
+  color: #E5E9F2;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  overflow-x: hidden;
+}
+
+a {
+  color: inherit;
+  text-decoration: none !important;
+}
+
+a:hover {
+  text-decoration: none !important;
+}
+
+button {
+  background-color: transparent;
+  border-style: none;
+  cursor: pointer;
+  padding: 0;
+  color: inherit;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  letter-spacing: -0.02em;
+}
+
+code, pre, .font-mono {
+  font-family: 'JetBrains Mono', monospace;
+}
+
+/* Glassmorphism & Cyber Card System (16px border radius) */
+.floating-card {
+  background-color: #131C2E;
+  border: 1px solid rgba(148, 163, 184, 0.15);
+  border-radius: 16px;
+  padding: 1.5rem;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.35), 0 8px 10px -6px rgba(0, 0, 0, 0.25);
+  backdrop-filter: blur(12px);
+}
+
+.floating-card-elevated {
+  background-color: #18243A;
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  border-radius: 16px;
+  padding: 1.5rem;
+  box-shadow: 0 20px 30px -10px rgba(0, 0, 0, 0.45), 0 10px 15px -5px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(16px);
+}
+
+.floating-card-interactive {
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.2s ease;
+}
+
+.floating-card-interactive:hover {
+  transform: translateY(-2px);
+  border-color: rgba(99, 102, 241, 0.35);
+  box-shadow: 0 20px 35px -8px rgba(0, 0, 0, 0.55), 0 0 20px rgba(99, 102, 241, 0.12);
+}
+
+/* Input Surfaces */
+.input-surface {
+  background-color: #0D182B;
+  border: 1px solid rgba(148, 163, 184, 0.15);
+  border-radius: 12px;
+  color: #E5E9F2;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.input-surface:focus {
+  border-color: #6366F1;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
+}
+
+/* Buttons */
+.btn-primary {
+  background-color: #6366F1;
+  color: #FFFFFF;
+  border-radius: 12px;
+  font-weight: 600;
+  padding: 0.65rem 1.25rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  box-shadow: 0 4px 14px rgba(99, 102, 241, 0.3);
+  transition: all 0.2s ease;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background-color: #818CF8;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(99, 102, 241, 0.45);
+}
+
+.btn-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-secondary {
+  background-color: #131C2E;
+  color: #E5E9F2;
+  border: 1px solid rgba(148, 163, 184, 0.15);
+  border-radius: 12px;
+  font-weight: 500;
+  padding: 0.65rem 1.25rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  transition: all 0.2s ease;
+}
+
+.btn-secondary:hover:not(:disabled) {
+  background-color: #18243A;
+  border-color: rgba(148, 163, 184, 0.3);
+  color: #FFFFFF;
+}
+
+/* Custom Scrollbar */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #08090D;
+  background: #091426;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #1e222e;
+  background: #18243A;
   border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #FF7547;
+  background: #6366F1;
 }
 
-/* Cyber Scanning Grid Background */
+/* Subtle Cyber Grid Background */
 .cyber-grid {
-  background-size: 40px 40px;
+  background-size: 32px 32px;
   background-image: 
-    linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+    linear-gradient(to right, rgba(148, 163, 184, 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(148, 163, 184, 0.04) 1px, transparent 1px);
 }
 
-.cyber-grid-dense {
-  background-size: 20px 20px;
-  background-image: 
-    linear-gradient(to right, rgba(255, 255, 255, 0.04) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
-}
-
-/* Scanning Beam Animation */
+/* Scanner Beam */
 .scanner-beam {
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   height: 2px;
-  background: linear-gradient(90deg, transparent, #FF7547, #FF4D5A, transparent);
-  box-shadow: 0 0 15px rgba(255, 117, 71, 0.7);
+  background: linear-gradient(90deg, transparent, #22D3EE, #6366F1, transparent);
+  box-shadow: 0 0 15px rgba(34, 211, 238, 0.7);
   animation: scanVertical 4s ease-in-out infinite;
 }
 
@@ -69,14 +173,4 @@
   10% { opacity: 1; }
   90% { opacity: 1; }
   100% { top: 100%; opacity: 0; }
-}
-
-/* Threat Pulse */
-@keyframes radarSweep {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
-.radar-sweep {
-  animation: radarSweep 10s linear infinite;
 }

@@ -1,0 +1,5 @@
+{"ts":"2026-10-13T13:06:00.161Z","session":"20261013-130600","kind":"server_start","data":{"port":5500,"host":"0.0.0.0","root":"c:\\Users\\Yash Srivastava\\Desktop\\FraudScope AI","https":false,"live_reload":true}}
+{"ts":"2026-10-13T13:06:00.749Z","session":"20261013-130600","kind":"http_request","data":{"method":"GET","path":"/","status":200,"duration_ms":1}}
+{"ts":"2026-10-13T13:06:00.985Z","session":"20261013-130600","kind":"ws_connect","data":{"client_id":"c0","url":"http://localhost:5500/","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36 Edg/155.0.0.0","viewport":[1389,753]}}
+{"ts":"2026-10-13T13:06:01.017Z","session":"20261013-130600","kind":"http_request","data":{"method":"GET","path":"/favicon.ico","status":404,"duration_ms":1}}
+{"ts":"2026-10-13T13:06:08.339Z","session":"20261013-130600","kind":"ws_disconnect","data":{"client_id":"c0"}}

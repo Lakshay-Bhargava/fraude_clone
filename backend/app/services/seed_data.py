@@ -76,6 +76,8 @@ def seed_database_if_empty(db: Session):
                 normalized_text=norm_text,
                 source_type=source_type,
                 submitted_url=submitted_url,
+                is_demo=True,
+                data_source="SYNTHETIC_DEMO",
                 content_hash=c_hash,
                 created_at=created_at,
                 review_status=status

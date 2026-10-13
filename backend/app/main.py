@@ -37,7 +37,7 @@ async def lifespan(app: FastAPI):
 app = FastAPI(
     title="FraudScope AI API",
     version=settings.VERSION,
-    description="Explainable AI Financial Advertisement Risk Analysis & Cyber-Threat Intelligence",
+    description="AI-Powered Financial Advertisement Fraud Detection & Investigation Platform",
     lifespan=lifespan
 )
 

@@ -17,9 +17,9 @@ export const StatusBadge: React.FC<StatusBadgeProps> = ({ status, size = 'md' })
     },
     NEEDS_REVIEW: {
       label: 'NEEDS REVIEW',
-      bg: 'bg-[#F3B84B]/10',
-      text: 'text-[#F3B84B]',
-      border: 'border-[#F3B84B]/30',
+      bg: 'bg-[#F4BC52]/10',
+      text: 'text-[#F4BC52]',
+      border: 'border-[#F4BC52]/30',
     },
     UNDER_INVESTIGATION: {
       label: 'UNDER INVESTIGATION',
@@ -29,9 +29,9 @@ export const StatusBadge: React.FC<StatusBadgeProps> = ({ status, size = 'md' })
     },
     ESCALATED: {
       label: 'ESCALATED',
-      bg: 'bg-[#FF4D5A]/10',
-      text: 'text-[#FF4D5A]',
-      border: 'border-[#FF4D5A]/30',
+      bg: 'bg-[#FF5964]/10',
+      text: 'text-[#FF5964]',
+      border: 'border-[#FF5964]/30',
     },
     CLOSED: {
       label: 'CLOSED',

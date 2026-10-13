@@ -22,8 +22,29 @@ from app.services.model_service import predict_risk
 from app.services.similarity_service import check_exact_duplicate, find_near_duplicates, find_shared_entity_matches
 from app.services.risk_scoring import calculate_composite_risk
 from app.services.ocr_service import extract_text_from_image
+from app.services.url_analysis import analyze_url
 
 router = APIRouter(prefix="/ads", tags=["Advertisements"])
+
+def detect_platform(text: str, url: Optional[str] = None, user_platform: Optional[str] = None) -> str:
+    if user_platform and user_platform.strip():
+        return user_platform.strip()
+    combined = f"{text} {url or ''}".lower()
+    if "t.me" in combined or "telegram" in combined:
+        return "Telegram"
+    elif "instagram" in combined or "insta" in combined:
+        return "Instagram"
+    elif "wa.me" in combined or "whatsapp" in combined:
+        return "WhatsApp"
+    elif "facebook" in combined or "fb.com" in combined:
+        return "Facebook"
+    elif "twitter" in combined or "x.com" in combined:
+        return "X"
+    elif "youtube" in combined or "youtu.be" in combined:
+        return "YouTube"
+    elif url and len(url.strip()) > 3:
+        return "Web"
+    return "Unknown"
 
 @router.post("/analyze", response_model=AdDetailSchema)
 def analyze_advertisement(payload: AdAnalyzeRequest, db: Session = Depends(get_db)):
@@ -50,13 +71,16 @@ def analyze_advertisement(payload: AdAnalyzeRequest, db: Session = Depends(get_d
     rule_res = evaluate_rules(norm_text)
 
     # 3. Baseline ML Model Evaluation
-    model_avail, model_prob = predict_risk(norm_text)
+    model_avail, model_prob, model_class, model_version, model_tokens = predict_risk(norm_text)
 
     # 4. Composite Risk Scoring
     risk_info = calculate_composite_risk(
         rule_results=rule_res,
         model_available=model_avail,
         model_signal=model_prob,
+        model_class=model_class,
+        model_version=model_version,
+        model_tokens=model_tokens,
         is_duplicate=is_duplicate
     )
 
@@ -65,14 +89,18 @@ def analyze_advertisement(payload: AdAnalyzeRequest, db: Session = Depends(get_d
     custom_id = f"AD-SCAN-{short_uuid}"
 
     now = datetime.now(timezone.utc)
+    detected_platform = detect_platform(raw_text, cleaned_url, payload.platform)
 
-    # Create Advertisement record
+    # Create Advertisement record (marked as LIVE_SCAN)
     ad = Advertisement(
         custom_id=custom_id,
         original_text=raw_text,
         normalized_text=norm_text,
         source_type=payload.source_type,
         submitted_url=cleaned_url,
+        platform=detected_platform,
+        is_demo=False,
+        data_source="LIVE_SCAN",
         content_hash=content_hash,
         created_at=now,
         review_status="NEEDS_REVIEW" if risk_info["risk_level"] in ["HIGH", "MEDIUM"] else "NEW"
@@ -80,13 +108,16 @@ def analyze_advertisement(payload: AdAnalyzeRequest, db: Session = Depends(get_d
     db.add(ad)
     db.flush()
 
-    # Store Analysis Result
+    # Store Analysis Result with full model classification metadata
     analysis = AnalysisResult(
         advertisement_id=ad.id,
         risk_score=risk_info["risk_score"],
         risk_level=risk_info["risk_level"],
         model_available=model_avail,
         model_signal=model_prob,
+        model_score=risk_info.get("model_score"),
+        model_version=risk_info.get("model_version"),
+        model_class=risk_info.get("model_class"),
         explanation=risk_info["explanation"],
         recommended_review_action=risk_info["recommended_review_action"],
         created_at=now
@@ -118,6 +149,27 @@ def analyze_advertisement(payload: AdAnalyzeRequest, db: Session = Depends(get_d
             )
             db.add(ev)
 
+    # Perform static URL analysis if URL is present or found in entities
+    target_url_for_analysis = cleaned_url
+    if not target_url_for_analysis:
+        for ed in extracted:
+            if ed["entity_type"] in ["URL_DOMAIN", "URL"]:
+                target_url_for_analysis = ed["entity_value"]
+                break
+
+    url_analysis_result = analyze_url(target_url_for_analysis) if target_url_for_analysis else None
+    if url_analysis_result and url_analysis_result.get("risk_score", 0) > 0:
+        ev_url = Evidence(
+            advertisement_id=ad.id,
+            analysis_result_id=analysis.id,
+            evidence_type="SUSPICIOUS_URL",
+            matched_text=target_url_for_analysis,
+            description=f"Static URL heuristics: {', '.join(url_analysis_result.get('indicators', []))} (reputation: {url_analysis_result.get('reputation_status', 'not_checked')})",
+            source_location="URL Analysis",
+            created_at=now
+        )
+        db.add(ev_url)
+
     # If high risk, create Alert automatically
     if risk_info["risk_level"] == "HIGH":
         alert = Alert(
@@ -136,7 +188,7 @@ def analyze_advertisement(payload: AdAnalyzeRequest, db: Session = Depends(get_d
         action="SCAN_AD",
         entity_type="ADVERTISEMENT",
         entity_id=str(ad.id),
-        details=f"Analyzed ad {custom_id} with score {risk_info['risk_score']} ({risk_info['risk_level']})",
+        details=f"Analyzed ad {custom_id} with score {risk_info['risk_score']} ({risk_info['risk_level']}) on platform {detected_platform}",
         created_at=now
     ))
 
@@ -177,6 +229,10 @@ def analyze_advertisement(payload: AdAnalyzeRequest, db: Session = Depends(get_d
         risk_level=analysis.risk_level,
         model_available=analysis.model_available,
         model_signal=analysis.model_signal,
+        model_score=analysis.model_score,
+        model_version=analysis.model_version,
+        model_class=analysis.model_class,
+        model_tokens=risk_info.get("model_tokens", []),
         explanation=analysis.explanation,
         recommended_review_action=analysis.recommended_review_action,
         triggered_rules=rule_res["triggered_rules"],
@@ -193,6 +249,9 @@ def analyze_advertisement(payload: AdAnalyzeRequest, db: Session = Depends(get_d
         normalized_text=ad.normalized_text,
         source_type=ad.source_type,
         submitted_url=ad.submitted_url,
+        platform=ad.platform or "Unknown",
+        is_demo=ad.is_demo,
+        data_source=ad.data_source,
         content_hash=ad.content_hash,
         review_status=ad.review_status,
         created_at=ad.created_at,
@@ -200,7 +259,8 @@ def analyze_advertisement(payload: AdAnalyzeRequest, db: Session = Depends(get_d
         evidence_items=ad.evidence_items,
         entities=ad.entities,
         related_ads=related,
-        cases=[]
+        cases=[],
+        url_analysis=url_analysis_result
     )
 
 @router.post("/ocr-upload")
@@ -286,11 +346,14 @@ def list_advertisements(
     search: Optional[str] = Query(None),
     risk_level: Optional[str] = Query(None),
     review_status: Optional[str] = Query(None),
+    is_demo: Optional[bool] = Query(None),
+    data_source: Optional[str] = Query(None),
     sort_by: str = Query("created_at"), # created_at, risk_score
     sort_order: str = Query("desc") # desc, asc
 ):
     """
-    Lists advertisement records with full pagination, search, risk filter, and status filters.
+    Lists advertisement records with full pagination, search, risk filter, status filters,
+    and clear separation of demo dataset records vs live scans.
     """
     query = db.query(Advertisement).join(AnalysisResult, isouter=True)
 
@@ -309,6 +372,12 @@ def list_advertisements(
 
     if review_status:
         query = query.filter(Advertisement.review_status == review_status.upper())
+
+    if is_demo is not None:
+        query = query.filter(Advertisement.is_demo == is_demo)
+
+    if data_source:
+        query = query.filter(Advertisement.data_source == data_source)
 
     # Sorting
     if sort_by == "risk_score":
@@ -333,6 +402,9 @@ def list_advertisements(
             "original_text": ad.original_text,
             "source_type": ad.source_type,
             "submitted_url": ad.submitted_url,
+            "platform": ad.platform or "Unknown",
+            "is_demo": ad.is_demo,
+            "data_source": ad.data_source or ("DATASET_IMPORT" if ad.is_demo else "LIVE_SCAN"),
             "risk_score": ad.analysis.risk_score if ad.analysis else None,
             "risk_level": ad.analysis.risk_level if ad.analysis else None,
             "review_status": ad.review_status,
@@ -350,13 +422,17 @@ def list_advertisements(
     }
 
 @router.get("/{id}", response_model=AdDetailSchema)
-def get_advertisement_detail(id: int, db: Session = Depends(get_db)):
+def get_advertisement_detail(id: str, db: Session = Depends(get_db)):
     """
-    Retrieves full forensic details of a single advertisement by primary ID or custom ID.
+    Retrieves full forensic details of a single advertisement by primary integer ID or custom ID.
     """
-    ad = db.query(Advertisement).filter(Advertisement.id == id).first()
+    if id.isdigit():
+        ad = db.query(Advertisement).filter(Advertisement.id == int(id)).first()
+    else:
+        ad = db.query(Advertisement).filter(Advertisement.custom_id == id).first()
+
     if not ad:
-        raise HTTPException(status_code=404, detail=f"Advertisement with ID {id} not found.")
+        raise HTTPException(status_code=404, detail=f"Advertisement with identifier '{id}' not found.")
 
     # Reconstruct triggered rules and near duplicates
     rule_res = evaluate_rules(ad.normalized_text)
@@ -407,6 +483,9 @@ def get_advertisement_detail(id: int, db: Session = Depends(get_db)):
             risk_level=ad.analysis.risk_level,
             model_available=ad.analysis.model_available,
             model_signal=ad.analysis.model_signal,
+            model_score=ad.analysis.model_score,
+            model_version=ad.analysis.model_version,
+            model_class=ad.analysis.model_class,
             explanation=ad.analysis.explanation,
             recommended_review_action=ad.analysis.recommended_review_action,
             triggered_rules=rule_res["triggered_rules"],
@@ -416,6 +495,15 @@ def get_advertisement_detail(id: int, db: Session = Depends(get_db)):
             near_duplicate_matches=near_dups
         )
 
+    # Perform URL analysis
+    target_url_detail = ad.submitted_url
+    if not target_url_detail:
+        for ent in ad.entities:
+            if ent.entity_type in ["URL_DOMAIN", "URL"]:
+                target_url_detail = ent.entity_value
+                break
+    url_analysis_detail = analyze_url(target_url_detail) if target_url_detail else None
+
     return AdDetailSchema(
         id=ad.id,
         custom_id=ad.custom_id,
@@ -423,6 +511,9 @@ def get_advertisement_detail(id: int, db: Session = Depends(get_db)):
         normalized_text=ad.normalized_text,
         source_type=ad.source_type,
         submitted_url=ad.submitted_url,
+        platform=ad.platform or "Unknown",
+        is_demo=ad.is_demo,
+        data_source=ad.data_source or ("DATASET_IMPORT" if ad.is_demo else "LIVE_SCAN"),
         content_hash=ad.content_hash,
         review_status=ad.review_status,
         created_at=ad.created_at,
@@ -430,16 +521,21 @@ def get_advertisement_detail(id: int, db: Session = Depends(get_db)):
         evidence_items=ad.evidence_items,
         entities=ad.entities,
         related_ads=related,
-        cases=cases_linked
+        cases=cases_linked,
+        url_analysis=url_analysis_detail
     )
 
 @router.patch("/{id}/status")
-def update_advertisement_status(id: int, payload: AdStatusUpdateRequest, db: Session = Depends(get_db)):
+def update_advertisement_status(id: str, payload: AdStatusUpdateRequest, db: Session = Depends(get_db)):
     """
     Updates the human review disposition of an advertisement.
     Maintains a strict audit event trail for accountable forensics.
     """
-    ad = db.query(Advertisement).filter(Advertisement.id == id).first()
+    if id.isdigit():
+        ad = db.query(Advertisement).filter(Advertisement.id == int(id)).first()
+    else:
+        ad = db.query(Advertisement).filter(Advertisement.custom_id == id).first()
+
     if not ad:
         raise HTTPException(status_code=404, detail="Advertisement not found.")
 
@@ -459,11 +555,15 @@ def update_advertisement_status(id: int, payload: AdStatusUpdateRequest, db: Ses
     return {"message": "Status updated successfully", "old_status": old_status, "new_status": ad.review_status}
 
 @router.delete("/{id}")
-def delete_advertisement(id: int, db: Session = Depends(get_db)):
+def delete_advertisement(id: str, db: Session = Depends(get_db)):
     """
     Deletes an advertisement record, associated evidence, and entities.
     """
-    ad = db.query(Advertisement).filter(Advertisement.id == id).first()
+    if id.isdigit():
+        ad = db.query(Advertisement).filter(Advertisement.id == int(id)).first()
+    else:
+        ad = db.query(Advertisement).filter(Advertisement.custom_id == id).first()
+
     if not ad:
         raise HTTPException(status_code=404, detail="Advertisement not found.")
 
@@ -473,7 +573,7 @@ def delete_advertisement(id: int, db: Session = Depends(get_db)):
         actor="Analyst",
         action="DELETE_RECORD",
         entity_type="ADVERTISEMENT",
-        entity_id=str(id),
+        entity_id=str(ad.id),
         details=f"Deleted advertisement {custom_id}",
         created_at=datetime.now(timezone.utc)
     ))

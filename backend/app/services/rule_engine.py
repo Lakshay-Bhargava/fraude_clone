@@ -15,6 +15,16 @@ SUSPICIOUS_RULES = [
             r"\bno\s+kyc(?:\s+verification)?(?:\s+needed|\s+required)?\b",
             r"\bfully\s+activated\s+(?:business\s+and\s+personal|checking)\s+accounts?\b",
             r"\bmule\s+accounts?\b",
+            r"\baccount\s+(?:available\s+)?for\s+rent\b",
+            r"\bcurrent\s+accounts?\s+available(?:\s+for\s+rent)?\b",
+            r"\b(?:bank\s+)?account\s+kiraye\s+pe\b",
+            r"\bbank\s+account\s+rent\s+par\b",
+            r"\bfresh\s+current(?:\s+accounts?)?\b",
+            r"\b(?:savings|current|bank)\s+(?:a/c|akaunt|acc0unt|account)\s+(?:bikau|ready)\b",
+            r"\b(?:savings|current|bank)\s+(?:a/c|akaunt|acc0unt|account)\s+for\s+sale\b",
+            r"\bkhata\s+kiraye\s+pe\b",
+            r"\baccount\s+chahiye,?\s+paisa\s+milega\b",
+            r"\b(?:savings|current|bank)\s+account\s+with\s+pin\s*\+\s*sim\b",
         ]
     },
     {
@@ -28,8 +38,42 @@ SUSPICIOUS_RULES = [
             r"\bcash\s+out\s+(?:at\s+any\s+terminal|methods?)\b",
             r"\bbalance\s+\$[\d,]+\s+guaranteed\b",
             r"\bwith\s+pin\s+included\b",
+            r"\bcard\s+\+\s+pin\b",
             r"\bcloned\s+cards?\b",
             r"\bcard\s+dumps?\b",
+            r"\batm\s+cards?\s+(?:chahiye|available|with\s+account)\b",
+            r"\bcard\s+aur\s+pin\s+available\b",
+            r"\bdebit\s+card\s+and\s+account\s+access\s+available\b",
+            r"\b(?:atm|debit|credit)\s+card\s+kiraye\s+pe\b",
+            r"\b(?:atm|debit|credit)\s+card\s+bechno\s+hai\b",
+            r"\bsasta\s+(?:atm|debit|credit)\s+(?:card|kard)\b",
+        ]
+    },
+    {
+        "id": "RULE_SIM_LINKED_BANKING",
+        "name": "SIM-Linked Banking / Account Sale",
+        "category": "ACCOUNT_TAKEOVER",
+        "weight": 44,
+        "explanation": "Content advertises bank accounts sold alongside physical SIM cards registered to unauthorized holders.",
+        "patterns": [
+            r"\blinked\s+sim\s+ke\s+saath\s+account\b",
+            r"\bbank\s+account\s+with\s+linked\s+sim\b",
+            r"\blinked\s+sim\b",
+            r"\bsim-?linked\s+banking\b",
+            r"\bpin\s*\+\s*sim\s*(?:\+\s*cheque\s*book)?\b",
+            r"\bpin\s+aur\s+sim\b",
+        ]
+    },
+    {
+        "id": "RULE_UPI_RENTAL",
+        "name": "UPI Identifier / Gateway Rental",
+        "category": "MONEY_LAUNDERING",
+        "weight": 40,
+        "explanation": "Content requests or offers UPI IDs or merchant handles for routing untraceable financial transfers.",
+        "patterns": [
+            r"\bupi\s+(?:id\s+)?(?:access|for\s+rent|rent\s+par)\b",
+            r"\bmerchant\s+upi\s+available\b",
+            r"\bupi\s+handle\s+available\b",
         ]
     },
     {
@@ -88,6 +132,8 @@ SUSPICIOUS_RULES = [
             r"\bfreeze\s+within\s+\d+\s+hours?\b",
             r"\bdon't\s+miss\s+this\s+opportunity\b",
             r"\bhurry[,\s]+few\s+slots\s+remaining\b",
+            r"\burgent\s+buyers?(?:\s+only)?\b",
+            r"\bpayment\s+after\s+verification\b",
         ]
     },
     {
@@ -136,17 +182,45 @@ BENIGN_WARNING_PATTERNS = [
     r"\bofficial\s+banking\s+portal\b",
 ]
 
+# Financial Domain Relevance Gate Indicators
+FINANCIAL_RELEVANCE_PATTERNS = [
+    r"\b(?:bank|banking|banker|account|accounts|checking|savings|current|mule)\b",
+    r"\b(?:card|cards|atm|debit|credit|cvv|pin|otp|passcode|password)\b",
+    r"\b(?:loan|loans|lending|credit\s+line|collateral|advance\s+fee)\b",
+    r"\b(?:upi|wallet|payment|paytm|gpay|phonepe|transfer|remittance)\b",
+    r"\b(?:wire\s+transfer|cash\s+out|cashout|payout|passive\s+income)\b",
+    r"\b(?:crypto|cryptocurrency|bitcoin|usdt|arbitrage|forex|yield|trading\s+bot)\b",
+    r"\b(?:investment|returns?|interest|apr|apy|deposit|dividend)\b",
+    r"\b(?:kyc|identity\s+verification|credentials?|security\s+alert)\b",
+    r"\b(?:freeze|frozen|unfreeze|unlock\s+account)\b",
+]
+
+def check_financial_relevance(text: str) -> Tuple[bool, List[str]]:
+    """
+    Evaluates whether the advertisement content is relevant to financial solicitation,
+    banking, loans, accounts, or payment instruments.
+    Returns (is_relevant: bool, matched_terms: List[str]).
+    Ordinary non-financial advertisements (clothing, restaurant, retail) return False.
+    """
+    matches = []
+    for pattern in FINANCIAL_RELEVANCE_PATTERNS:
+        found = re.findall(pattern, text, re.IGNORECASE)
+        for term in found:
+            t_lower = term.lower()
+            if t_lower not in matches:
+                matches.append(t_lower)
+    return (len(matches) > 0, matches)
+
 def evaluate_rules(text: str) -> Dict[str, Any]:
     """
     Evaluates rule patterns against the normalized text.
-    Detects benign educational/consumer-alert context to prevent false positives.
-    Returns triggered rules, raw score, benign context detection, and extracted phrases.
+    Passes text through financial relevance gate and detects benign educational context.
+    Returns triggered rules, raw score, benign context detection, and financial relevance.
     """
-    triggered_rules = []
-    suspicious_phrases = []
-    total_rule_weight = 0
+    # 1. Financial-Fraud Relevance Gate
+    is_financially_relevant, financial_markers = check_financial_relevance(text)
 
-    # 1. Check for Benign Educational / Regulatory Warning Context
+    # 2. Check for Benign Educational / Regulatory Warning Context
     is_benign = False
     benign_matches = []
     for pattern in BENIGN_WARNING_PATTERNS:
@@ -155,30 +229,37 @@ def evaluate_rules(text: str) -> Dict[str, Any]:
             is_benign = True
             benign_matches.append(match.group(0))
 
-    # 2. Evaluate Suspicious Rules
-    for rule in SUSPICIOUS_RULES:
-        matched_in_rule = []
-        for pattern in rule["patterns"]:
-            for match in re.finditer(pattern, text, re.IGNORECASE):
-                phrase = match.group(0)
-                if phrase not in matched_in_rule:
-                    matched_in_rule.append(phrase)
-                if phrase not in suspicious_phrases:
-                    suspicious_phrases.append(phrase)
+    triggered_rules = []
+    suspicious_phrases = []
+    total_rule_weight = 0
 
-        if matched_in_rule:
-            weight = rule["weight"]
-            total_rule_weight += weight
-            triggered_rules.append({
-                "rule_id": rule["id"],
-                "rule_name": rule["name"],
-                "category": rule["category"],
-                "weight": weight,
-                "matched_phrases": matched_in_rule,
-                "explanation": rule["explanation"]
-            })
+    # 3. Evaluate Suspicious Rules (only if financially relevant)
+    if is_financially_relevant:
+        for rule in SUSPICIOUS_RULES:
+            matched_in_rule = []
+            for pattern in rule["patterns"]:
+                for match in re.finditer(pattern, text, re.IGNORECASE):
+                    phrase = match.group(0)
+                    if phrase not in matched_in_rule:
+                        matched_in_rule.append(phrase)
+                    if phrase not in suspicious_phrases:
+                        suspicious_phrases.append(phrase)
+
+            if matched_in_rule:
+                weight = rule["weight"]
+                total_rule_weight += weight
+                triggered_rules.append({
+                    "rule_id": rule["id"],
+                    "rule_name": rule["name"],
+                    "category": rule["category"],
+                    "weight": weight,
+                    "matched_phrases": matched_in_rule,
+                    "explanation": rule["explanation"]
+                })
 
     return {
+        "is_financial_relevance": is_financially_relevant,
+        "financial_markers": financial_markers,
         "triggered_rules": triggered_rules,
         "suspicious_phrases": suspicious_phrases,
         "raw_rule_score": total_rule_weight,

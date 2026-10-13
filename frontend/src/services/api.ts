@@ -37,8 +37,18 @@ export const api = {
   checkHealth: () => request<{ status: string; database: string }>('/api/health'),
 
   // Dashboard
-  getStats: () => request<DashboardStats>('/api/dashboard/stats'),
+  getStats: (includeDemo: boolean = true) => request<DashboardStats>(`/api/dashboard/stats?include_demo=${includeDemo}`),
   getActivity: () => request<DashboardActivity[]>('/api/dashboard/activity'),
+  getTrends: (days: number = 7, includeDemo: boolean = true) => request<DashboardActivity[]>(`/api/dashboard/trends?days=${days}&include_demo=${includeDemo}`),
+  getPlatforms: (includeDemo: boolean = true) => request<Array<{ platform: string; suspicious: number; total: number }>>(`/api/dashboard/platforms?include_demo=${includeDemo}`),
+  getAuditActivity: (limit: number = 12) =>
+    request<Array<{ id: number; actor: string; action: string; entity_type: string; entity_id: string; details?: string; created_at: string; severity?: string }>>(
+      `/api/dashboard/audit-activity?limit=${limit}`
+    ),
+  getClusters: (limit: number = 10) =>
+    request<Array<{ cluster_id: string; cluster_type: string; entity_value: string; advertisements_count: number; advertisement_ids: number[]; highest_risk_level: string; last_seen: string }>>(
+      `/api/dashboard/clusters?limit=${limit}`
+    ),
 
   // Advertisements & Scanner
   analyzeAd: (content: string, sourceType: string = 'text', submittedUrl?: string) =>
@@ -92,6 +102,8 @@ export const api = {
     search?: string;
     risk_level?: string;
     review_status?: string;
+    is_demo?: boolean;
+    data_source?: string;
     sort_by?: string;
     sort_order?: string;
   } = {}) => {
@@ -101,6 +113,8 @@ export const api = {
     if (params.search) query.set('search', params.search);
     if (params.risk_level) query.set('risk_level', params.risk_level);
     if (params.review_status) query.set('review_status', params.review_status);
+    if (params.is_demo !== undefined) query.set('is_demo', params.is_demo.toString());
+    if (params.data_source) query.set('data_source', params.data_source);
     if (params.sort_by) query.set('sort_by', params.sort_by);
     if (params.sort_order) query.set('sort_order', params.sort_order);
 
@@ -113,15 +127,15 @@ export const api = {
     }>(`/api/ads?${query.toString()}`);
   },
 
-  getAdDetail: (id: number) => request<AdvertisementDetail>(`/api/ads/${id}`),
+  getAdDetail: (id: number | string) => request<AdvertisementDetail>(`/api/ads/${id}`),
 
-  updateAdStatus: (id: number, reviewStatus: string, notes?: string, actor?: string) =>
+  updateAdStatus: (id: number | string, reviewStatus: string, notes?: string, actor?: string) =>
     request<{ message: string; old_status: string; new_status: string }>(`/api/ads/${id}/status`, {
       method: 'PATCH',
       body: JSON.stringify({ review_status: reviewStatus, notes, actor: actor || 'Analyst Alpha' }),
     }),
 
-  deleteAd: (id: number) =>
+  deleteAd: (id: number | string) =>
     request<{ message: string }>(`/api/ads/${id}`, {
       method: 'DELETE',
     }),

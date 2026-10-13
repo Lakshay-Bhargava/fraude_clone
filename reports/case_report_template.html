@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>FraudScope AI / FinGuard — Forensic Case Dossier</title>
+  <style>
+    /* CSS Page Dimensions and Print Styles */
+    @page {
+      size: A4 portrait;
+      margin: 12mm 14mm 14mm 14mm;
+    }
+
+    @media print {
+      body {
+        margin: 0;
+        padding: 0;
+        background: #ffffff !important;
+        color: #0f172a !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+      .page-break {
+        page-break-before: always;
+        break-before: page;
+      }
+      .no-break {
+        page-break-inside: avoid;
+        break-inside: avoid;
+      }
+      .keep-with-next {
+        page-break-after: avoid;
+        break-after: avoid;
+      }
+      .footer-running {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+      }
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      font-size: 8.5pt;
+      line-height: 1.35;
+      color: #1e293b;
+      background: #f8fafc;
+      padding: 20px;
+    }
+
+    .report-container {
+      max-width: 210mm;
+      margin: 0 auto;
+      background: #ffffff;
+    }
+
+    /* Page container simulation */
+    .report-page {
+      min-height: 275mm;
+      position: relative;
+      padding: 10px 0 20px 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .report-page + .report-page {
+      border-top: 1px dashed #cbd5e1;
+      margin-top: 20px;
+      padding-top: 20px;
+    }
+
+    @media print {
+      .report-page + .report-page {
+        border-top: none;
+        margin-top: 0;
+        padding-top: 0;
+      }
+    }
+
+    /* Header Accent Bar */
+    .header-primary {
+      background: #0B1220;
+      color: #ffffff;
+      padding: 14px 18px;
+      border-radius: 6px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .header-primary h1 {
+      font-size: 15pt;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+      margin-bottom: 2px;
+    }
+
+    .header-primary p {
+      font-size: 7.5pt;
+      color: #94A3B8;
+      font-family: monospace;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .badge-confidential {
+      background: #6366F1;
+      color: #ffffff;
+      font-size: 7.5pt;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    /* Running Header for Page 2+ */
+    .header-subsequent {
+      background: #0B1220;
+      color: #ffffff;
+      padding: 6px 14px;
+      border-radius: 4px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+      font-size: 8pt;
+    }
+
+    .header-subsequent .title {
+      font-weight: 700;
+    }
+
+    .header-subsequent .ref {
+      color: #22D3EE;
+      font-family: monospace;
+    }
+
+    .header-subsequent .badge {
+      color: #EF4444;
+      font-weight: 700;
+      font-size: 7pt;
+    }
+
+    /* Metadata Card */
+    .metadata-card {
+      background: #18243A;
+      color: #E2E8F0;
+      padding: 12px 16px;
+      border-radius: 6px;
+      display: grid;
+      grid-template-columns: 2fr 2fr 1fr;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+
+    .meta-group div {
+      margin-bottom: 3px;
+      font-size: 8pt;
+    }
+
+    .meta-label {
+      color: #94A3B8;
+      font-size: 7pt;
+      text-transform: uppercase;
+      font-family: monospace;
+    }
+
+    .meta-val-highlight {
+      color: #22D3EE;
+      font-weight: 700;
+      font-family: monospace;
+    }
+
+    .risk-score-box {
+      background: #EF4444;
+      color: #ffffff;
+      padding: 8px 12px;
+      border-radius: 6px;
+      text-align: center;
+    }
+
+    .risk-score-box .score {
+      font-size: 14pt;
+      font-weight: 800;
+      line-height: 1;
+      font-family: monospace;
+    }
+
+    .risk-score-box .label {
+      font-size: 7pt;
+      font-weight: 700;
+      text-transform: uppercase;
+      margin-top: 3px;
+    }
+
+    /* Section Styles */
+    .section-title {
+      font-size: 9.5pt;
+      font-weight: 700;
+      color: #0F172A;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+      margin-bottom: 6px;
+      border-bottom: 1.5px solid #E2E8F0;
+      padding-bottom: 3px;
+    }
+
+    .card-block {
+      background: #F8FAFC;
+      border: 1px solid #E2E8F0;
+      border-radius: 5px;
+      padding: 9px 12px;
+      margin-bottom: 12px;
+    }
+
+    .snippet-text {
+      font-size: 8pt;
+      line-height: 1.4;
+      color: #1e293b;
+      word-break: break-word;
+      overflow-wrap: anywhere;
+    }
+
+    /* Rules Table */
+    .rules-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 12px;
+      font-size: 7.8pt;
+    }
+
+    .rules-table th {
+      background: #F1F5F9;
+      color: #475569;
+      font-weight: 700;
+      text-transform: uppercase;
+      padding: 5px 8px;
+      text-align: left;
+      border-bottom: 1px solid #CBD5E1;
+      font-size: 7pt;
+    }
+
+    .rules-table td {
+      padding: 5px 8px;
+      border-bottom: 1px solid #E2E8F0;
+      vertical-align: top;
+    }
+
+    .rule-id {
+      color: #EF4444;
+      font-weight: 700;
+      font-family: monospace;
+      white-space: nowrap;
+    }
+
+    .rule-impact {
+      font-weight: 700;
+      color: #0F172A;
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    /* Entities Grid */
+    .entities-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px 14px;
+      font-size: 7.8pt;
+    }
+
+    .entity-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 4px 0;
+      border-bottom: 1px dashed #E2E8F0;
+      word-break: break-all;
+    }
+
+    .entity-label {
+      color: #64748B;
+      font-weight: 600;
+      font-size: 7pt;
+      text-transform: uppercase;
+      min-width: 110px;
+    }
+
+    .entity-value {
+      color: #0F172A;
+      font-family: monospace;
+      font-weight: 600;
+      text-align: right;
+    }
+
+    /* Clusters & Linkages */
+    .cluster-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 4px 8px;
+      background: #F8FAFC;
+      border: 1px solid #E2E8F0;
+      border-radius: 4px;
+      margin-bottom: 5px;
+      font-size: 7.8pt;
+    }
+
+    .cluster-id {
+      font-family: monospace;
+      font-weight: 700;
+      color: #6366F1;
+    }
+
+    /* Footer */
+    .footer-bar {
+      margin-top: auto;
+      padding-top: 8px;
+      border-top: 1px solid #E2E8F0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 7pt;
+      color: #94A3B8;
+      font-style: italic;
+    }
+
+    .footer-bar .page-number {
+      font-style: normal;
+      font-weight: 700;
+      color: #475569;
+    }
+  </style>
+</head>
+<body>
+
+<div class="report-container">
+  <!-- PAGE 1 -->
+  <div class="report-page">
+    <!-- Primary Header -->
+    <div class="header-primary no-break">
+      <div>
+        <h1>FraudScope AI / FinGuard</h1>
+        <p>AI-Powered Financial Advertisement Fraud Investigation Platform</p>
+      </div>
+      <div class="badge-confidential">
+        CONFIDENTIAL // LE ONLY
+      </div>
+    </div>
+
+    <!-- Case Metadata -->
+    <div class="metadata-card no-break">
+      <div class="meta-group">
+        <div><span class="meta-label">Case Ref:</span> <span class="meta-val-highlight">CASE-2026-0001</span></div>
+        <div><span class="meta-label">Post ID:</span> <span class="meta-val-highlight">AD-DEMO-001</span></div>
+        <div><span class="meta-label">Channel/Platform:</span> Telegram</div>
+      </div>
+      <div class="meta-group">
+        <div><span class="meta-label">Generated Date:</span> October 13, 2026</div>
+        <div><span class="meta-label">Detection Status:</span> VERIFIED_SUSPICIOUS</div>
+        <div><span class="meta-label">Investigator:</span> Lead Analyst Alpha</div>
+      </div>
+      <div class="risk-score-box">
+        <div class="score">85/100</div>
+        <div class="label">HIGH RISK</div>
+      </div>
+    </div>
+
+    <!-- Section 1 -->
+    <div class="no-break keep-with-next">
+      <div class="section-title">1. Executive Summary &amp; Fraud Relevance Gate</div>
+    </div>
+    <div class="card-block no-break">
+      <p class="snippet-text">
+        <strong>Relevance Triage:</strong> Confirmed financial solicitation pattern. Content explicitly advertises unauthorized commercial bank checking accounts with bypassed KYC verification, pre-linked ATM cards, and active credential harvesting mechanisms. Highly correlated with organized mule recruitment operations and illegal cash-out networks.
+      </p>
+    </div>
+
+    <!-- Section 2 -->
+    <div class="no-break keep-with-next">
+      <div class="section-title">2. Advertisement Evidence &amp; Detected Content</div>
+    </div>
+    <div class="card-block no-break">
+      <p class="snippet-text">
+        &ldquo;GUARANTEED UNCHECKED BANK ACCOUNTS FOR SALE! Get fully activated business and personal checking accounts with online access and debit cards. No KYC verification needed. Instant delivery. Contact @FastCashDrop on Telegram or dm +1-555-019-8234 now. Limited slots left today!&rdquo;
+      </p>
+      <div style="margin-top: 6px; font-size: 7pt; color: #64748B; font-family: monospace;">
+        Source: Text / Social Ad &bull; Content Hash: 4e89f2a71d80b2c1598b04a8e3f491c2b740e53a
+      </div>
+    </div>
+
+    <!-- Section 3 -->
+    <div class="no-break keep-with-next">
+      <div class="section-title">3. Triggered Violation Rules &amp; Threat Vectors</div>
+    </div>
+    <table class="rules-table no-break">
+      <thead>
+        <tr>
+          <th style="width: 25%;">Rule Identifier</th>
+          <th style="width: 20%;">Threat Category</th>
+          <th style="width: 45%;">Description</th>
+          <th style="width: 10%;">Impact</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="rule-id">[RULE_UNCHECKED_ACCOUNT]</td>
+          <td>ACCOUNT_SALE</td>
+          <td>Offering commercial bank accounts for unauthorized rental or illicit purchase.</td>
+          <td class="rule-impact">+40 pts</td>
+        </tr>
+        <tr>
+          <td class="rule-id">[RULE_SIM_LINKED_BANKING]</td>
+          <td>CREDENTIAL_BYPASS</td>
+          <td>Account bundled with active SIM and debit card credentials for OTP interception.</td>
+          <td class="rule-impact">+30 pts</td>
+        </tr>
+        <tr>
+          <td class="rule-id">[RULE_PRESSURE_TACTICS]</td>
+          <td>COERCIVE_FRAMING</td>
+          <td>Urgency markers (&ldquo;Limited slots left today&rdquo;, &ldquo;Instant delivery&rdquo;).</td>
+          <td class="rule-impact">+15 pts</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- Page 1 Footer -->
+    <div class="footer-bar">
+      <span>FraudScope AI / FinGuard Automated Forensic Case Dossier — Official Investigative Record</span>
+      <span class="page-number">Page 1 of 2</span>
+    </div>
+  </div>
+
+  <!-- PAGE 2 -->
+  <div class="report-page page-break">
+    <!-- Running Header for Page 2 -->
+    <div class="header-subsequent no-break">
+      <span class="title">FraudScope AI / FinGuard — Forensic Case Dossier</span>
+      <span class="ref">CASE-2026-0001 // AD-DEMO-001</span>
+      <span class="badge">CONFIDENTIAL // LE ONLY</span>
+    </div>
+
+    <!-- Section 4 -->
+    <div class="no-break keep-with-next">
+      <div class="section-title">4. Extracted Technical Indicators (Redacted Evidence)</div>
+    </div>
+    <div class="card-block no-break">
+      <div class="entities-grid">
+        <div class="entity-row">
+          <span class="entity-label">Phone Identifier:</span>
+          <span class="entity-value">+1-555-019-8234</span>
+        </div>
+        <div class="entity-row">
+          <span class="entity-label">Telegram Handle:</span>
+          <span class="entity-value">@FastCashDrop</span>
+        </div>
+        <div class="entity-row">
+          <span class="entity-label">Web / Channel Link:</span>
+          <span class="entity-value">https://t.me/FastCashDrop</span>
+        </div>
+        <div class="entity-row">
+          <span class="entity-label">UPI Identifier:</span>
+          <span class="entity-value">fastcash@okhdfcbank</span>
+        </div>
+      </div>
+      <div style="margin-top: 6px; font-size: 7pt; color: #64748B; font-style: italic;">
+        Notice: Extracted automatically via entity normalization. Redacted in shared public intelligence reports.
+      </div>
+    </div>
+
+    <!-- Section 5 -->
+    <div class="no-break keep-with-next">
+      <div class="section-title">5. URL Security &amp; Reputation Analysis</div>
+    </div>
+    <div class="card-block no-break">
+      <div class="entities-grid">
+        <div class="entity-row">
+          <span class="entity-label">Evaluated Domain:</span>
+          <span class="entity-value">t.me</span>
+        </div>
+        <div class="entity-row">
+          <span class="entity-label">Heuristic Status:</span>
+          <span class="entity-value" style="color: #F59E0B;">SUSPICIOUS_CHANNEL</span>
+        </div>
+        <div class="entity-row">
+          <span class="entity-label">SSRF / IP Integrity:</span>
+          <span class="entity-value" style="color: #10B981;">Passed (Public DNS)</span>
+        </div>
+        <div class="entity-row">
+          <span class="entity-label">Reputation Provider:</span>
+          <span class="entity-value">Local Static Heuristics</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 6 -->
+    <div class="no-break keep-with-next">
+      <div class="section-title">6. Threat Cluster &amp; Network Linkages</div>
+    </div>
+    <div class="no-break" style="margin-bottom: 12px;">
+      <div class="cluster-item">
+        <span class="cluster-id">AD-DEMO-004</span>
+        <span>Platform: Telegram</span>
+        <span>Link: Shared Telegram (@FastCashDrop)</span>
+        <span style="color: #EF4444; font-weight: 700;">HIGH RISK</span>
+      </div>
+      <div class="cluster-item">
+        <span class="cluster-id">AD-DEMO-006</span>
+        <span>Platform: Telegram</span>
+        <span>Link: Exact Content Fingerprint Duplicate</span>
+        <span style="color: #EF4444; font-weight: 700;">HIGH RISK</span>
+      </div>
+      <div class="cluster-item">
+        <span class="cluster-id">AD-DEMO-007</span>
+        <span>Platform: Telegram</span>
+        <span>Link: Shared Phone (+1-555-019-8234)</span>
+        <span style="color: #EF4444; font-weight: 700;">HIGH RISK</span>
+      </div>
+      <div style="font-size: 7pt; color: #64748B; font-style: italic; margin-top: 3px;">
+        Notice: Shared indicators demonstrate common operational infrastructure across 4 syndicate nodes.
+      </div>
+    </div>
+
+    <!-- Section 7 -->
+    <div class="no-break keep-with-next">
+      <div class="section-title">7. Investigator Assessment &amp; Recommendations</div>
+    </div>
+    <div class="card-block no-break">
+      <p class="snippet-text">
+        High confidence money mule recruitment and illicit account distribution syndicate. The subject operation distributes pre-activated accounts across multiple redundant channels.
+      </p>
+      <div style="margin-top: 6px; font-size: 7.8pt; color: #1e293b;">
+        <strong>Recommended Actions:</strong>
+        <ul style="padding-left: 18px; margin-top: 3px;">
+          <li>Initiate platform takedown request for Telegram channel <code>@FastCashDrop</code>.</li>
+          <li>Escalate phone identifier <code>+1-555-019-8234</code> to Financial Crime Intelligence Unit for mule ring deconfliction.</li>
+          <li>Freeze suspected merchant UPI receiver handles associated with cluster CL-PHO-002.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Page 2 Footer -->
+    <div class="footer-bar">
+      <span>FraudScope AI / FinGuard Automated Forensic Case Dossier — Official Investigative Record</span>
+      <span class="page-number">Page 2 of 2</span>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

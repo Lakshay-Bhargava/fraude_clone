@@ -13,9 +13,14 @@ export interface AnalysisResult {
   risk_level: 'LOW' | 'MEDIUM' | 'HIGH';
   model_available: boolean;
   model_signal?: number | null;
+  model_score?: number | null;
+  model_version?: string | null;
+  model_class?: 'safe' | 'suspicious' | string | null;
+  model_tokens?: Array<{ token: string; contribution: number; type: string }>;
   explanation: string;
   recommended_review_action: string;
   triggered_rules: TriggeredRule[];
+  matched_rules?: any[];
   suspicious_phrases: string[];
   is_duplicate?: boolean;
   duplicate_of_id?: string | null;
@@ -30,7 +35,7 @@ export interface AnalysisResult {
 
 export interface ExtractedEntity {
   id?: number;
-  entity_type: 'PHONE' | 'TELEGRAM' | 'WHATSAPP' | 'URL_DOMAIN' | 'CRYPTO' | 'EMAIL' | string;
+  entity_type: 'PHONE' | 'TELEGRAM' | 'WHATSAPP' | 'URL_DOMAIN' | 'CRYPTO' | 'EMAIL' | 'UPI' | string;
   entity_value: string;
   normalized_value: string;
 }
@@ -51,8 +56,12 @@ export interface AdvertisementSummary {
   source_type: string;
   submitted_url?: string | null;
   risk_score?: number | null;
-  risk_level?: 'LOW' | 'MEDIUM' | 'HIGH' | null;
-  review_status: 'NEW' | 'NEEDS_REVIEW' | 'UNDER_INVESTIGATION' | 'ESCALATED' | 'CLOSED' | 'FALSE_POSITIVE';
+  risk_level?: 'LOW' | 'MEDIUM' | 'HIGH' | string | null;
+  review_status: 'NEW' | 'NEEDS_REVIEW' | 'UNDER_INVESTIGATION' | 'ESCALATED' | 'CLOSED' | 'FALSE_POSITIVE' | 'UNDER_REVIEW' | 'CONFIRMED_FRAUD' | 'BENIGN' | string;
+  platform?: string;
+  platform_detected?: string;
+  is_demo?: boolean;
+  data_source?: string;
   created_at: string;
   entities_count: number;
   cases_count: number;
@@ -66,7 +75,13 @@ export interface AdvertisementDetail {
   source_type: string;
   submitted_url?: string | null;
   content_hash: string;
-  review_status: 'NEW' | 'NEEDS_REVIEW' | 'UNDER_INVESTIGATION' | 'ESCALATED' | 'CLOSED' | 'FALSE_POSITIVE';
+  review_status: 'NEW' | 'NEEDS_REVIEW' | 'UNDER_INVESTIGATION' | 'ESCALATED' | 'CLOSED' | 'FALSE_POSITIVE' | 'UNDER_REVIEW' | 'CONFIRMED_FRAUD' | 'BENIGN' | string;
+  platform?: string;
+  platform_detected?: string;
+  is_demo?: boolean;
+  data_source?: string;
+  risk_score?: number | null;
+  risk_level?: 'LOW' | 'MEDIUM' | 'HIGH' | string | null;
   created_at: string;
   analysis?: AnalysisResult;
   evidence_items: EvidenceItem[];
@@ -85,6 +100,20 @@ export interface AdvertisementDetail {
     status: string;
     priority: string;
   }>;
+  url_analysis?: UrlAnalysisData | null;
+}
+
+export interface UrlAnalysisData {
+  url: string;
+  normalized_url: string;
+  domain: string;
+  status: string;
+  risk_score: number;
+  is_suspicious: boolean;
+  heuristics: string[];
+  reputation_provider: string;
+  reputation_status: string;
+  is_ssrf_risk: boolean;
 }
 
 export interface CaseNote {
@@ -100,23 +129,27 @@ export interface CaseItem {
   case_ref: string;
   title: string;
   description?: string;
+  status: 'OPEN' | 'IN_PROGRESS' | 'ESCALATED' | 'RESOLVED' | 'CLOSED';
   priority: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
-  status: 'OPEN' | 'IN_PROGRESS' | 'ESCALATED' | 'CLOSED';
-  assigned_to: string;
+  assigned_to?: string;
   created_at: string;
   updated_at: string;
-  advertisements_count: number;
-  advertisements: AdvertisementSummary[];
-  notes: CaseNote[];
+  ad_count: number;
+  notes_count: number;
+  ads: AdvertisementSummary[];
+  advertisements_count?: number;
+  advertisements?: any[];
+  notes?: any[];
 }
 
 export interface AlertItem {
   id: number;
-  advertisement_id?: number | null;
-  custom_id?: string | null;
   alert_type: string;
   severity: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
+  title: string;
   message: string;
+  advertisement_id?: number;
+  case_id?: number;
   reviewed: boolean;
   created_at: string;
 }
@@ -129,7 +162,14 @@ export interface DashboardStats {
   open_cases_count: number;
   awaiting_review_count: number;
   total_entities_tracked: number;
-  demo_mode: boolean;
+  active_clusters_count?: number;
+  demo_mode?: boolean;
+  demo_records_count?: number;
+  live_scans_count?: number;
+  model_status?: string;
+  model_version?: string;
+  last_trained_at?: string;
+  vocabulary_size?: number;
 }
 
 export interface DashboardActivity {
@@ -140,10 +180,42 @@ export interface DashboardActivity {
   total: number;
 }
 
+export interface DashboardPlatform {
+  platform: string;
+  suspicious: number;
+  total: number;
+}
+
+export interface DashboardAuditActivity {
+  id: number;
+  actor: string;
+  action: string;
+  entity_type: string;
+  entity_id: string;
+  details?: string;
+  created_at: string;
+  severity?: string;
+}
+
+export interface DashboardCluster {
+  cluster_id: string;
+  cluster_type: string;
+  entity_value: string;
+  advertisements_count: number;
+  advertisement_ids: number[];
+  highest_risk_level: string;
+  last_seen: string;
+}
+
+export interface ThreatNetworkData {
+  nodes: NetworkNode[];
+  edges: NetworkEdge[];
+}
+
 export interface NetworkNode {
   id: string;
   label: string;
-  node_type: string;
+  node_type: 'ad' | 'case' | 'entity_phone' | 'entity_telegram' | 'entity_url' | 'entity_crypto' | string;
   risk_level?: string;
   risk_score?: number;
   metadata?: Record<string, any>;
@@ -154,19 +226,7 @@ export interface NetworkEdge {
   source: string;
   target: string;
   relationship: string;
-  label?: string;
-}
-
-export interface ThreatNetworkData {
-  nodes: NetworkNode[];
-  edges: NetworkEdge[];
-  stats: {
-    total_nodes: number;
-    total_edges: number;
-    ad_nodes: number;
-    case_nodes: number;
-    shared_entity_nodes: number;
-  };
+  label: string;
 }
 
 export interface SystemSettings {
@@ -176,8 +236,10 @@ export interface SystemSettings {
   demo_mode: boolean;
   ml_model: {
     status: string;
-    type: string;
+    model_type: string;
     version: string;
+    last_trained: string;
+    classes: string[];
   };
   active_rules: Array<{
     id: string;
@@ -186,9 +248,4 @@ export interface SystemSettings {
     weight: number;
     description: string;
   }>;
-  platform: {
-    name: string;
-    version: string;
-    environment: string;
-  };
 }

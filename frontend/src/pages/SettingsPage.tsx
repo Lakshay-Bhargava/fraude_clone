@@ -7,7 +7,10 @@ import {
   Save,
   CheckCircle,
   AlertTriangle,
-  Info
+  Info,
+  Globe,
+  Bell,
+  EyeOff
 } from 'lucide-react';
 import { api } from '../services/api';
 import { SystemSettings } from '../types';
@@ -18,9 +21,28 @@ export const SettingsPage: React.FC = () => {
 
   // Form states
   const [lowCutoff, setLowCutoff] = useState(35);
-  const [highCutoff, setHighCutoff] = useState(65);
+  const [highCutoff, setHighCutoff] = useState(70);
   const [similarityCutoff, setSimilarityCutoff] = useState(0.78);
   const [demoMode, setDemoMode] = useState(true);
+
+  // Additional FinGuard AI Settings
+  const [supportedLanguages, setSupportedLanguages] = useState({
+    english: true,
+    hindi: true,
+    hinglish: true,
+  });
+
+  const [alertPreferences, setAlertPreferences] = useState({
+    liveClusterToasts: true,
+    highRiskAlertSound: false,
+    unresolvedBadge: true,
+  });
+
+  const [privacySettings, setPrivacySettings] = useState({
+    maskPhoneNumbers: true,
+    maskUpiHandles: true,
+    redactSensitiveOcr: true,
+  });
 
   const [saving, setSaving] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
@@ -31,10 +53,10 @@ export const SettingsPage: React.FC = () => {
       setLoading(true);
       const data = await api.getSettings();
       setSettingsData(data);
-      setLowCutoff(data.risk_threshold_low);
-      setHighCutoff(data.risk_threshold_high);
-      setSimilarityCutoff(data.similarity_threshold);
-      setDemoMode(data.demo_mode);
+      setLowCutoff(data.risk_threshold_low || 35);
+      setHighCutoff(data.risk_threshold_high || 70);
+      setSimilarityCutoff(data.similarity_threshold || 0.78);
+      setDemoMode(data.demo_mode ?? true);
     } catch (err: any) {
       setErrorMsg(err.message || 'Failed to load system settings');
     } finally {
@@ -64,6 +86,7 @@ export const SettingsPage: React.FC = () => {
         demo_mode: demoMode,
       });
       setSaveSuccess(true);
+      setTimeout(() => setSaveSuccess(false), 4000);
       await fetchSettings();
     } catch (err: any) {
       setErrorMsg(err.message || 'Failed to persist settings.');
@@ -73,164 +96,178 @@ export const SettingsPage: React.FC = () => {
   };
 
   if (loading) {
-    return <div className="py-12 text-center text-xs font-mono text-[#9297A4]">Loading system configuration...</div>;
+    return (
+      <div className="py-24 text-center text-xs font-mono text-[#64748B] space-y-2">
+        <div className="w-5 h-5 border-2 border-[#6366F1] border-t-transparent rounded-full animate-spin mx-auto mb-2" />
+        <p>Loading application configuration...</p>
+      </div>
+    );
   }
 
   return (
     <div className="space-y-6 max-w-4xl mx-auto">
       {/* Header */}
       <div>
-        <h2 className="text-xl font-bold font-display text-white">System Settings & Engine Calibration</h2>
-        <p className="text-xs font-mono text-[#9297A4] mt-0.5">
-          Configure risk scoring bands, near-duplicate similarity boundaries, and inspect ML model telemetry
+        <h1 className="text-2xl font-bold text-white tracking-tight">System Settings & Engine Calibration</h1>
+        <p className="text-sm text-[#94A3B8] mt-0.5">
+          Configure detection thresholds, multilingual models, privacy redactions, and alert notifications.
         </p>
       </div>
 
       <form onSubmit={handleSave} className="space-y-6">
         {/* Risk Thresholds Calibration Box */}
-        <div className="bg-[#101218] border border-white/[0.08] rounded-xl p-6 space-y-6">
-          <div className="flex items-center justify-between border-b border-white/[0.06] pb-3">
+        <div className="floating-card space-y-6">
+          <div className="flex items-center justify-between border-b border-[rgba(148,163,184,0.1)] pb-3">
             <div>
-              <h3 className="text-sm font-bold text-white font-display">Risk Threshold Boundaries</h3>
-              <p className="text-[11px] font-mono text-[#9297A4]">Calibrate 0-100 index categorization</p>
+              <h2 className="text-sm font-bold text-white">Risk Scoring Calibration</h2>
+              <p className="text-xs text-[#94A3B8]">Configure score boundary bands (0–34 Low, 35–69 Medium, 70–100 High)</p>
             </div>
-            <Sliders className="w-4 h-4 text-[#FF7547]" />
+            <Sliders className="w-4 h-4 text-[#6366F1]" />
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <label className="block text-xs font-mono text-[#9297A4] mb-1">
+            <div className="space-y-2">
+              <label className="block text-xs text-[#94A3B8] font-medium">
                 Low Risk Ceiling (Currently: {lowCutoff}/100)
               </label>
               <input
                 type="range"
                 min={10}
-                max={50}
+                max={49}
                 value={lowCutoff}
                 onChange={(e) => setLowCutoff(parseInt(e.target.value, 10))}
-                className="w-full accent-[#FF7547]"
+                className="w-full accent-[#10B981]"
               />
-              <span className="text-[10px] font-mono text-[#626775]">
-                Scores &lt; {lowCutoff} classified as LOW RISK (Routine review)
+              <span className="text-[11px] font-mono text-[#64748B] block">
+                Scores &lt; {lowCutoff} classified as LOW RISK
               </span>
             </div>
 
-            <div>
-              <label className="block text-xs font-mono text-[#9297A4] mb-1">
+            <div className="space-y-2">
+              <label className="block text-xs text-[#94A3B8] font-medium">
                 High Risk Floor (Currently: {highCutoff}/100)
               </label>
               <input
                 type="range"
-                min={55}
+                min={50}
                 max={90}
                 value={highCutoff}
                 onChange={(e) => setHighCutoff(parseInt(e.target.value, 10))}
-                className="w-full accent-[#FF4D5A]"
+                className="w-full accent-[#EF4444]"
               />
-              <span className="text-[10px] font-mono text-[#626775]">
-                Scores &ge; {highCutoff} classified as HIGH RISK (Immediate escalation)
+              <span className="text-[11px] font-mono text-[#64748B] block">
+                Scores &ge; {highCutoff} classified as HIGH RISK
               </span>
             </div>
           </div>
+        </div>
 
-          <div>
-            <label className="block text-xs font-mono text-[#9297A4] mb-1">
-              RapidFuzz Near-Duplicate Sensitivity (Currently: {(similarityCutoff * 100).toFixed(0)}%)
+        {/* Multilingual Support Settings */}
+        <div className="floating-card space-y-4">
+          <div className="flex items-center justify-between border-b border-[rgba(148,163,184,0.1)] pb-3">
+            <div>
+              <h2 className="text-sm font-bold text-white">Multilingual Detection Vectors</h2>
+              <p className="text-xs text-[#94A3B8]">Enable or disable language lexicons and transliteration handlers</p>
+            </div>
+            <Globe className="w-4 h-4 text-[#22D3EE]" />
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+            <label className="p-3 rounded-xl bg-[#0D182B] border border-[rgba(148,163,184,0.15)] flex items-center justify-between cursor-pointer">
+              <span>English Lexicon</span>
+              <input
+                type="checkbox"
+                checked={supportedLanguages.english}
+                onChange={(e) => setSupportedLanguages({ ...supportedLanguages, english: e.target.checked })}
+                className="accent-[#6366F1]"
+              />
             </label>
-            <input
-              type="range"
-              min={0.5}
-              max={0.95}
-              step={0.01}
-              value={similarityCutoff}
-              onChange={(e) => setSimilarityCutoff(parseFloat(e.target.value))}
-              className="w-full accent-[#49D6A5]"
-            />
-            <span className="text-[10px] font-mono text-[#626775]">
-              Token Sort Similarity threshold required to cluster related campaign variations
-            </span>
+            <label className="p-3 rounded-xl bg-[#0D182B] border border-[rgba(148,163,184,0.15)] flex items-center justify-between cursor-pointer">
+              <span>Hindi Devanagari</span>
+              <input
+                type="checkbox"
+                checked={supportedLanguages.hindi}
+                onChange={(e) => setSupportedLanguages({ ...supportedLanguages, hindi: e.target.checked })}
+                className="accent-[#6366F1]"
+              />
+            </label>
+            <label className="p-3 rounded-xl bg-[#0D182B] border border-[rgba(148,163,184,0.15)] flex items-center justify-between cursor-pointer">
+              <span>Hinglish Romanized</span>
+              <input
+                type="checkbox"
+                checked={supportedLanguages.hinglish}
+                onChange={(e) => setSupportedLanguages({ ...supportedLanguages, hinglish: e.target.checked })}
+                className="accent-[#6366F1]"
+              />
+            </label>
           </div>
         </div>
 
-        {/* Machine Learning Model Telemetry */}
-        <div className="bg-[#101218] border border-white/[0.08] rounded-xl p-6 space-y-4">
-          <div className="flex items-center justify-between border-b border-white/[0.06] pb-3">
+        {/* Privacy & Redaction Settings */}
+        <div className="floating-card space-y-4">
+          <div className="flex items-center justify-between border-b border-[rgba(148,163,184,0.1)] pb-3">
             <div>
-              <h3 className="text-sm font-bold text-white font-display">Machine Learning Engine</h3>
-              <p className="text-[11px] font-mono text-[#9297A4]">Scikit-Learn baseline inference pipeline</p>
+              <h2 className="text-sm font-bold text-white">Privacy & Credential Masking</h2>
+              <p className="text-xs text-[#94A3B8]">Automatic redacting of sensitive phone numbers, cards, and personal identifiers</p>
             </div>
-            <Cpu className="w-4 h-4 text-[#49D6A5]" />
+            <EyeOff className="w-4 h-4 text-[#F59E0B]" />
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-4 text-xs font-mono">
-            <div className="p-3 rounded-lg bg-[#08090D] border border-white/5">
-              <span className="text-[#626775] block text-[10px]">ENGINE STATUS</span>
-              <span className="text-[#49D6A5] font-bold mt-1 block">
-                ● {settingsData?.ml_model?.status || 'ONLINE'}
-              </span>
-            </div>
-            <div className="p-3 rounded-lg bg-[#08090D] border border-white/5">
-              <span className="text-[#626775] block text-[10px]">PIPELINE ARCHITECTURE</span>
-              <span className="text-white font-bold mt-1 block">TF-IDF + Logistic Reg</span>
-            </div>
-            <div className="p-3 rounded-lg bg-[#08090D] border border-white/5">
-              <span className="text-[#626775] block text-[10px]">FALLBACK CAPABILITY</span>
-              <span className="text-white font-bold mt-1 block">Deterministic Rules</span>
-            </div>
-          </div>
-        </div>
-
-        {/* Active Rules Inventory */}
-        <div className="bg-[#101218] border border-white/[0.08] rounded-xl p-6 space-y-4">
-          <div className="flex items-center justify-between border-b border-white/[0.06] pb-3">
-            <div>
-              <h3 className="text-sm font-bold text-white font-display">Active Investigative Heuristic Rules</h3>
-              <p className="text-[11px] font-mono text-[#9297A4]">
-                Deterministic detection triggers loaded in the core engine ({settingsData?.active_rules?.length ?? 0} rules)
-              </p>
-            </div>
-            <Shield className="w-4 h-4 text-[#FF7547]" />
-          </div>
-
-          <div className="space-y-2.5 max-h-72 overflow-y-auto divide-y divide-white/5">
-            {settingsData?.active_rules?.map((rule) => (
-              <div key={rule.id} className="pt-2 flex items-start justify-between text-xs font-mono">
-                <div>
-                  <div className="flex items-center gap-2">
-                    <span className="font-bold text-white">{rule.name}</span>
-                    <span className="text-[10px] text-[#FF7547] bg-[#FF7547]/10 px-1.5 py-0.2 rounded">
-                      {rule.category}
-                    </span>
-                  </div>
-                  <p className="text-[11px] text-[#9297A4] mt-0.5">{rule.description}</p>
-                </div>
-                <span className="font-bold text-[#FF4D5A] shrink-0 ml-4">+{rule.weight} PTS</span>
-              </div>
-            ))}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+            <label className="p-3 rounded-xl bg-[#0D182B] border border-[rgba(148,163,184,0.15)] flex items-center justify-between cursor-pointer">
+              <span>Mask Phone Numbers (+91 ***)</span>
+              <input
+                type="checkbox"
+                checked={privacySettings.maskPhoneNumbers}
+                onChange={(e) => setPrivacySettings({ ...privacySettings, maskPhoneNumbers: e.target.checked })}
+                className="accent-[#6366F1]"
+              />
+            </label>
+            <label className="p-3 rounded-xl bg-[#0D182B] border border-[rgba(148,163,184,0.15)] flex items-center justify-between cursor-pointer">
+              <span>Redact Card Numbers & PINs</span>
+              <input
+                type="checkbox"
+                checked={privacySettings.maskUpiHandles}
+                onChange={(e) => setPrivacySettings({ ...privacySettings, maskUpiHandles: e.target.checked })}
+                className="accent-[#6366F1]"
+              />
+            </label>
+            <label className="p-3 rounded-xl bg-[#0D182B] border border-[rgba(148,163,184,0.15)] flex items-center justify-between cursor-pointer">
+              <span>Sanitize OCR Data</span>
+              <input
+                type="checkbox"
+                checked={privacySettings.redactSensitiveOcr}
+                onChange={(e) => setPrivacySettings({ ...privacySettings, redactSensitiveOcr: e.target.checked })}
+                className="accent-[#6366F1]"
+              />
+            </label>
           </div>
         </div>
 
-        {/* Save Actions */}
+        {/* Error / Success Notifications */}
         {errorMsg && (
-          <div className="p-3 rounded bg-red-500/10 border border-red-500/30 text-xs font-mono text-red-400">
-            {errorMsg}
+          <div className="p-3.5 rounded-xl bg-[#EF4444]/10 border border-[#EF4444]/25 text-xs text-[#EF4444] flex items-center gap-2">
+            <AlertTriangle className="w-4 h-4 shrink-0" />
+            <span>{errorMsg}</span>
           </div>
         )}
 
         {saveSuccess && (
-          <div className="p-3 rounded bg-[#49D6A5]/10 border border-[#49D6A5]/30 text-xs font-mono text-[#49D6A5]">
-            ✓ Settings successfully persisted into SQLite database.
+          <div className="p-3.5 rounded-xl bg-[#10B981]/10 border border-[#10B981]/25 text-xs font-mono text-[#10B981] flex items-center gap-2">
+            <CheckCircle className="w-4 h-4 shrink-0" />
+            <span>Settings successfully saved and persisted to backend database.</span>
           </div>
         )}
 
-        <div className="flex justify-end">
+        {/* Save Button */}
+        <div className="flex justify-end pt-2">
           <button
             type="submit"
             disabled={saving}
-            className="px-6 py-2.5 rounded-lg bg-[#FF7547] text-white font-mono text-xs font-semibold uppercase tracking-wider hover:bg-[#FF8A65] transition-colors flex items-center gap-2"
+            className="btn-primary text-xs py-2.5 px-6 shadow-md shadow-[#6366F1]/20 flex items-center gap-2"
           >
             <Save className="w-3.5 h-3.5" />
-            <span>{saving ? 'Persisting...' : 'Save Configuration'}</span>
+            <span>{saving ? 'Saving...' : 'Save Configuration'}</span>
           </button>
         </div>
       </form>

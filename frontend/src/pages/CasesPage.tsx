@@ -121,7 +121,7 @@ export const CasesPage: React.FC = () => {
 
         <button
           onClick={() => setCreateModalOpen(true)}
-          className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-[#FF7547] text-white font-mono text-xs font-semibold hover:bg-[#FF8A65] transition-colors"
+          className="btn-primary text-xs py-2 px-4 flex items-center gap-1.5"
         >
           <Plus className="w-4 h-4" />
           <span>Open New Case</span>
@@ -129,11 +129,11 @@ export const CasesPage: React.FC = () => {
       </div>
 
       {/* Filter Bar */}
-      <div className="bg-[#101218] border border-white/[0.08] rounded-xl p-4 flex flex-wrap items-center gap-3">
+      <div className="floating-card p-4 flex flex-wrap items-center gap-3">
         <select
           value={statusFilter}
           onChange={(e) => setStatusFilter(e.target.value)}
-          className="py-1.5 px-3 text-xs bg-[#171A22] border border-white/10 rounded-lg text-[#9297A4] font-mono focus:outline-none"
+          className="py-2 px-3 text-xs input-surface text-[#9BA7B8]"
         >
           <option value="">All Case Statuses</option>
           <option value="OPEN">Open</option>
@@ -145,7 +145,7 @@ export const CasesPage: React.FC = () => {
         <select
           value={priorityFilter}
           onChange={(e) => setPriorityFilter(e.target.value)}
-          className="py-1.5 px-3 text-xs bg-[#171A22] border border-white/10 rounded-lg text-[#9297A4] font-mono focus:outline-none"
+          className="py-2 px-3 text-xs input-surface text-[#9BA7B8]"
         >
           <option value="">All Priorities</option>
           <option value="CRITICAL">Critical</option>
@@ -169,7 +169,7 @@ export const CasesPage: React.FC = () => {
           cases.map((c) => (
             <div
               key={c.id}
-              className="bg-[#101218] border border-white/[0.08] rounded-xl p-5 flex flex-col justify-between hover:border-[#FF7547]/40 transition-colors"
+              className="floating-card floating-card-interactive flex flex-col justify-between"
             >
               <div>
                 <div className="flex items-center justify-between gap-2 mb-2">
@@ -192,8 +192,8 @@ export const CasesPage: React.FC = () => {
 
               <div className="pt-4 border-t border-white/[0.06] flex items-center justify-between text-xs font-mono text-[#9297A4]">
                 <div className="flex items-center gap-3">
-                  <span title="Linked advertisements">📁 {c.advertisements_count} Ads</span>
-                  <span title="Analyst notes">💬 {c.notes.length} Notes</span>
+                  <span title="Linked advertisements">📁 {c.ad_count ?? c.advertisements_count ?? 0} Ads</span>
+                  <span title="Analyst notes">💬 {c.notes?.length ?? c.notes_count ?? 0} Notes</span>
                 </div>
 
                 <button
@@ -262,10 +262,10 @@ export const CasesPage: React.FC = () => {
               {/* Linked Advertisements List */}
               <div>
                 <span className="text-[#9297A4] block text-[10px] uppercase mb-2">
-                  Linked Advertisements ({selectedCase.advertisements.length})
+                  Linked Advertisements ({(selectedCase.advertisements || selectedCase.ads || []).length})
                 </span>
                 <div className="space-y-2">
-                  {selectedCase.advertisements.map((ad) => (
+                  {(selectedCase.advertisements || selectedCase.ads || []).map((ad: any) => (
                     <div
                       key={ad.id}
                       className="p-2.5 rounded bg-[#08090D] border border-white/10 flex items-center justify-between"
@@ -289,10 +289,10 @@ export const CasesPage: React.FC = () => {
               {/* Notes Feed */}
               <div>
                 <span className="text-[#9297A4] block text-[10px] uppercase mb-2">
-                  Analyst Investigation Log ({selectedCase.notes.length} entries)
+                  Analyst Investigation Log ({(selectedCase.notes || []).length} entries)
                 </span>
                 <div className="space-y-2 mb-4 max-h-48 overflow-y-auto">
-                  {selectedCase.notes.map((n) => (
+                  {(selectedCase.notes || []).map((n: any) => (
                     <div key={n.id} className="p-3 rounded bg-[#08090D] border border-white/5 space-y-1">
                       <div className="flex items-center justify-between text-[10px] text-[#626775]">
                         <span className="text-[#49D6A5] font-semibold">{n.actor}</span>

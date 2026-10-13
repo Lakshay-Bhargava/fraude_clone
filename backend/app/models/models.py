@@ -28,6 +28,9 @@ class Advertisement(Base):
     content_hash = Column(String(64), index=True, nullable=False) # SHA256 of normalized text
     created_at = Column(DateTime, default=utc_now)
     review_status = Column(String(32), default="NEW") # NEW, NEEDS_REVIEW, UNDER_INVESTIGATION, ESCALATED, CLOSED, FALSE_POSITIVE
+    platform = Column(String(64), default="Unknown")
+    is_demo = Column(Boolean, default=False, index=True) # DEMO vs LIVE scan provenance
+    data_source = Column(String(32), default="LIVE_SCAN", index=True) # LIVE_SCAN, DATASET_IMPORT, SYNTHETIC_DEMO
 
     # Relationships
     analysis = relationship("AnalysisResult", back_populates="advertisement", uselist=False, cascade="all, delete-orphan")
@@ -44,7 +47,10 @@ class AnalysisResult(Base):
     risk_score = Column(Float, nullable=False) # 0 to 100
     risk_level = Column(String(16), nullable=False) # LOW, MEDIUM, HIGH
     model_available = Column(Boolean, default=True)
-    model_signal = Column(Float, nullable=True) # ML probability if present
+    model_signal = Column(Float, nullable=True) # ML probability if present (0.0 to 1.0)
+    model_score = Column(Float, nullable=True) # Model percentage score (0 to 100)
+    model_version = Column(String(64), nullable=True) # e.g. fraudscope-tfidf-lr-v1.0
+    model_class = Column(String(32), nullable=True) # safe or suspicious
     explanation = Column(Text, nullable=False)
     recommended_review_action = Column(String(128), nullable=False)
     created_at = Column(DateTime, default=utc_now)

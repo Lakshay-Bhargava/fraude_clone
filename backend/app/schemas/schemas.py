@@ -32,6 +32,10 @@ class AnalysisResultSchema(BaseModel):
     risk_level: str
     model_available: bool
     model_signal: Optional[float] = None
+    model_score: Optional[float] = None
+    model_version: Optional[str] = None
+    model_class: Optional[str] = None
+    model_tokens: List[Dict[str, Any]] = []
     explanation: str
     recommended_review_action: str
     triggered_rules: List[TriggeredRuleSchema] = []
@@ -44,6 +48,7 @@ class AdAnalyzeRequest(BaseModel):
     content: str = Field(..., min_length=1, max_length=15000, description="Advertisement text or OCR extracted text")
     source_type: str = Field(default="text", description="text, url, screenshot, csv_batch")
     submitted_url: Optional[str] = Field(default=None, description="Optional URL string for safe static evaluation")
+    platform: Optional[str] = Field(default=None, description="Optional platform source e.g. Telegram, Instagram, Facebook, X, Web")
 
 class AdSummarySchema(BaseModel):
     model_config = ConfigDict(from_attributes=True)
@@ -52,9 +57,12 @@ class AdSummarySchema(BaseModel):
     original_text: str
     source_type: str
     submitted_url: Optional[str]
+    platform: Optional[str] = "Unknown"
     risk_score: Optional[float]
     risk_level: Optional[str]
     review_status: str
+    is_demo: bool = False
+    data_source: str = "LIVE_SCAN"
     created_at: datetime
     entities_count: int = 0
     cases_count: int = 0
@@ -67,6 +75,9 @@ class AdDetailSchema(BaseModel):
     normalized_text: str
     source_type: str
     submitted_url: Optional[str]
+    platform: Optional[str] = "Unknown"
+    is_demo: bool = False
+    data_source: str = "LIVE_SCAN"
     content_hash: str
     review_status: str
     created_at: datetime
@@ -75,6 +86,7 @@ class AdDetailSchema(BaseModel):
     entities: List[EntitySchema] = []
     related_ads: List[Dict[str, Any]] = []
     cases: List[Dict[str, Any]] = []
+    url_analysis: Optional[Dict[str, Any]] = None
 
 class AdStatusUpdateRequest(BaseModel):
     review_status: str # NEW, NEEDS_REVIEW, UNDER_INVESTIGATION, ESCALATED, CLOSED, FALSE_POSITIVE
@@ -145,7 +157,14 @@ class DashboardStatsResponse(BaseModel):
     open_cases_count: int
     awaiting_review_count: int
     total_entities_tracked: int
-    demo_mode: bool = True
+    active_clusters_count: int = 0
+    demo_mode: bool = False
+    demo_records_count: int = 0
+    live_scans_count: int = 0
+    model_status: Optional[str] = "online"
+    model_version: Optional[str] = None
+    last_trained_at: Optional[str] = None
+    vocabulary_size: Optional[int] = None
 
 class DashboardActivityItem(BaseModel):
     date: str
@@ -153,6 +172,30 @@ class DashboardActivityItem(BaseModel):
     medium_risk: int
     low_risk: int
     total: int
+
+class DashboardPlatformItem(BaseModel):
+    platform: str
+    suspicious: int
+    total: int
+
+class DashboardActivityLogItem(BaseModel):
+    id: int
+    actor: str
+    action: str
+    entity_type: str
+    entity_id: str
+    details: Optional[str] = None
+    created_at: datetime
+    severity: Optional[str] = None
+
+class DashboardClusterItem(BaseModel):
+    cluster_id: str
+    cluster_type: str
+    entity_value: str
+    advertisements_count: int
+    advertisement_ids: List[int]
+    highest_risk_level: str
+    last_seen: datetime
 
 class NetworkNode(BaseModel):
     id: str

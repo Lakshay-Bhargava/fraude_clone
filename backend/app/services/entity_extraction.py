@@ -4,15 +4,18 @@ from typing import List, Dict
 
 # Regex patterns for common financial threat vectors & contact channels
 PHONE_REGEX = re.compile(r'(?:\+?(\d{1,3})[-.\s]?)?\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}\b')
+INDIAN_PHONE_REGEX = re.compile(r'(?:\+91[-.\s]?)?[6-9]\d{9}\b')
 TELEGRAM_REGEX = re.compile(r'(?:@([A-Za-z0-9_]{4,32})|t\.me/([A-Za-z0-9_]{4,32}))', re.IGNORECASE)
 WHATSAPP_REGEX = re.compile(r'(?:whatsapp|wa\.me)[\s/:+]+([0-9\-\s\(\)]{8,20})', re.IGNORECASE)
+UPI_REGEX = re.compile(r'\b([a-zA-Z0-9.\-_]{2,64}@(okhdfcbank|okaxis|oksbi|okicici|paytm|ybl|apl|upi|axl|ibl|barodampay|federal|kotak|sbi|postbank|jupiteraxis|fam|slice|airtel|fbl|icici|hdfcbank))\b', re.IGNORECASE)
+GENERIC_UPI_REGEX = re.compile(r'(?:upi(?:\s*id)?[:\s]+)([a-zA-Z0-9.\-_]{2,64}@[a-zA-Z]{2,32})\b', re.IGNORECASE)
 URL_REGEX = re.compile(r'https?://[^\s<>"]+|www\.[^\s<>"]+', re.IGNORECASE)
 EMAIL_REGEX = re.compile(r'[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+')
 CRYPTO_REGEX = re.compile(r'\b(?:0x[a-fA-F0-9]{40}|[13][a-km-zA-HJ-NP-Z1-9]{25,34}|bc1[a-zA-HJ-NP-Z0-9]{39,59})\b')
 
 def extract_entities(text: str, submitted_url: str = None) -> List[Dict[str, str]]:
     """
-    Extracts structured entities such as phone numbers, Telegram handles,
+    Extracts structured entities such as phone numbers, UPI identifiers, Telegram handles,
     WhatsApp contacts, email addresses, URL domains, and crypto addresses.
     Returns a deduplicated list of entity dictionaries.
     """
@@ -29,6 +32,15 @@ def extract_entities(text: str, submitted_url: str = None) -> List[Dict[str, str
                 "normalized_value": norm.strip().lower()
             })
 
+    # UPI Identifiers
+    for match in UPI_REGEX.finditer(text):
+        val = match.group(1)
+        add_entity("UPI_ID", val, val.lower())
+
+    for match in GENERIC_UPI_REGEX.finditer(text):
+        val = match.group(1)
+        add_entity("UPI_ID", val, val.lower())
+
     # Telegram handles
     for match in TELEGRAM_REGEX.finditer(text):
         handle = match.group(1) or match.group(2)
@@ -43,7 +55,14 @@ def extract_entities(text: str, submitted_url: str = None) -> List[Dict[str, str
         if len(cleaned) >= 7:
             add_entity("WHATSAPP", val.strip(), cleaned)
 
-    # Phone numbers
+    # Indian phone numbers (10 digits starting with 6-9)
+    for match in INDIAN_PHONE_REGEX.finditer(text):
+        val = match.group(0)
+        cleaned = re.sub(r'[^\d+]', '', val)
+        if len(cleaned) >= 10:
+            add_entity("PHONE", val.strip(), cleaned)
+
+    # Standard phone numbers
     for match in PHONE_REGEX.finditer(text):
         val = match.group(0)
         cleaned = re.sub(r'[^\d+]', '', val)

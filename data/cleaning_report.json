@@ -1,0 +1,120 @@
+{
+  "dataset_name": "FraudScope AI Indian Financial Ad Fraud Benchmark",
+  "raw_source_file": "data/uploaded_dataset.csv",
+  "cleaning_timestamp": "2026-10-13T15:53:06.033476+00:00",
+  "summary": {
+    "original_rows": 745,
+    "retained_rows": 745,
+    "excluded_rows": 0,
+    "exact_duplicate_rows": 0,
+    "repeated_text_instances": 536,
+    "unique_raw_texts": 209,
+    "unique_normalized_text_groups": 209,
+    "label_distribution": {
+      "safe": 400,
+      "suspicious": 345
+    },
+    "risk_level_distribution": {
+      "low": 400,
+      "high": 245,
+      "medium": 100
+    },
+    "category_distribution": {
+      "none": 400,
+      "account_rental": 123,
+      "account_sale": 91,
+      "atm_card_sale": 90,
+      "credit_card_sale": 41
+    },
+    "platform_distribution": {
+      "Classifieds": 143,
+      "Telegram": 126,
+      "WhatsApp Group": 124,
+      "Instagram": 123,
+      "X": 118,
+      "Facebook": 111
+    },
+    "missing_values": {
+      "post_id": 0,
+      "platform": 0,
+      "timestamp": 0,
+      "username": 0,
+      "language": 0,
+      "text": 0,
+      "image_path": 648,
+      "phone": 490,
+      "upi_id": 600,
+      "url": 614,
+      "label": 0,
+      "risk_level": 0,
+      "category": 0,
+      "cluster_id": 670,
+      "is_hard_negative": 0,
+      "split": 0,
+      "normalized_text": 0
+    }
+  },
+  "leakage_audit_original_csv": {
+    "leaking_text_groups_count": 59,
+    "leaking_text_groups_percentage": 28.23,
+    "affected_rows_count": 557,
+    "leakage_diagnosis": "Original split assigned identical repeated ad texts into train, val, and test simultaneously, causing artificial memorization and metric inflation."
+  },
+  "leakage_safe_splits": {
+    "strategy": "Stratified Group Shuffle Split on normalized text groups with zero cross-split overlap",
+    "train": {
+      "rows": 544,
+      "unique_text_groups": 146,
+      "label_counts": {
+        "suspicious": 275,
+        "safe": 269
+      },
+      "risk_counts": {
+        "low": 269,
+        "high": 177,
+        "medium": 98
+      }
+    },
+    "validation": {
+      "rows": 98,
+      "unique_text_groups": 31,
+      "label_counts": {
+        "safe": 59,
+        "suspicious": 39
+      },
+      "risk_counts": {
+        "low": 59,
+        "high": 39
+      }
+    },
+    "test": {
+      "rows": 103,
+      "unique_text_groups": 32,
+      "label_counts": {
+        "safe": 72,
+        "suspicious": 31
+      },
+      "risk_counts": {
+        "low": 72,
+        "high": 29,
+        "medium": 2
+      }
+    },
+    "leakage_verification": {
+      "train_val_overlap": 0,
+      "train_test_overlap": 0,
+      "val_test_overlap": 0,
+      "leakage_free": true
+    }
+  },
+  "cleaning_decisions": [
+    "Preserved original uploaded CSV untouched at data/uploaded_dataset.csv.",
+    "Dropped trailing empty columns resulting from trailing delimiters.",
+    "Standardized unicode to NFKC and stripped zero-width characters.",
+    "Normalized whitespace to single spaces and generated lowercase normalized text for grouping.",
+    "Retained all 745 records; resolved repeated ad text variants by grouping rather than deletion to retain platform and timestamp diversity.",
+    "Audited and resolved original split leakage: mapped each distinct text group exclusively to one split.",
+    "Preserved all metadata fields (platform, language, category, risk_level, phone, upi_id, url).",
+    "Guaranteed zero text group leakage between train, val, and test."
+  ]
+}

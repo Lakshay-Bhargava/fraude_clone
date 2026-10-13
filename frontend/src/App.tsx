@@ -17,21 +17,38 @@ export function App() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* Public Routes */}
+        {/* Public Landing & Login */}
         <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<LoginPage />} />
 
-        {/* Protected App Workspace Routes */}
+        {/* FinGuard AI Workspace Routes wrapped in AppShell */}
         <Route element={<AppShell />}>
+          {/* 1. Dashboard */}
           <Route path="/console" element={<DashboardPage />} />
-          <Route path="/scanner" element={<ScannerPage />} />
+          <Route path="/dashboard" element={<Navigate to="/console" replace />} />
+
+          {/* 2. Flagged Posts */}
+          <Route path="/flagged-posts" element={<AdvertisementsPage />} />
+          <Route path="/investigations" element={<Navigate to="/flagged-posts" replace />} />
+          <Route path="/advertisements" element={<Navigate to="/flagged-posts" replace />} />
           <Route path="/investigations/:id" element={<InvestigationPage />} />
-          <Route path="/advertisements" element={<AdvertisementsPage />} />
+
+          {/* Dedicated Scanner */}
+          <Route path="/scanner" element={<ScannerPage />} />
+
+          {/* 3. Clusters / Networks */}
           <Route path="/network" element={<ThreatNetworkPage />} />
-          <Route path="/cases" element={<CasesPage />} />
-          <Route path="/alerts" element={<AlertsPage />} />
+          <Route path="/clusters" element={<Navigate to="/network" replace />} />
+
+          {/* 4. Reports */}
           <Route path="/reports" element={<ReportsPage />} />
+
+          {/* 5. Settings */}
           <Route path="/settings" element={<SettingsPage />} />
+
+          {/* Auxiliary pages */}
+          <Route path="/alerts" element={<AlertsPage />} />
+          <Route path="/cases" element={<CasesPage />} />
         </Route>
 
         {/* Fallback */}
