@@ -227,6 +227,7 @@ def analyze_advertisement(payload: AdAnalyzeRequest, db: Session = Depends(get_d
         id=analysis.id,
         risk_score=analysis.risk_score,
         risk_level=analysis.risk_level,
+        classification=risk_info.get("classification", "SAFE"),
         model_available=analysis.model_available,
         model_signal=analysis.model_signal,
         model_score=analysis.model_score,

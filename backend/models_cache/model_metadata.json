@@ -1,7 +1,7 @@
 {
-  "model_version": "fraudscope-tfidf-lr-v1.0",
-  "algorithm": "TF-IDF Vectorizer + Logistic Regression (class_weight='balanced')",
-  "trained_at_utc": "2026-10-13T15:54:04.940198+00:00",
+  "model_version": "fraudscope-context-lr-v2.0",
+  "algorithm": "Context-Aware TF-IDF Vectorizer + Logistic Regression (class_weight='balanced')",
+  "trained_at_utc": "2026-10-13T17:05:42.893542+00:00",
   "dataset_version": "fraudscope-benchmark-v1-cleaned",
   "dataset_rows": {
     "total": 745,
@@ -9,224 +9,279 @@
     "val": 98,
     "test": 103
   },
+  "thresholds": {
+    "suspicious": 0.65,
+    "needs_review": 0.45,
+    "safe": 0.449
+  },
   "feature_configuration": {
     "ngram_range": [
       1,
-      2
+      3
+    ],
+    "suppressed_isolated_unigrams": [
+      "accepted",
+      "available",
+      "buy",
+      "daily",
+      "deal",
+      "earn",
+      "offering",
+      "order",
+      "sale",
+      "selling",
+      "transfer",
+      "use"
     ],
     "min_df": 2,
-    "max_features": 3000,
-    "vocabulary_size": 572,
+    "max_features": 4000,
+    "vocabulary_size": 896,
     "regularization_C": 1.0,
     "class_weight": "balanced"
   },
   "top_features": {
     "suspicious": [
       {
+        "token": "account",
+        "weight": 1.4391
+      },
+      {
         "token": "karo",
-        "weight": 1.2953
+        "weight": 1.0555
       },
       {
         "token": "dm",
-        "weight": 1.1913
+        "weight": 1.0203
       },
       {
-        "token": "पर",
-        "weight": 1.0907
+        "token": "bank account",
+        "weight": 1.0106
       },
       {
-        "token": "कर",
-        "weight": 1.0907
-      },
-      {
-        "token": "account",
-        "weight": 1.0905
-      },
-      {
-        "token": "available",
-        "weight": 0.9973
+        "token": "savings",
+        "weight": 0.8871
       },
       {
         "token": "paisa",
-        "weight": 0.9889
+        "weight": 0.8331
+      },
+      {
+        "token": "bank",
+        "weight": 0.8181
+      },
+      {
+        "token": "kard",
+        "weight": 0.8045
       },
       {
         "token": "paisa milega",
-        "weight": 0.9476
-      },
-      {
-        "token": "kiraye pe",
-        "weight": 0.9464
+        "weight": 0.7943
       },
       {
         "token": "kiraye",
-        "weight": 0.9464
+        "weight": 0.7896
       },
       {
-        "token": "milega",
-        "weight": 0.9177
+        "token": "kiraye pe",
+        "weight": 0.7896
       },
       {
         "token": "for",
-        "weight": 0.8772
+        "weight": 0.7863
+      },
+      {
+        "token": "current",
+        "weight": 0.7833
+      },
+      {
+        "token": "milega",
+        "weight": 0.7461
       },
       {
         "token": "do",
-        "weight": 0.8582
-      },
-      {
-        "token": "urgent",
-        "weight": 0.8292
-      },
-      {
-        "token": "dena",
-        "weight": 0.8273
+        "weight": 0.7288
       }
     ],
     "safe": [
       {
         "token": "kya",
-        "weight": -1.4673
+        "weight": -1.3005
       },
       {
         "token": "ka",
-        "weight": -1.3399
+        "weight": -1.1821
       },
       {
         "token": "gaya",
-        "weight": -1.2447
+        "weight": -1.0591
       },
       {
         "token": "kaise",
-        "weight": -1.1367
-      },
-      {
-        "token": "ke",
-        "weight": -1.0163
+        "weight": -0.9943
       },
       {
         "token": "ke liye",
-        "weight": -1.0163
+        "weight": -0.9004
+      },
+      {
+        "token": "ke",
+        "weight": -0.9004
       },
       {
         "token": "liye",
-        "weight": -1.0163
+        "weight": -0.9004
       },
       {
         "token": "update",
-        "weight": -0.9765
+        "weight": -0.8706
       },
       {
         "token": "kaunsa",
-        "weight": -0.8421
-      },
-      {
-        "token": "mein",
-        "weight": -0.8061
+        "weight": -0.731
       },
       {
         "token": "kya hai",
-        "weight": -0.7992
+        "weight": -0.6924
+      },
+      {
+        "token": "process kya hai",
+        "weight": -0.6924
       },
       {
         "token": "process",
-        "weight": -0.7992
+        "weight": -0.6924
       },
       {
         "token": "process kya",
-        "weight": -0.7992
+        "weight": -0.6924
+      },
+      {
+        "token": "mein",
+        "weight": -0.6908
       },
       {
         "token": "apply",
-        "weight": -0.7834
-      },
-      {
-        "token": "ne",
-        "weight": -0.7391
+        "weight": -0.6796
       }
     ]
   },
   "validation_metrics": {
-    "accuracy": 0.6939,
-    "precision": 0.5652,
+    "accuracy": 0.7857,
+    "precision": 0.65,
     "recall": 1.0,
-    "f1_score": 0.7222,
+    "f1_score": 0.7879,
     "roc_auc": 1.0,
     "pr_auc": 1.0,
     "confusion_matrix": {
-      "true_negatives": 29,
-      "false_positives": 30,
+      "true_negatives": 38,
+      "false_positives": 21,
       "false_negatives": 0,
       "true_positives": 39
     },
-    "classification_report": {
-      "safe": {
-        "precision": 1.0,
-        "recall": 0.4915254237288136,
-        "f1-score": 0.6590909090909091,
-        "support": 59.0
-      },
-      "suspicious": {
-        "precision": 0.5652173913043478,
-        "recall": 1.0,
-        "f1-score": 0.7222222222222222,
-        "support": 39.0
-      },
-      "accuracy": 0.6938775510204082,
-      "macro avg": {
-        "precision": 0.7826086956521738,
-        "recall": 0.7457627118644068,
-        "f1-score": 0.6906565656565656,
-        "support": 98.0
-      },
-      "weighted avg": {
-        "precision": 0.8269742679680567,
-        "recall": 0.6938775510204082,
-        "f1-score": 0.6842145949288806,
-        "support": 98.0
-      }
-    }
+    "hard_negative_false_positives": 0,
+    "hard_negative_total": 21
   },
   "test_metrics": {
-    "accuracy": 0.6311,
-    "precision": 0.4493,
+    "accuracy": 0.9223,
+    "precision": 0.7949,
     "recall": 1.0,
-    "f1_score": 0.62,
-    "roc_auc": 0.9713,
-    "pr_auc": 0.942,
+    "f1_score": 0.8857,
+    "roc_auc": 0.9211,
+    "pr_auc": 0.7909,
     "confusion_matrix": {
-      "true_negatives": 34,
-      "false_positives": 38,
+      "true_negatives": 64,
+      "false_positives": 8,
       "false_negatives": 0,
       "true_positives": 31
     },
-    "classification_report": {
-      "safe": {
-        "precision": 1.0,
-        "recall": 0.4722222222222222,
-        "f1-score": 0.6415094339622641,
-        "support": 72.0
-      },
-      "suspicious": {
-        "precision": 0.4492753623188406,
-        "recall": 1.0,
-        "f1-score": 0.62,
-        "support": 31.0
-      },
-      "accuracy": 0.6310679611650486,
-      "macro avg": {
-        "precision": 0.7246376811594203,
-        "recall": 0.7361111111111112,
-        "f1-score": 0.6307547169811321,
-        "support": 103.0
-      },
-      "weighted avg": {
-        "precision": 0.8342479245813986,
-        "recall": 0.6310679611650486,
-        "f1-score": 0.6350357208279905,
-        "support": 103.0
-      }
+    "hard_negative_false_positives": 8,
+    "hard_negative_total": 19
+  },
+  "comparative_evaluation": {
+    "baseline": {
+      "threshold": 0.5,
+      "val_accuracy": 0.6939,
+      "val_precision": 0.5652,
+      "val_recall": 1.0,
+      "val_f1": 0.7222,
+      "test_accuracy": 0.6311,
+      "test_precision": 0.4493,
+      "test_recall": 1.0,
+      "test_f1": 0.62,
+      "test_hard_neg_fp": 19,
+      "test_hard_neg_total": 19
+    },
+    "improved": {
+      "threshold": 0.65,
+      "val_accuracy": 0.7857,
+      "val_precision": 0.65,
+      "val_recall": 1.0,
+      "val_f1": 0.7879,
+      "test_accuracy": 0.9223,
+      "test_precision": 0.7949,
+      "test_recall": 1.0,
+      "test_f1": 0.8857,
+      "test_hard_neg_fp": 8,
+      "test_hard_neg_total": 19
     }
   },
-  "evaluation_disclosure": "NOTICE: Evaluation was performed on a held-out, leakage-safe test split with ZERO text-group overlap. Performance on synthetic benchmark advertisements does not establish identical real-world operational fraud detection accuracy. In production, ML probability must always be combined with the deterministic heuristic rule engine and human analyst review."
+  "validation_threshold_sweep": {
+    "0.45": {
+      "threshold": 0.45,
+      "f1_score": 0.7222,
+      "precision": 0.5652,
+      "recall": 1.0,
+      "hard_negative_fp": 9,
+      "hard_negative_total": 21
+    },
+    "0.5": {
+      "threshold": 0.5,
+      "f1_score": 0.7222,
+      "precision": 0.5652,
+      "recall": 1.0,
+      "hard_negative_fp": 9,
+      "hard_negative_total": 21
+    },
+    "0.55": {
+      "threshold": 0.55,
+      "f1_score": 0.7222,
+      "precision": 0.5652,
+      "recall": 1.0,
+      "hard_negative_fp": 9,
+      "hard_negative_total": 21
+    },
+    "0.6": {
+      "threshold": 0.6,
+      "f1_score": 0.7222,
+      "precision": 0.5652,
+      "recall": 1.0,
+      "hard_negative_fp": 9,
+      "hard_negative_total": 21
+    },
+    "0.65": {
+      "threshold": 0.65,
+      "f1_score": 0.7879,
+      "precision": 0.65,
+      "recall": 1.0,
+      "hard_negative_fp": 0,
+      "hard_negative_total": 21
+    },
+    "0.7": {
+      "threshold": 0.7,
+      "f1_score": 0.7879,
+      "precision": 0.65,
+      "recall": 1.0,
+      "hard_negative_fp": 0,
+      "hard_negative_total": 21
+    },
+    "0.75": {
+      "threshold": 0.75,
+      "f1_score": 0.9459,
+      "precision": 1.0,
+      "recall": 0.8974,
+      "hard_negative_fp": 0,
+      "hard_negative_total": 21
+    }
+  },
+  "evaluation_disclosure": "NOTICE: Evaluation was performed on a held-out, leakage-safe test split with ZERO text-group overlap. Decision threshold was selected strictly on the validation set. Performance on synthetic benchmark advertisements does not establish identical real-world operational fraud detection accuracy. In production, ML probability must always be combined with the deterministic heuristic rule engine and human analyst review."
 }

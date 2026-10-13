@@ -30,6 +30,7 @@ class AnalysisResultSchema(BaseModel):
     id: Optional[int] = None
     risk_score: float
     risk_level: str
+    classification: Optional[str] = "SAFE"
     model_available: bool
     model_signal: Optional[float] = None
     model_score: Optional[float] = None
@@ -209,8 +210,11 @@ class NetworkEdge(BaseModel):
     id: str
     source: str
     target: str
-    relationship: str # SHARED_TELEGRAM, SHARED_PHONE, SHARED_DOMAIN, TEXT_SIMILARITY, LINKED_CASE
+    relationship: str # SHARED_TELEGRAM, SHARED_PHONE, SHARED_DOMAIN, TEXT_SIMILARITY, LINKED_CASE, CONFIRMED_COORDINATION
     label: Optional[str] = None
+    evidence_strength: Optional[str] = "MEDIUM"
+    coordination_status: Optional[str] = "POTENTIALLY_CONNECTED"
+    shared_identifiers: List[Dict[str, Any]] = []
 
 class NetworkGraphResponse(BaseModel):
     nodes: List[NetworkNode]
