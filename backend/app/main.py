@@ -52,6 +52,17 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Root Endpoint for platform checks & probes
+@app.get("/")
+def root():
+    return {
+        "status": "online",
+        "service": settings.PROJECT_NAME,
+        "version": settings.VERSION,
+        "docs": "/docs",
+        "health": "/api/health"
+    }
+
 # Health Check Endpoint
 @app.get("/api/health")
 def health_check():
@@ -82,5 +93,8 @@ app.include_router(settings_router, prefix=settings.API_V1_STR)
 app.include_router(scanner_router, prefix=settings.API_V1_STR)
 
 if __name__ == "__main__":
+    import os
     import uvicorn
-    uvicorn.run("app.main:app", host="127.0.0.1", port=8000, reload=True)
+    port = int(os.getenv("PORT", "8000"))
+    host = os.getenv("HOST", "0.0.0.0" if os.getenv("ENVIRONMENT") == "production" else "127.0.0.1")
+    uvicorn.run("app.main:app", host=host, port=port, reload=False)

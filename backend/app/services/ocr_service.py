@@ -20,22 +20,25 @@ import pytesseract
 def find_tesseract_binary() -> Optional[str]:
     """
     Auto-discovers Tesseract executable across bundled repo directories,
-    standard Windows Program Files installations, and system PATH.
+    standard Windows Program Files installations, standard Linux paths, and system PATH.
     """
     current_dir = os.path.dirname(os.path.abspath(__file__))
     project_root = os.path.abspath(os.path.join(current_dir, "..", "..", ".."))
 
     candidates = [
-        # 1. Bundled portable binary in repository
+        # 1. Bundled portable binary in repository (Windows local dev)
         os.path.join(project_root, "backend", "tesseract", "tesseract.exe"),
         os.path.join(current_dir, "..", "..", "tesseract", "tesseract.exe"),
         # 2. Standard Windows installation paths
         r"C:\Program Files\Tesseract-OCR\tesseract.exe",
         r"C:\Program Files (x86)\Tesseract-OCR\tesseract.exe",
         os.path.expandvars(r"%LOCALAPPDATA%\Programs\Tesseract-OCR\tesseract.exe"),
-        # 3. System PATH
+        # 3. System PATH (works for both Windows and Linux)
         shutil.which("tesseract"),
-        shutil.which("tesseract.exe")
+        shutil.which("tesseract.exe"),
+        # 4. Standard Linux installation locations
+        "/usr/bin/tesseract",
+        "/usr/local/bin/tesseract",
     ]
 
     for candidate in candidates:
@@ -56,9 +59,23 @@ def configure_tesseract() -> Tuple[bool, Optional[str], Optional[str]]:
     pytesseract.pytesseract.tesseract_cmd = binary_path
 
     # Auto-configure tessdata
-    tessdata_dir = os.path.join(os.path.dirname(binary_path), "tessdata")
-    if os.path.isdir(tessdata_dir):
-        os.environ["TESSDATA_PREFIX"] = tessdata_dir
+    # 1. Respect explicit environment variable if set and valid
+    existing_prefix = os.environ.get("TESSDATA_PREFIX")
+    if existing_prefix and os.path.isdir(existing_prefix):
+        return True, binary_path, None
+
+    # 2. Check candidate tessdata directories (relative to binary, Linux standard dirs)
+    candidate_tessdata = [
+        os.path.join(os.path.dirname(binary_path), "tessdata"),
+        "/usr/share/tesseract-ocr/5/tessdata",
+        "/usr/share/tesseract-ocr/4.00/tessdata",
+        "/usr/share/tessdata",
+        "/usr/local/share/tessdata",
+    ]
+    for candidate in candidate_tessdata:
+        if candidate and os.path.isdir(candidate):
+            os.environ["TESSDATA_PREFIX"] = candidate
+            break
 
     return True, binary_path, None
 
