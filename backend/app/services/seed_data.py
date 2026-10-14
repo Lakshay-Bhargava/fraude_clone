@@ -117,13 +117,16 @@ def seed_database_if_empty(db: Session):
             rule_res = evaluate_rules(norm_text)
 
             # ML prediction
-            ml_avail, ml_prob = predict_risk(norm_text)
+            ml_avail, ml_prob, ml_class, ml_ver, ml_tokens = predict_risk(norm_text)
 
             # Risk scoring
             risk_info = calculate_composite_risk(
                 rule_results=rule_res,
                 model_available=ml_avail,
                 model_signal=ml_prob,
+                model_class=ml_class,
+                model_version=ml_ver,
+                model_tokens=ml_tokens,
                 is_duplicate=("006" in custom_id)
             )
 
@@ -134,6 +137,9 @@ def seed_database_if_empty(db: Session):
                 risk_level=risk_info["risk_level"],
                 model_available=ml_avail,
                 model_signal=ml_prob,
+                model_score=risk_info.get("model_score"),
+                model_version=ml_ver,
+                model_class=ml_class,
                 explanation=risk_info["explanation"],
                 recommended_review_action=risk_info["recommended_review_action"],
                 created_at=created_at
