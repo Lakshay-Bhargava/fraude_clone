@@ -1,0 +1,71 @@
+{
+  "nav": {
+    "dashboard": "सिंहावलोकन",
+    "url_scanner": "यूआरएल स्कैनर",
+    "website_xray": "वेबसाइट एक्स-रे",
+    "ad_scanner": "विज्ञापन विश्लेषण",
+    "clusters": "नेटवर्क डिटेक्टिव",
+    "flagged_posts": "फ्लैग्ड विज्ञापन",
+    "cases": "मामले",
+    "reports": "रिपोर्ट्स",
+    "settings": "सेटिंग्स",
+    "scan_post": "विज्ञापन स्कैन करें",
+    "search_prompt": "खोजें या नेविगेट करें... Ctrl K",
+    "logout": "लॉग आउट"
+  },
+  "context": {
+    "platform": "प्लेटफ़ॉर्म",
+    "risk": "जोखिम",
+    "date_range": "अवधि",
+    "all": "सभी",
+    "all_time": "पूरा समय",
+    "last_7d": "पिछले 7 दिन",
+    "last_30d": "पिछले 30 दिन",
+    "synthetic_data": "सिंथेटिक डेटा",
+    "model_online": "मॉडल सक्रिय"
+  },
+  "dashboard": {
+    "welcome_title": "वापसी पर स्वागत, अन्वेषक",
+    "welcome_desc": "वित्तीय विज्ञापन धोखाधड़ी और म्यूल नेटवर्क की निरंतर निगरानी और जांच।",
+    "ml_engine": "संदर्भ-जागरूक फोरेंसिक मॉडल",
+    "vocab": "शब्दावली",
+    "roc_auc": "परीक्षण ROC-AUC",
+    "unseen_test": "अनदेखी शब्दावली परीक्षण",
+    "stat_ads_analyzed": "विश्लेषित विज्ञापन",
+    "stat_high_risk": "उच्च जोखिम अलर्ट",
+    "stat_active_clusters": "सक्रिय क्लस्टर्स",
+    "stat_entities_extracted": "प्राप्त पहचानकर्ता",
+    "posts_over_time": "समय के साथ स्कैन किए गए विज्ञापन",
+    "risk_distribution": "जोखिम वितरण",
+    "platform_breakdown": "प्लेटफ़ॉर्म अनुसार संदिग्ध विज्ञापन",
+    "audit_trail": "हालिया ऑडिट रिकॉर्ड",
+    "replay_feed": "लाइव फ़ीड चलाएं",
+    "pause_feed": "फ़ीड रोकें",
+    "simulation_label": "सिमुलेशन",
+    "empty_state": "अभी कोई डेटा नहीं है। शुरू करने के लिए विज्ञापन स्कैन करें।"
+  },
+  "table": {
+    "platform": "प्लेटफ़ॉर्म",
+    "post_id": "पोस्ट आईडी",
+    "snippet": "विज्ञापन का अंश",
+    "risk_level": "जोखिम स्तर एवं स्कोर",
+    "indicators": "पहचानकर्ता",
+    "status": "स्थिति",
+    "date": "पहचान तिथि",
+    "evidence_action": "कार्रवाई",
+    "view_evidence": "जांचें",
+    "generate_report": "केस रिपोर्ट बनाएं",
+    "mark_false_positive": "गलत चेतावनी दर्ज करें"
+  },
+  "common": {
+    "high": "उच्च",
+    "medium": "मध्यम",
+    "low": "कम",
+    "close": "बंद करें",
+    "loading": "लोड हो रहा है...",
+    "search": "खोजें",
+    "reset": "रीसेट",
+    "details": "विवरण",
+    "case_dossier": "केस दस्तावेज़"
+  }
+}

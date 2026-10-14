@@ -19,9 +19,9 @@ export interface AnalysisResult {
   model_tokens?: Array<{ token: string; contribution: number; type: string }>;
   explanation: string;
   recommended_review_action: string;
-  triggered_rules: TriggeredRule[];
+  triggered_rules?: TriggeredRule[];
   matched_rules?: any[];
-  suspicious_phrases: string[];
+  suspicious_phrases?: string[];
   is_duplicate?: boolean;
   duplicate_of_id?: string | null;
   near_duplicate_matches?: Array<{
@@ -170,6 +170,9 @@ export interface DashboardStats {
   model_version?: string;
   last_trained_at?: string;
   vocabulary_size?: number;
+  roc_auc?: number;
+  unseen_wording_test_accuracy?: number;
+  unseen_wording_test_roc_auc?: number;
 }
 
 export interface DashboardActivity {
@@ -219,6 +222,9 @@ export interface NetworkNode {
   risk_level?: string;
   risk_score?: number;
   metadata?: Record<string, any>;
+  connected_ads_count?: number;
+  connected_ad_ids?: (string | number)[];
+  cluster_id?: string;
 }
 
 export interface NetworkEdge {
@@ -248,4 +254,36 @@ export interface SystemSettings {
     weight: number;
     description: string;
   }>;
+}
+
+export interface User {
+  id: number;
+  full_name: string;
+  email: string;
+  username: string;
+  role: 'Investigator' | 'Fraud Analyst' | 'Administrator' | string;
+  is_active: boolean;
+  created_at?: string;
+  updated_at?: string;
+}
+
+export interface AuthResponse {
+  access_token: string;
+  token_type: string;
+  user: User;
+  message?: string;
+}
+
+export interface RegisterPayload {
+  full_name: string;
+  email: string;
+  username: string;
+  password: string;
+  confirm_password: string;
+  role?: 'Investigator' | 'Fraud Analyst' | string;
+}
+
+export interface LoginPayload {
+  username_or_email: string;
+  password: string;
 }

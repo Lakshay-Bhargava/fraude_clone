@@ -1,47 +1,64 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useLocation, useNavigate, useSearchParams, Outlet } from 'react-router-dom';
 import {
-  LayoutDashboard,
-  ShieldAlert,
-  Network,
-  FileBarChart2,
-  Settings,
   Bell,
   Search,
   Menu,
   X,
-  ChevronLeft,
-  ChevronRight,
-  Filter,
-  Calendar,
-  User,
-  ScanSearch,
-  ExternalLink,
-  CheckCircle2,
-  AlertTriangle
+  User as UserIcon,
+  LogOut,
+  AlertTriangle,
+  Languages,
+  Plus,
+  ShieldAlert,
+  ChevronDown,
+  ExternalLink
 } from 'lucide-react';
 import { Logo } from '../ui/Logo';
 import { api } from '../../services/api';
+import { useAuth } from '../../context/AuthContext';
+import { useLanguage } from '../../context/LanguageContext';
+import { CommandPalette } from '../ui/CommandPalette';
+import { QuickScanModal } from '../ui/QuickScanModal';
 
-interface NavItem {
-  name: string;
+interface NavTab {
+  nameKey: string;
+  defaultName: string;
   href: string;
-  icon: React.ElementType;
+  badge?: number;
 }
 
 export const AppShell: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
+  const { user, logout } = useAuth();
+  const { language, setLanguage, t } = useLanguage();
 
-  const [collapsed, setCollapsed] = useState(false);
-  const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const userMenuRef = useRef<HTMLDivElement>(null);
-  const [unresolvedAlertsCount, setUnresolvedAlertsCount] = useState<number>(3);
-  const [toastAlert, setToastAlert] = useState<{ id: string; title: string; message: string; type: string } | null>(null);
 
-  // Close user profile menu on click outside
+  const [commandPaletteOpen, setCommandPaletteOpen] = useState(false);
+  const [quickScanModalOpen, setQuickScanModalOpen] = useState(false);
+
+  const [unresolvedAlertsCount, setUnresolvedAlertsCount] = useState<number>(0);
+  const [flaggedCount, setFlaggedCount] = useState<number>(0);
+  const [activeToastAlert, setActiveToastAlert] = useState<{ id: string; title: string; message: string; adId?: number } | null>(null);
+
+  // Global Ctrl+K / Cmd+K keyboard shortcut
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        setCommandPaletteOpen((prev) => !prev);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
+  // Close user dropdown on outside click
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (userMenuRef.current && !userMenuRef.current.contains(event.target as Node)) {
@@ -56,477 +73,458 @@ export const AppShell: React.FC = () => {
     };
   }, [userMenuOpen]);
 
-  // Read current query params for global controls
-  const currentSearch = searchParams.get('search') || '';
-  const currentPlatform = searchParams.get('platform') || 'All';
-  const currentRisk = searchParams.get('risk') || 'All';
-  const currentDateRange = searchParams.get('dateRange') || 'all';
-
-  const [searchInput, setSearchInput] = useState(currentSearch);
-
+  // Load alert and stats counts for badges
   useEffect(() => {
-    setSearchInput(currentSearch);
-  }, [currentSearch]);
-
-  useEffect(() => {
-    // Fetch unresolved high risk alerts count from database
     api.listAlerts({ reviewed: false })
       .then((alerts) => {
         const highAlerts = alerts.filter(a => a.severity === 'HIGH' || a.severity === 'CRITICAL');
         setUnresolvedAlertsCount(highAlerts.length);
         if (highAlerts.length > 0) {
           const latest = highAlerts[0];
-          setToastAlert({
+          setActiveToastAlert({
             id: `alert-${latest.id}`,
-            title: `Active High-Risk Alert (#${latest.id})`,
+            title: `High-risk alert (#${latest.id})`,
             message: latest.message,
-            type: 'high',
+            adId: latest.advertisement_id,
           });
         }
       })
-      .catch(() => {
-        setUnresolvedAlertsCount(0);
-      });
+      .catch(() => setUnresolvedAlertsCount(0));
+
+    api.getStats(true)
+      .then((stats) => {
+        setFlaggedCount(stats.total_analyzed || 0);
+      })
+      .catch(() => {});
   }, [location.pathname]);
 
-  // Master 5 Navigation items per Master Prompt specs
-  const navigation: NavItem[] = [
-    { name: 'Dashboard', href: '/console', icon: LayoutDashboard },
-    { name: 'Flagged Posts', href: '/flagged-posts', icon: ShieldAlert },
-    { name: 'Clusters / Networks', href: '/network', icon: Network },
-    { name: 'Reports', href: '/reports', icon: FileBarChart2 },
-    { name: 'Settings', href: '/settings', icon: Settings },
-  ];
+  // Query parameter filters for the context bar
+  const currentPlatform = searchParams.get('platform') || 'All';
+  const currentRisk = searchParams.get('risk') || 'All';
+  const currentDateRange = searchParams.get('dateRange') || 'all';
 
-  const updateFilters = (newParams: Record<string, string>) => {
+  const updateContextFilter = (key: string, value: string) => {
     const next = new URLSearchParams(searchParams);
-    Object.entries(newParams).forEach(([key, val]) => {
-      if (!val || val === 'All' || val === 'all') {
-        next.delete(key);
-      } else {
-        next.set(key, val);
-      }
-    });
+    if (!value || value === 'All' || value === 'all') {
+      next.delete(key);
+    } else {
+      next.set(key, value);
+    }
 
-    // If we're on a page that isn't flagged-posts or dashboard, redirect to flagged-posts so investigator sees results
-    const targetPath = (location.pathname === '/console' || location.pathname === '/flagged-posts') 
-      ? location.pathname 
+    // Direct filters to flagged posts table if user is filtering
+    const targetPath = (location.pathname === '/console' || location.pathname === '/flagged-posts')
+      ? location.pathname
       : '/flagged-posts';
 
     navigate({ pathname: targetPath, search: next.toString() });
   };
 
-  const handleSearchSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    updateFilters({ search: searchInput.trim() });
+  const navTabs: NavTab[] = [
+    { nameKey: 'nav.dashboard', defaultName: 'Overview', href: '/console' },
+    { nameKey: 'nav.url_scanner', defaultName: 'URL Scanner', href: '/url-scanner' },
+    { nameKey: 'nav.website_xray', defaultName: 'Web X-Ray', href: '/website-xray' },
+    { nameKey: 'nav.ad_scanner', defaultName: 'Ad Analysis', href: '/ad-scanner' },
+    { nameKey: 'nav.clusters', defaultName: 'Threat Network', href: '/network' },
+    { nameKey: 'nav.flagged_posts', defaultName: 'Flagged', href: '/flagged-posts', badge: flaggedCount },
+    { nameKey: 'nav.cases', defaultName: 'Cases', href: '/cases' },
+    { nameKey: 'nav.reports', defaultName: 'Reports', href: '/reports' },
+    { nameKey: 'nav.settings', defaultName: 'Settings', href: '/settings' },
+  ];
+
+  const isTabActive = (href: string) => {
+    if (href === '/console') {
+      return location.pathname === '/console' || location.pathname === '/dashboard';
+    }
+    return location.pathname.startsWith(href);
   };
 
+  const handleLogout = async () => {
+    setUserMenuOpen(false);
+    await logout();
+    navigate('/login', { replace: true });
+  };
+
+  const displayName = user?.full_name || 'Investigator';
+  const displayRole = user?.role || 'Investigator';
+  const initials = displayName
+    .split(' ')
+    .map(p => p[0])
+    .join('')
+    .substring(0, 2)
+    .toUpperCase() || 'FS';
+
   return (
-    <div className="flex h-screen bg-[#0B1220] text-[#E5E9F2] overflow-hidden">
-      {/* Desktop & Tablet Collapsible Sidebar */}
-      <aside
-        className={`hidden md:flex md:flex-col ${
-          collapsed ? 'w-20' : 'w-64'
-        } bg-[#091426] border-r border-[rgba(148,163,184,0.15)] shrink-0 z-30 transition-all duration-300 relative shadow-2xl`}
-      >
-        {/* Brand Header */}
-        <div className="h-20 min-h-[80px] flex items-center justify-between px-5 border-b border-[rgba(148,163,184,0.1)] bg-[#08101E]">
-          <Link to="/" className="flex items-center overflow-hidden">
-            <Logo size="sm" showText={!collapsed} />
+    <div className="min-h-screen bg-[var(--bg)] text-[var(--text)] flex flex-col font-sans">
+      {/* =========================================================================
+          1. TOP NAVIGATION HEADER (Expanded / Larger)
+         ========================================================================= */}
+      <header className="h-16 sticky top-0 z-40 bg-[var(--card)] border-b border-[var(--border)] px-3 sm:px-6 flex items-center justify-between select-none shadow-2xs gap-3">
+        {/* Left: Brand Logo & Navigation */}
+        <div className="flex items-center gap-4 xl:gap-6 min-w-0 flex-1">
+          <Link to="/console" className="flex items-center gap-2.5 group shrink-0">
+            <div className="relative flex items-center justify-center shrink-0">
+              <img
+                src="/fraudscope_emblem.png"
+                alt="FRAUDSCOPE AI"
+                className="h-9 w-9 object-contain drop-shadow-[0_2px_6px_rgba(212,175,55,0.2)]"
+              />
+            </div>
+            <div className="flex flex-col justify-center leading-none">
+              <div className="flex items-center gap-1">
+                <span className="font-sans text-base font-bold tracking-tight text-[var(--text)] group-hover:text-[#D4AF37] transition-colors whitespace-nowrap">
+                  FRAUDSCOPE <span className="text-[#D4AF37]">AI</span>
+                </span>
+              </div>
+              <span className="text-[9px] tracking-widest text-[var(--muted)] font-mono uppercase font-semibold mt-0.5 whitespace-nowrap hidden sm:inline">
+                Threat Intelligence
+              </span>
+            </div>
           </Link>
-          <button
-            onClick={() => setCollapsed(!collapsed)}
-            className="p-1.5 rounded-lg text-[#94A3B8] hover:text-[#E5E9F2] hover:bg-[#131C2E] transition-colors"
-            title={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
-            aria-label="Toggle sidebar collapse"
-          >
-            {collapsed ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}
-          </button>
+
+          {/* Navigation Tabs (Desktop >= 900px) */}
+          <nav className="hidden lg:flex items-center h-16 gap-0.5 xl:gap-1 overflow-x-auto no-scrollbar min-w-0 flex-1" aria-label="Main Navigation">
+            {navTabs.map((tab) => {
+              const active = isTabActive(tab.href);
+              return (
+                <Link
+                  key={tab.href}
+                  to={tab.href}
+                  className={`h-16 flex items-center gap-1.5 px-2.5 xl:px-3 text-xs xl:text-sm font-medium transition-all border-b-[3px] whitespace-nowrap shrink-0 ${
+                    active
+                      ? 'border-[var(--primary)] font-bold text-[var(--text)]'
+                      : 'border-transparent text-[var(--muted)] hover:text-[var(--text)] hover:border-[var(--border)]'
+                  }`}
+                >
+                  <span>{t(tab.nameKey, tab.defaultName)}</span>
+                  {tab.badge !== undefined && tab.badge > 0 && (
+                    <span
+                      className={`text-[11px] font-mono px-1.5 py-0.2 rounded-full ${
+                        active
+                          ? 'bg-[var(--primary)] text-white font-bold shadow-2xs'
+                          : 'bg-[var(--bg)] text-[var(--muted)] border border-[var(--border)]'
+                      }`}
+                    >
+                      {tab.badge}
+                    </span>
+                  )}
+                </Link>
+              );
+            })}
+          </nav>
         </div>
 
-        {/* 5 Core Navigation Items */}
-        <nav className="flex-1 px-3 py-6 space-y-1.5 overflow-y-auto">
-          {navigation.map((item) => {
-            const Icon = item.icon;
-            const isActive =
-              (item.href === '/console' && (location.pathname === '/console' || location.pathname === '/dashboard')) ||
-              (item.href === '/flagged-posts' &&
-                (location.pathname === '/flagged-posts' ||
-                  location.pathname === '/investigations' ||
-                  location.pathname.startsWith('/investigations/'))) ||
-              (item.href === '/network' && location.pathname.startsWith('/network')) ||
-              (item.href === '/reports' && location.pathname.startsWith('/reports')) ||
-              (item.href === '/settings' && location.pathname.startsWith('/settings'));
+        {/* Right Controls: Command-bar, Scan post, Language, Alerts, Avatar */}
+        <div className="flex items-center gap-2 sm:gap-2.5 shrink-0 z-10 bg-[var(--card)] pl-3 border-l border-[var(--border)]/60">
+          {/* Command-bar trigger button - Always visible and prominent */}
+          <button
+            type="button"
+            onClick={() => setCommandPaletteOpen(true)}
+            className="flex items-center gap-2 px-3 py-1.5 text-xs text-[var(--muted)] bg-[var(--bg)] hover:bg-[var(--table-hover)] hover:text-[var(--text)] border border-[var(--border)] rounded-[var(--radius)] transition-colors shadow-2xs whitespace-nowrap shrink-0 cursor-pointer"
+            title="Search or jump to... (Ctrl+K)"
+          >
+            <Search className="w-3.5 h-3.5 text-[var(--muted)] shrink-0" />
+            <span className="text-xs font-medium">Search...</span>
+            <kbd className="inline-flex items-center text-[10px] font-mono px-1.5 py-0.5 bg-[var(--card)] border border-[var(--border)] rounded text-[var(--muted)]">
+              Ctrl K
+            </kbd>
+          </button>
 
+          {/* Primary "Scan post" button */}
+          <button
+            type="button"
+            onClick={() => setQuickScanModalOpen(true)}
+            className="btn-primary text-xs xl:text-sm py-1.5 px-3 sm:px-3.5 shadow-sm flex items-center gap-1.5 font-semibold whitespace-nowrap shrink-0"
+            title="Scan suspicious advertisement"
+          >
+            <Plus className="w-3.5 h-3.5" />
+            <span>{t('nav.scan_post', 'Scan post')}</span>
+          </button>
+
+          {/* Language Switcher Toggle (EN | HI) */}
+          <div className="flex items-center p-0.5 rounded-[var(--radius)] bg-[var(--bg)] border border-[var(--border)] text-xs font-mono shrink-0">
+            <button
+              type="button"
+              onClick={() => setLanguage('en')}
+              className={`px-1.5 py-0.5 rounded-[2px] transition-all font-semibold ${
+                language === 'en'
+                  ? 'bg-[var(--primary)] text-white shadow-2xs'
+                  : 'text-[var(--muted)] hover:text-[var(--text)]'
+              }`}
+            >
+              EN
+            </button>
+            <button
+              type="button"
+              onClick={() => setLanguage('hi')}
+              className={`px-1.5 py-0.5 rounded-[2px] transition-all font-semibold ${
+                language === 'hi'
+                  ? 'bg-[var(--primary)] text-white shadow-2xs'
+                  : 'text-[var(--muted)] hover:text-[var(--text)]'
+              }`}
+            >
+              HI
+            </button>
+          </div>
+
+          {/* Notification Bell */}
+          <Link
+            to="/alerts"
+            className="relative p-1.5 rounded-[var(--radius)] text-[var(--muted)] hover:text-[var(--text)] hover:bg-[var(--table-hover)] transition-colors shrink-0"
+            title="High-risk threat alerts"
+          >
+            <Bell className="w-4 h-4 sm:w-5 sm:h-5" />
+            {unresolvedAlertsCount > 0 && (
+              <span className="absolute top-1 right-1 w-2 h-2 rounded-full bg-[var(--primary)] ring-2 ring-[var(--card)]" />
+            )}
+          </Link>
+
+          {/* User Profile Avatar & Dropdown */}
+          <div className="relative shrink-0" ref={userMenuRef}>
+            <button
+              type="button"
+              onClick={() => setUserMenuOpen(!userMenuOpen)}
+              className="flex items-center gap-1.5 p-1 rounded-[var(--radius)] hover:bg-[var(--table-hover)] transition-colors border border-transparent hover:border-[var(--border)]"
+              aria-label="User menu"
+              aria-expanded={userMenuOpen}
+            >
+              <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-[var(--accent)] text-white text-xs font-mono font-bold flex items-center justify-center shadow-2xs ring-1 ring-[var(--border)]">
+                {initials}
+              </div>
+              <ChevronDown className="w-3.5 h-3.5 text-[var(--muted)]" />
+            </button>
+
+            {userMenuOpen && (
+              <div className="absolute right-0 mt-2 w-56 rounded-[var(--radius)] bg-[var(--card)] border border-[var(--border)] shadow-lg py-1.5 z-50 animate-in fade-in zoom-in-95 duration-100">
+                <div className="px-3.5 py-2.5 border-b border-[var(--border)]">
+                  <div className="text-sm font-bold text-[var(--text)] truncate">{displayName}</div>
+                  <div className="text-xs font-mono text-[var(--muted)] truncate">{displayRole}</div>
+                </div>
+                <Link
+                  to="/settings"
+                  onClick={() => setUserMenuOpen(false)}
+                  className="block px-3.5 py-2 text-xs sm:text-sm text-[var(--text)] hover:bg-[var(--table-hover)] transition-colors"
+                >
+                  {t('nav.settings', 'Settings')}
+                </Link>
+                <button
+                  type="button"
+                  onClick={handleLogout}
+                  className="w-full text-left px-3.5 py-2 text-xs sm:text-sm text-[#A8341C] hover:bg-[#FDE8E8] transition-colors flex items-center gap-2"
+                >
+                  <LogOut className="w-4 h-4" />
+                  <span>{t('nav.logout', 'Log out')}</span>
+                </button>
+              </div>
+            )}
+          </div>
+
+          {/* Hamburger Menu Toggle (Below 900px) */}
+          <button
+            type="button"
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className="lg:hidden p-1.5 rounded-[var(--radius)] text-[var(--muted)] hover:text-[var(--text)] hover:bg-[var(--table-hover)] transition-colors"
+            aria-label="Toggle navigation tabs"
+          >
+            {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+          </button>
+        </div>
+      </header>
+
+      {/* Mobile Drawer (Below 900px) */}
+      {mobileMenuOpen && (
+        <div className="lg:hidden border-b border-[var(--border)] bg-[var(--card)] px-4 py-3 space-y-1 z-30">
+          {navTabs.map((tab) => {
+            const active = isTabActive(tab.href);
             return (
               <Link
-                key={item.name}
-                to={item.href}
-                title={collapsed ? item.name : undefined}
-                className={`group flex items-center ${
-                  collapsed ? 'justify-center px-0' : 'justify-between px-3.5'
-                } py-3 rounded-xl text-xs font-medium tracking-wide transition-all relative ${
-                  isActive
-                    ? 'bg-gradient-to-r from-[#6366F1]/25 to-[#6366F1]/10 text-white border-l-4 border-l-[#6366F1] border-t border-r border-b border-[rgba(99,102,241,0.25)] shadow-md shadow-[#6366F1]/10 font-semibold'
-                    : 'text-[#94A3B8] hover:text-[#E5E9F2] hover:bg-[#131C2E] border-l-4 border-l-transparent'
+                key={tab.href}
+                to={tab.href}
+                onClick={() => setMobileMenuOpen(false)}
+                className={`flex items-center justify-between p-2 rounded-[var(--radius)] text-xs ${
+                  active
+                    ? 'bg-[var(--primary)] text-white font-bold'
+                    : 'text-[var(--text)] hover:bg-[var(--table-hover)]'
                 }`}
               >
-                <div className="flex items-center gap-3 min-w-0">
-                  <Icon
-                    className={`w-4 h-4 shrink-0 transition-colors ${
-                      isActive ? 'text-[#6366F1]' : 'text-[#64748B] group-hover:text-[#E5E9F2]'
-                    }`}
-                  />
-                  {!collapsed && <span className="truncate">{item.name}</span>}
-                </div>
-
-                {/* Badge for Flagged Posts displaying unresolved high-risk alerts */}
-                {!collapsed && item.name === 'Flagged Posts' && unresolvedAlertsCount > 0 && (
-                  <span className="px-2 py-0.5 rounded-full bg-[#EF4444]/20 text-[#EF4444] border border-[#EF4444]/30 text-[10px] font-mono font-bold">
-                    {unresolvedAlertsCount}
+                <span>{t(tab.nameKey, tab.defaultName)}</span>
+                {tab.badge !== undefined && tab.badge > 0 && (
+                  <span className="font-mono text-[10px] px-1.5 py-0.2 rounded bg-black/20">
+                    {tab.badge}
                   </span>
-                )}
-
-                {/* Collapsed Badge Indicator */}
-                {collapsed && item.name === 'Flagged Posts' && unresolvedAlertsCount > 0 && (
-                  <span className="absolute top-2 right-2 w-2 h-2 rounded-full bg-[#EF4444] ring-2 ring-[#091426]" />
                 )}
               </Link>
             );
           })}
-        </nav>
+        </div>
+      )}
 
-        {/* Sidebar Footer with Quick Scanner Trigger & Status */}
-        <div className="p-3 border-t border-[rgba(148,163,184,0.1)] bg-[#08101E] space-y-2">
-          {!collapsed ? (
-            <Link
-              to="/scanner"
-              className="w-full btn-primary text-xs py-2.5 px-3 flex items-center justify-center gap-2"
-            >
-              <ScanSearch className="w-4 h-4" />
-              <span>Scan New Post</span>
-            </Link>
-          ) : (
-            <Link
-              to="/scanner"
-              className="w-full flex items-center justify-center p-2.5 rounded-xl bg-[#6366F1] text-white hover:bg-[#818CF8] transition-colors"
-              title="Scan New Post"
-            >
-              <ScanSearch className="w-4 h-4" />
-            </Link>
-          )}
+      {/* =========================================================================
+          2. CONTEXT BAR UNDER NAV (Enlarged & Clear)
+         ========================================================================= */}
+      <div className="bg-[var(--bg)] border-b border-[var(--border)] px-4 sm:px-8 py-3 flex flex-wrap items-center justify-between gap-3 text-xs sm:text-sm">
+        {/* Left: Platform, Risk, and Date Range Filter Chips */}
+        <div className="flex flex-wrap items-center gap-4 sm:gap-6">
+          {/* Platform Filter */}
+          <div className="flex items-center gap-1.5">
+            <span className="text-xs font-semibold text-[var(--muted)] uppercase tracking-wider">
+              {t('context.platform', 'Platform')}:
+            </span>
+            {(['All', 'Telegram', 'Instagram', 'Facebook', 'WhatsApp'] as const).map((plat) => {
+              const active = currentPlatform.toLowerCase() === plat.toLowerCase();
+              return (
+                <button
+                  key={plat}
+                  onClick={() => updateContextFilter('platform', plat)}
+                  className={`text-xs font-medium px-2.5 py-1 rounded-[var(--radius)] transition-all ${
+                    active
+                      ? 'bg-[var(--card)] text-[var(--text)] font-bold border border-[var(--border)] shadow-xs'
+                      : 'text-[var(--muted)] hover:text-[var(--text)] hover:bg-[var(--table-hover)]'
+                  }`}
+                >
+                  {plat === 'All' ? t('context.all', 'All') : plat}
+                </button>
+              );
+            })}
+          </div>
 
-          {/* User Profile Footer */}
-          <div
-            className={`p-2.5 rounded-xl bg-[#131C2E] border border-[rgba(148,163,184,0.1)] flex items-center ${
-              collapsed ? 'justify-center' : 'justify-between'
-            }`}
-          >
-            <div className="flex items-center gap-2.5 min-w-0">
-              <div className="w-7 h-7 rounded-full bg-[#6366F1]/20 border border-[#6366F1]/40 flex items-center justify-center text-xs font-mono font-bold text-[#6366F1] shrink-0">
-                FS
-              </div>
-              {!collapsed && (
-                <div className="min-w-0">
-                  <p className="text-xs font-medium text-[#E5E9F2] truncate">Lead Investigator</p>
-                  <p className="text-[10px] font-mono text-[#10B981] flex items-center gap-1">
-                    <span className="w-1.5 h-1.5 rounded-full bg-[#10B981] animate-pulse" />
-                    FraudScope Engine Active
-                  </p>
-                </div>
-              )}
-            </div>
+          <span className="text-[var(--border)] hidden sm:inline">|</span>
+
+          {/* Risk Filter */}
+          <div className="flex items-center gap-1.5">
+            <span className="text-xs font-semibold text-[var(--muted)] uppercase tracking-wider">
+              {t('context.risk', 'Risk')}:
+            </span>
+            {(['All', 'HIGH', 'MEDIUM', 'LOW'] as const).map((lvl) => {
+              const active = currentRisk.toUpperCase() === lvl;
+              return (
+                <button
+                  key={lvl}
+                  onClick={() => updateContextFilter('risk', lvl)}
+                  className={`text-xs font-medium px-2.5 py-1 rounded-[var(--radius)] transition-all ${
+                    active
+                      ? 'bg-[var(--card)] text-[var(--text)] font-bold border border-[var(--border)] shadow-xs'
+                      : 'text-[var(--muted)] hover:text-[var(--text)] hover:bg-[var(--table-hover)]'
+                  }`}
+                >
+                  {lvl === 'All'
+                    ? t('context.all', 'All')
+                    : lvl === 'HIGH'
+                    ? t('common.high', 'High')
+                    : lvl === 'MEDIUM'
+                    ? t('common.medium', 'Medium')
+                    : t('common.low', 'Low')}
+                </button>
+              );
+            })}
+          </div>
+
+          <span className="text-[var(--border)] hidden sm:inline">|</span>
+
+          {/* Date Range Filter */}
+          <div className="hidden md:flex items-center gap-1.5">
+            <span className="text-xs font-semibold text-[var(--muted)] uppercase tracking-wider">
+              {t('context.date_range', 'Date range')}:
+            </span>
+            {[
+              { id: 'all', labelKey: 'context.all_time', defaultLabel: 'All time' },
+              { id: '7d', labelKey: 'context.last_7d', defaultLabel: 'Last 7d' },
+              { id: '30d', labelKey: 'context.last_30d', defaultLabel: 'Last 30d' },
+            ].map((d) => {
+              const active = currentDateRange === d.id;
+              return (
+                <button
+                  key={d.id}
+                  onClick={() => updateContextFilter('dateRange', d.id)}
+                  className={`text-xs font-medium px-2.5 py-1 rounded-[var(--radius)] transition-all ${
+                    active
+                      ? 'bg-[var(--card)] text-[var(--text)] font-bold border border-[var(--border)] shadow-xs'
+                      : 'text-[var(--muted)] hover:text-[var(--text)] hover:bg-[var(--table-hover)]'
+                  }`}
+                >
+                  {t(d.labelKey, d.defaultLabel)}
+                </button>
+              );
+            })}
           </div>
         </div>
-      </aside>
 
-      {/* Main Content Workspace */}
-      <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
-        {/* Top Navigation Bar with Search, Filters & Controls */}
-        <header className="h-20 min-h-[80px] bg-[#0E1728] border-b border-[rgba(148,163,184,0.15)] flex items-center justify-between px-6 sm:px-8 z-20 shrink-0 shadow-md gap-4">
-          <div className="flex items-center gap-4 min-w-0 flex-1">
-            {/* Mobile menu button */}
-            <button
-              onClick={() => setMobileSidebarOpen(true)}
-              className="md:hidden h-11 w-11 flex items-center justify-center text-[#94A3B8] hover:text-white rounded-xl bg-[#131C2E] border border-[rgba(148,163,184,0.2)] hover:border-[#6366F1]/40 transition-colors shrink-0 shadow-sm"
-              aria-label="Open Navigation Drawer"
-            >
-              <Menu className="w-5 h-5 text-[#E5E9F2]" />
-            </button>
-
-            {/* Global Search Input */}
-            <form onSubmit={handleSearchSubmit} className="relative flex-1 max-w-md xl:max-w-lg">
-              <Search className="w-4 h-4 text-[#94A3B8] absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
-              <input
-                type="text"
-                placeholder="Search posts, phone numbers, UPI IDs, URLs..."
-                value={searchInput}
-                onChange={(e) => setSearchInput(e.target.value)}
-                style={{ paddingLeft: '44px' }}
-                className="w-full pr-4 h-11 text-xs bg-[#0D182B] border border-[rgba(148,163,184,0.2)] rounded-xl text-[#E5E9F2] placeholder-[#64748B] focus:outline-none focus:border-[#6366F1] focus:ring-1 focus:ring-[#6366F1] transition-all shadow-inner"
-              />
-            </form>
-
-            {/* Platform Filter Dropdown */}
-            <div className="hidden xl:flex items-center gap-2">
-              <span className="text-xs text-[#94A3B8] font-medium">Platform:</span>
-              <select
-                value={currentPlatform}
-                onChange={(e) => updateFilters({ platform: e.target.value })}
-                className="h-11 text-xs bg-[#0D182B] border border-[rgba(148,163,184,0.2)] rounded-xl text-[#E5E9F2] px-3.5 focus:outline-none focus:border-[#6366F1]"
-              >
-                <option value="All">All Platforms</option>
-                <option value="Telegram">Telegram</option>
-                <option value="Instagram">Instagram</option>
-                <option value="Facebook">Facebook</option>
-                <option value="YouTube">YouTube</option>
-                <option value="X">X (Twitter)</option>
-              </select>
-            </div>
-
-            {/* Risk Filter Dropdown */}
-            <div className="hidden xl:flex items-center gap-2">
-              <span className="text-xs text-[#94A3B8] font-medium">Risk:</span>
-              <select
-                value={currentRisk}
-                onChange={(e) => updateFilters({ risk: e.target.value })}
-                className="h-11 text-xs bg-[#0D182B] border border-[rgba(148,163,184,0.2)] rounded-xl text-[#E5E9F2] px-3.5 focus:outline-none focus:border-[#6366F1]"
-              >
-                <option value="All">All Risk Levels</option>
-                <option value="HIGH">High Risk</option>
-                <option value="MEDIUM">Medium Risk</option>
-                <option value="LOW">Low Risk</option>
-              </select>
-            </div>
-
-            {/* Date Range Selector */}
-            <div className="hidden 2xl:flex items-center gap-2">
-              <Calendar className="w-4 h-4 text-[#94A3B8]" />
-              <select
-                value={currentDateRange}
-                onChange={(e) => updateFilters({ dateRange: e.target.value })}
-                className="h-11 text-xs bg-[#0D182B] border border-[rgba(148,163,184,0.2)] rounded-xl text-[#E5E9F2] px-3.5 focus:outline-none focus:border-[#6366F1]"
-              >
-                <option value="all">All Dates</option>
-                <option value="24h">Last 24 Hours</option>
-                <option value="7d">Last 7 Days</option>
-                <option value="30d">Last 30 Days</option>
-              </select>
-            </div>
-          </div>
-
-          {/* Right Header Controls: Notification Bell, Scan CTA & Profile */}
-          <div className="flex items-center gap-3.5 shrink-0">
-            {/* Quick Scan Post Button */}
-            <Link
-              to="/scanner"
-              className="btn-primary h-11 text-xs px-4 rounded-xl shadow-md shadow-[#6366F1]/25 hidden sm:inline-flex items-center gap-2 font-medium"
-            >
-              <ScanSearch className="w-4 h-4" />
-              <span>Scan Post</span>
-            </Link>
-
-            {/* Notification Bell with unread count */}
-            <div className="relative">
-              <button
-                onClick={() => {
-                  setToastAlert({
-                    id: 'notification-click',
-                    title: 'Active High-Risk Alerts',
-                    message: `${unresolvedAlertsCount} unreviewed high-risk financial ad groups require investigation.`,
-                    type: 'info',
-                  });
-                }}
-                className="h-11 w-11 rounded-xl bg-[#131C2E] border border-[rgba(148,163,184,0.2)] text-[#94A3B8] hover:text-[#E5E9F2] hover:border-[#6366F1]/40 transition-colors flex items-center justify-center"
-                title={`${unresolvedAlertsCount} Unresolved High-Risk Alerts`}
-                aria-label="Notification bell"
-              >
-                <Bell className="w-4 h-4" />
-                {unresolvedAlertsCount > 0 && (
-                  <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-[#EF4444] text-white text-[9px] font-bold flex items-center justify-center shadow">
-                    {unresolvedAlertsCount}
-                  </span>
-                )}
-              </button>
-            </div>
-
-            {/* User Avatar & Profile Menu */}
-            <div className="relative shrink-0" ref={userMenuRef}>
-              <button
-                onClick={() => setUserMenuOpen(!userMenuOpen)}
-                className="h-11 flex items-center gap-2.5 px-3 rounded-xl bg-[#131C2E] border border-[rgba(148,163,184,0.2)] hover:border-[#6366F1]/40 transition-colors"
-                aria-label="User Profile"
-              >
-                <div className="w-7 h-7 rounded-full bg-[#6366F1] text-white flex items-center justify-center text-xs font-bold shadow-inner">
-                  FS
-                </div>
-                <span className="text-xs font-medium text-[#E5E9F2] hidden md:inline">Investigator</span>
-              </button>
-
-              {userMenuOpen && (
-                <div
-                  className="absolute right-0 top-full mt-2 w-52 rounded-xl border border-[rgba(148,163,184,0.2)] shadow-2xl py-1.5 z-50 animate-fade-in"
-                  style={{ backgroundColor: '#18243A' }}
-                >
-                  <div className="px-3.5 py-2.5 border-b border-[rgba(148,163,184,0.1)]">
-                    <p className="text-xs font-semibold text-white">Investigator Alpha</p>
-                    <p className="text-[10px] text-[#94A3B8] font-mono mt-0.5">fraudscope@intel.sec</p>
-                  </div>
-                  <div className="py-1">
-                    <Link
-                      to="/settings"
-                      onClick={() => setUserMenuOpen(false)}
-                      className="flex items-center gap-2.5 px-3.5 py-2 text-xs text-[#E5E9F2] hover:bg-[#131C2E] hover:text-white transition-colors no-underline"
-                    >
-                      <Settings className="w-3.5 h-3.5 text-[#94A3B8]" />
-                      <span>System Settings</span>
-                    </Link>
-                    <Link
-                      to="/reports"
-                      onClick={() => setUserMenuOpen(false)}
-                      className="flex items-center gap-2.5 px-3.5 py-2 text-xs text-[#E5E9F2] hover:bg-[#131C2E] hover:text-white transition-colors no-underline"
-                    >
-                      <FileBarChart2 className="w-3.5 h-3.5 text-[#94A3B8]" />
-                      <span>Exported Reports</span>
-                    </Link>
-                  </div>
-                  <div className="border-t border-[rgba(148,163,184,0.1)] pt-1">
-                    <Link
-                      to="/"
-                      onClick={() => setUserMenuOpen(false)}
-                      className="flex items-center gap-2.5 px-3.5 py-2 text-xs text-[#EF4444] hover:bg-[#EF4444]/10 transition-colors no-underline"
-                    >
-                      <span>Logout Session</span>
-                    </Link>
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
-        </header>
-
-        {/* Live Alert Toast Banner */}
-        {toastAlert && (
-          <div 
-            className="border-b border-[#EF4444]/30 px-4 py-2.5 flex items-center justify-between z-10 transition-all shadow-md shrink-0"
-            style={{ backgroundColor: '#18243A' }}
-          >
-            <div className="flex items-center gap-3">
-              <span className="p-1.5 rounded-lg bg-[#EF4444]/20 text-[#EF4444] shrink-0">
-                <ShieldAlert className="w-4 h-4" />
-              </span>
-              <div>
-                <p className="text-xs font-semibold text-white flex items-center gap-2">
-                  <span>{toastAlert.title}</span>
-                  <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-[#EF4444]/20 text-[#EF4444]">LIVE</span>
-                </p>
-                <p className="text-[11px] text-[#94A3B8]">{toastAlert.message}</p>
-              </div>
-            </div>
-            <div className="flex items-center gap-2 shrink-0">
-              <Link
-                to="/network"
-                onClick={() => setToastAlert(null)}
-                className="text-xs font-semibold text-[#22D3EE] hover:text-white hover:underline px-2 py-1 transition-colors no-underline"
-              >
-                View Cluster
-              </Link>
-              <button
-                onClick={() => setToastAlert(null)}
-                className="p-1.5 text-[#94A3B8] hover:text-white hover:bg-[#131C2E] rounded-lg transition-colors flex items-center justify-center bg-transparent border-0 outline-none"
-                aria-label="Dismiss alert"
-              >
-                <X className="w-4 h-4" />
-              </button>
-            </div>
-          </div>
-        )}
-
-        {/* Routed Page Content */}
-        <main className="flex-1 overflow-y-auto bg-[#0B1220] p-4 sm:p-6 lg:p-8">
-          <Outlet />
-        </main>
+        {/* Right Status: "Synthetic data · Model online" (Phase 1 & 2 requirement) */}
+        <div className="flex items-center gap-2 text-xs font-mono text-[var(--muted)] font-medium">
+          <span className="flex items-center gap-1.5">
+            <span className="w-2 h-2 rounded-full bg-[var(--risk-low)] ring-2 ring-[var(--risk-low)]/20" />
+            <span>{t('context.synthetic_data', 'Synthetic data')}</span>
+          </span>
+          <span>·</span>
+          <span>{t('context.model_online', 'Model online')}</span>
+        </div>
       </div>
 
-      {/* Mobile Sidebar Drawer */}
-      {mobileSidebarOpen && (
-        <div className="fixed inset-0 z-[100] md:hidden flex">
-          <div
-            className="fixed inset-0 bg-black/80 backdrop-blur-sm z-[100]"
-            style={{ backgroundColor: 'rgba(0, 0, 0, 0.82)' }}
-            onClick={() => setMobileSidebarOpen(false)}
-          />
-          <div 
-            className="relative w-72 max-w-[85vw] border-r border-[rgba(148,163,184,0.15)] h-full flex flex-col z-[101] shadow-2xl"
-            style={{ backgroundColor: '#091426' }}
-          >
-            <div 
-              className="h-20 min-h-[80px] flex items-center justify-between px-5 border-b border-[rgba(148,163,184,0.1)]"
-              style={{ backgroundColor: '#08101E' }}
-            >
-              <Logo size="sm" />
-              <button
-                onClick={() => setMobileSidebarOpen(false)}
-                className="text-[#94A3B8] hover:text-white p-1.5 rounded-lg hover:bg-[#131C2E] transition-colors"
-                aria-label="Close menu drawer"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-
-            <nav className="flex-1 px-3 py-4 space-y-1.5 overflow-y-auto">
-              {navigation.map((item) => {
-                const Icon = item.icon;
-                const isActive =
-                  (item.href === '/console' && (location.pathname === '/console' || location.pathname === '/dashboard')) ||
-                  (item.href === '/flagged-posts' &&
-                    (location.pathname === '/flagged-posts' ||
-                      location.pathname === '/investigations' ||
-                      location.pathname.startsWith('/investigations/'))) ||
-                  (item.href === '/network' && location.pathname.startsWith('/network')) ||
-                  (item.href === '/reports' && location.pathname.startsWith('/reports')) ||
-                  (item.href === '/settings' && location.pathname.startsWith('/settings'));
-                return (
-                  <Link
-                    key={item.name}
-                    to={item.href}
-                    onClick={() => setMobileSidebarOpen(false)}
-                    className={`flex items-center justify-between px-3.5 py-3 rounded-xl text-xs font-medium no-underline transition-all ${
-                      isActive
-                        ? 'bg-gradient-to-r from-[#6366F1]/25 to-[#6366F1]/10 text-white border-l-4 border-l-[#6366F1] font-semibold'
-                        : 'text-[#94A3B8] hover:text-white hover:bg-[#131C2E]'
-                    }`}
+      {/* =========================================================================
+          3. DISMISSIBLE TOP-RIGHT TOAST ALERT (Phase 2 Requirement)
+         ========================================================================= */}
+      {activeToastAlert && (
+        <div
+          role="alert"
+          className="fixed top-14 right-4 z-50 max-w-sm rounded-[var(--radius)] bg-[var(--card)] border border-[#F8B4B6] p-3 shadow-lg animate-in fade-in slide-in-from-top-2 duration-150"
+        >
+          <div className="flex items-start justify-between gap-2.5">
+            <div className="flex items-start gap-2">
+              <div className="p-1 rounded-[var(--radius)] bg-[#FDE8E8] text-[#A8341C] shrink-0 mt-0.5">
+                <ShieldAlert className="w-4 h-4" />
+              </div>
+              <div className="space-y-0.5">
+                <div className="text-xs font-bold text-[var(--text)]">
+                  {activeToastAlert.title}
+                </div>
+                <div className="text-[11px] text-[var(--muted)] leading-snug line-clamp-2">
+                  {activeToastAlert.message}
+                </div>
+                {activeToastAlert.adId && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setActiveToastAlert(null);
+                      navigate(`/flagged-posts?search=${activeToastAlert.adId}`);
+                    }}
+                    className="text-[11px] font-medium text-[var(--primary)] hover:underline inline-flex items-center gap-0.5 pt-0.5"
                   >
-                    <div className="flex items-center gap-3">
-                      <Icon className={`w-4 h-4 ${isActive ? 'text-[#6366F1]' : 'text-[#64748B]'}`} />
-                      <span>{item.name}</span>
-                    </div>
-                    {item.name === 'Flagged Posts' && unresolvedAlertsCount > 0 && (
-                      <span className="px-2 py-0.5 rounded-full bg-[#EF4444]/20 text-[#EF4444] text-[10px] font-bold font-mono">
-                        {unresolvedAlertsCount}
-                      </span>
-                    )}
-                  </Link>
-                );
-              })}
-            </nav>
-
-            <div 
-              className="p-4 border-t border-[rgba(148,163,184,0.1)]"
-              style={{ backgroundColor: '#08101E' }}
-            >
-              <Link
-                to="/scanner"
-                onClick={() => setMobileSidebarOpen(false)}
-                className="w-full btn-primary text-xs py-2.5 flex items-center justify-center gap-2 no-underline"
-              >
-                <ScanSearch className="w-4 h-4" />
-                <span>Scan New Post</span>
-              </Link>
+                    <span>View post</span>
+                    <ExternalLink className="w-2.5 h-2.5" />
+                  </button>
+                )}
+              </div>
             </div>
+            <button
+              type="button"
+              onClick={() => setActiveToastAlert(null)}
+              className="p-1 text-[var(--muted)] hover:text-[var(--text)] transition-colors"
+              aria-label="Dismiss alert"
+            >
+              <X className="w-3.5 h-3.5" />
+            </button>
           </div>
         </div>
       )}
+
+      {/* =========================================================================
+          4. MAIN FULL-WIDTH WORKSPACE CONTENT (No left sidebar)
+         ========================================================================= */}
+      <main className="flex-1 w-full max-w-7xl mx-auto px-3 sm:px-6 py-4">
+        <Outlet />
+      </main>
+
+      {/* Command Palette Modal (Ctrl+K) */}
+      <CommandPalette
+        isOpen={commandPaletteOpen}
+        onClose={() => setCommandPaletteOpen(false)}
+        onOpenScanModal={() => setQuickScanModalOpen(true)}
+      />
+
+      {/* Quick Scan Post Modal */}
+      <QuickScanModal
+        isOpen={quickScanModalOpen}
+        onClose={() => setQuickScanModalOpen(false)}
+      />
     </div>
   );
 };

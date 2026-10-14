@@ -141,3 +141,18 @@ class SystemSetting(Base):
     value = Column(String(256), nullable=False)
     description = Column(String(256), nullable=True)
     updated_at = Column(DateTime, default=utc_now, onupdate=utc_now)
+
+
+class User(Base):
+    __tablename__ = "users"
+
+    id = Column(Integer, primary_key=True, index=True)
+    full_name = Column(String(128), nullable=False)
+    email = Column(String(128), unique=True, index=True, nullable=False)
+    username = Column(String(64), unique=True, index=True, nullable=False)
+    password_hash = Column(String(256), nullable=False)
+    role = Column(String(32), default="Investigator", nullable=False) # Investigator, Fraud Analyst, Administrator
+    is_active = Column(Boolean, default=True, nullable=False)
+    created_at = Column(DateTime, default=utc_now)
+    updated_at = Column(DateTime, default=utc_now, onupdate=utc_now)
+

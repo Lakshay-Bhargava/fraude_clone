@@ -1,10 +1,16 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { AuthProvider } from './context/AuthContext';
+import { LanguageProvider } from './context/LanguageContext';
+import { ProtectedRoute } from './components/auth/ProtectedRoute';
 import { LandingPage } from './pages/LandingPage';
 import { LoginPage } from './pages/LoginPage';
+import { RegisterPage } from './pages/RegisterPage';
 import { AppShell } from './components/layout/AppShell';
 import { DashboardPage } from './pages/DashboardPage';
 import { ScannerPage } from './pages/ScannerPage';
+import { UrlScannerPage } from './pages/UrlScannerPage';
+import { WebsiteXRayPage } from './pages/WebsiteXRayPage';
 import { InvestigationPage } from './pages/InvestigationPage';
 import { AdvertisementsPage } from './pages/AdvertisementsPage';
 import { ThreatNetworkPage } from './pages/ThreatNetworkPage';
@@ -15,46 +21,60 @@ import { SettingsPage } from './pages/SettingsPage';
 
 export function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        {/* Public Landing & Login */}
-        <Route path="/" element={<LandingPage />} />
-        <Route path="/login" element={<LoginPage />} />
+    <LanguageProvider>
+      <AuthProvider>
+        <BrowserRouter>
+        <Routes>
+          {/* Public Landing, Login & Registration */}
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/register" element={<RegisterPage />} />
 
-        {/* FinGuard AI Workspace Routes wrapped in AppShell */}
-        <Route element={<AppShell />}>
-          {/* 1. Dashboard */}
-          <Route path="/console" element={<DashboardPage />} />
-          <Route path="/dashboard" element={<Navigate to="/console" replace />} />
+          {/* Authenticated FRAUDSCOPE AI Workspace Routes guarded by ProtectedRoute */}
+          <Route element={<ProtectedRoute />}>
+            <Route element={<AppShell />}>
+              {/* Overview / Dashboard */}
+              <Route path="/console" element={<DashboardPage />} />
+              <Route path="/dashboard" element={<Navigate to="/console" replace />} />
 
-          {/* 2. Flagged Posts */}
-          <Route path="/flagged-posts" element={<AdvertisementsPage />} />
-          <Route path="/investigations" element={<Navigate to="/flagged-posts" replace />} />
-          <Route path="/advertisements" element={<Navigate to="/flagged-posts" replace />} />
-          <Route path="/investigations/:id" element={<InvestigationPage />} />
+              {/* Module 1: Smart URL Scanner */}
+              <Route path="/url-scanner" element={<UrlScannerPage />} />
 
-          {/* Dedicated Scanner */}
-          <Route path="/scanner" element={<ScannerPage />} />
+              {/* Module 2: Website X-Ray */}
+              <Route path="/website-xray" element={<WebsiteXRayPage />} />
 
-          {/* 3. Clusters / Networks */}
-          <Route path="/network" element={<ThreatNetworkPage />} />
-          <Route path="/clusters" element={<Navigate to="/network" replace />} />
+              {/* Module 3: Advertisement & Message Analysis */}
+              <Route path="/ad-scanner" element={<ScannerPage />} />
+              <Route path="/scanner" element={<Navigate to="/ad-scanner" replace />} />
 
-          {/* 4. Reports */}
-          <Route path="/reports" element={<ReportsPage />} />
+              {/* Flagged Posts & Investigation Dossiers */}
+              <Route path="/flagged-posts" element={<AdvertisementsPage />} />
+              <Route path="/investigations" element={<Navigate to="/flagged-posts" replace />} />
+              <Route path="/advertisements" element={<Navigate to="/flagged-posts" replace />} />
+              <Route path="/investigations/:id" element={<InvestigationPage />} />
 
-          {/* 5. Settings */}
-          <Route path="/settings" element={<SettingsPage />} />
+              {/* Module 4: Fraud Network Detective */}
+              <Route path="/network" element={<ThreatNetworkPage />} />
+              <Route path="/clusters" element={<Navigate to="/network" replace />} />
 
-          {/* Auxiliary pages */}
-          <Route path="/alerts" element={<AlertsPage />} />
-          <Route path="/cases" element={<CasesPage />} />
-        </Route>
+              {/* 4. Forensic Reports */}
+              <Route path="/reports" element={<ReportsPage />} />
 
-        {/* Fallback */}
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
-    </BrowserRouter>
+              {/* 5. System Settings */}
+              <Route path="/settings" element={<SettingsPage />} />
+
+              {/* Auxiliary Case Management & Alert Feeds */}
+              <Route path="/alerts" element={<AlertsPage />} />
+              <Route path="/cases" element={<CasesPage />} />
+            </Route>
+          </Route>
+
+          {/* Fallback */}
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </BrowserRouter>
+    </AuthProvider>
+  </LanguageProvider>
   );
 }
 

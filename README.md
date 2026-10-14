@@ -114,24 +114,49 @@ cd backend
 ## 🧭 Navigation & Core Workspaces
 
 1. **Dashboard** (`/console`):
-   - Welcome header, Data Provenance selector (`All Records` vs `Live Scans Only`), and real-time database sync.
-   - **Active ML Forensic Engine Card**: Live model status, version (`fraudscope-tfidf-lr-v1.0`), vocabulary size, and test ROC-AUC.
-   - KPI metrics: Total Analyzed, High-Risk Alerts, Active Clusters, Entities Extracted.
-   - Recharts Visualizations: Posts scanned over time, Risk distribution, Platform comparison.
-   - Recent Flagged Advertisements table with provenance badges and Evidence Drawer action.
-2. **Advertisement Scanner** (`/scanner`):
-   - Multilingual detection presets, text input, platform selector, optional URL, OCR screenshot upload.
-   - Displays Composite Risk Score (0-100), Risk Level badge, plain-language triage explanation, and recommended action.
-   - **Machine Learning Classifier Evaluation Card**: Predicted class (`SUSPICIOUS` / `SAFE`), statistical probability, and token-level TF-IDF feature contributions.
-   - Triggered heuristic rules and extracted technical indicators (Phone, UPI, URLs).
-   - Instant PDF case report generation.
-3. **Flagged Posts Hub** (`/flagged-posts`):
-   - Comprehensive searchable index with pagination, risk filters, status filters, and **Provenance Filter** (`All`, `Live Only`, `Demo Only`).
-   - Snippets with highlighted red-flag keywords in English, Hindi, and Hinglish.
+   - Recharts Visualizations: Posts scanned over time with Scanned (#2F4B45) & Flagged (#D9482B), Donut risk distribution with centered total, Platform comparison.
+   - Clickable Stat Cards navigating directly to filtered views (Ads analyzed, High-risk alerts, Active clusters, Extracted entities).
+   - Compact ML Forensic Strip showing model version, vocabulary, ROC-AUC, and disjoint unseen-wording test accuracy.
+   - Replay Live Feed Simulation streaming posts client-side with Play/Pause and 1x/2x/5x speed controls.
+   - Priority Syndicate Queue ranking top 5 fraud clusters with instant "Open case" action.
+2. **Top Navigation & Context Bar Layout**:
+   - 48px sticky header with navigation tabs, command bar trigger ("Ctrl K"), single primary "Scan post" action, language switcher (EN | HI), notifications, and user avatar.
+   - Thin contextual filter bar with Platform, Risk, Date-range chips, and status indication ("Synthetic data · Model online").
+   - Below 900px responsive hamburger navigation.
+3. **Flagged Posts Hub & Contrast-Fixed Table** (`/flagged-posts`):
+   - Strict WCAG AA contrast compliance: text never turns dark or invisible; table rows hover to slightly darker paper (`#EDE5D3`).
+   - Sticky headers, 2-line snippets with keyword highlighting, risk badges, indicator chips, status chips, and pagination.
+   - Right-side slide-over Evidence Detail Drawer with full text, rule explanations, false-positive reporting, and instant PDF generation.
 4. **Threat Clusters & Networks** (`/network`):
-   - Interactive React Flow threat intelligence graph connecting advertisements, phone numbers, UPI IDs, and domains.
-5. **Reports Archive** (`/reports`):
-   - Downloadable case reports with export capabilities.
+   - D3-force graph with collision avoidance, `#22B8D4` rounded square hubs, risk-sized ad nodes, bridge ad rings, and cluster halos.
+5. **Command Palette (`Ctrl+K` / `Cmd+K`)**:
+   - Universal search across posts, phone numbers, UPI handles, and URLs, plus quick shortcuts.
+6. **Bilingual i18n (English / Hindi)**:
+   - Full localization support with persistent language choice in `localStorage`.
+
+---
+
+## 🎨 Design Tokens & Accessibility
+
+| Token | Hex / Value | Description |
+| :--- | :--- | :--- |
+| `--bg` | `#F2ECDF` | Warm paper page background |
+| `--card` | `#FBF7EE` | Surface card background |
+| `--sidebar` | `#E9E1D0` | Surface panel background |
+| `--primary` | `#D9482B` | Burnt vermilion primary action |
+| `--on-primary` | `#FFFFFF` | Text on primary |
+| `--accent` | `#2F4B45` | Deep forest accent ink |
+| `--text` | `#26221D` | High-contrast dark ink text |
+| `--muted` | `#6F675B` | Readable secondary text |
+| `--border` | `#D9CFBA` | Clean 1px surface border |
+| `--radius` | `4px` | Controlled radius (no pill shapes) |
+| `--table-hover` | `#EDE5D3` | Paper row hover (never dark grey) |
+| High Risk | `#E5484D` (text `#A8341C` on `#FDE8E8`) | High severity indicator |
+| Medium Risk | `#F5A524` (text `#8A5A00` on `#FEF3D6`) | Medium severity indicator |
+| Low Risk | `#2FA97C` (text `#1D6B4F` on `#E6F7F0`) | Safe / low severity indicator |
+| Indicator Chip | text `#0F6E7A` on `#D8EEF0` | High-contrast technical chip |
+
+All pairs tested and verified for WCAG AA compliance (contrast ratio $\ge 4.5:1$).
 
 ---
 
@@ -157,11 +182,10 @@ npm run dev
 ## 🧪 Testing and Verification
 
 ### Backend Automated Test Suite
-Runs all 29 automated unit and integration tests (including dataset cleaning, zero leakage verification, model inference, provenance tags, and API endpoints):
+Runs all 51 automated unit, integration, and WCAG AA contrast ratio tests:
 ```powershell
-.\backend\venv\Scripts\python -m pytest backend/tests
+.\backend\venv\Scripts\python -m pytest backend/tests -v
 ```
-**Result:** `29 passed in 23.51s` with 0 failures.
 
 ### Frontend Production Build
 Validates TypeScript types and packages the production bundle:
@@ -169,4 +193,3 @@ Validates TypeScript types and packages the production bundle:
 cd frontend
 npm run build
 ```
-**Result:** `✓ built in 2.88s` with 0 compilation errors.

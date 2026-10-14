@@ -21,6 +21,11 @@ class Settings(BaseModel):
     # Demo Mode
     DEMO_MODE: bool = True
     
+    # Authentication
+    SECRET_KEY: str = os.getenv("SECRET_KEY", "fraudscope-ai-production-grade-secret-key-2026-finguard")
+    ALGORITHM: str = "HS256"
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24 # 24 hours
+
     # CORS
     BACKEND_CORS_ORIGINS: list[str] = [
         "http://localhost:5173",

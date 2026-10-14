@@ -1,0 +1,71 @@
+{
+  "nav": {
+    "dashboard": "Overview",
+    "url_scanner": "URL Scanner",
+    "website_xray": "Website X-Ray",
+    "ad_scanner": "Ad Analysis",
+    "clusters": "Network Detective",
+    "flagged_posts": "Flagged posts",
+    "cases": "Cases",
+    "reports": "Reports",
+    "settings": "Settings",
+    "scan_post": "Scan post",
+    "search_prompt": "Search or jump to... Ctrl K",
+    "logout": "Log out"
+  },
+  "context": {
+    "platform": "Platform",
+    "risk": "Risk",
+    "date_range": "Date range",
+    "all": "All",
+    "all_time": "All time",
+    "last_7d": "Last 7d",
+    "last_30d": "Last 30d",
+    "synthetic_data": "Synthetic data",
+    "model_online": "Model online"
+  },
+  "dashboard": {
+    "welcome_title": "Welcome back, Investigator",
+    "welcome_desc": "Continuous surveillance feed tracking fraudulent investment campaigns and mule networks.",
+    "ml_engine": "Context-aware forensic model",
+    "vocab": "Vocabulary",
+    "roc_auc": "Test ROC-AUC",
+    "unseen_test": "Unseen-wording test",
+    "stat_ads_analyzed": "Ads analyzed",
+    "stat_high_risk": "High-risk alerts",
+    "stat_active_clusters": "Active clusters",
+    "stat_entities_extracted": "Entities extracted",
+    "posts_over_time": "Posts scanned over time",
+    "risk_distribution": "Risk distribution",
+    "platform_breakdown": "Platform-wise suspicious posts",
+    "audit_trail": "Recent audit trail",
+    "replay_feed": "Replay live feed",
+    "pause_feed": "Pause feed",
+    "simulation_label": "Simulation",
+    "empty_state": "No data yet. Scan a post to begin."
+  },
+  "table": {
+    "platform": "Platform",
+    "post_id": "Post ID",
+    "snippet": "Advertisement snippet",
+    "risk_level": "Risk level and score",
+    "indicators": "Extracted indicators",
+    "status": "Status",
+    "date": "Detection date",
+    "evidence_action": "Action",
+    "view_evidence": "Inspect",
+    "generate_report": "Generate case report",
+    "mark_false_positive": "Report false positive"
+  },
+  "common": {
+    "high": "High",
+    "medium": "Medium",
+    "low": "Low",
+    "close": "Close",
+    "loading": "Loading...",
+    "search": "Search",
+    "reset": "Reset",
+    "details": "Details",
+    "case_dossier": "Case dossier"
+  }
+}

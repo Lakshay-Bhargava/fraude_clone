@@ -8,6 +8,7 @@ from app.database.session import engine, Base, SessionLocal
 from app.services.seed_data import seed_database_if_empty
 from app.services.model_service import get_or_train_model
 
+from app.api.auth import router as auth_router
 from app.api.ads import router as ads_router
 from app.api.dashboard import router as dashboard_router
 from app.api.cases import router as cases_router
@@ -15,6 +16,7 @@ from app.api.network import router as network_router
 from app.api.alerts import router as alerts_router
 from app.api.reports import router as reports_router
 from app.api.settings import router as settings_router
+from app.api.scanner import router as scanner_router
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -69,6 +71,7 @@ def health_check():
     }
 
 # Register API Routers
+app.include_router(auth_router, prefix=settings.API_V1_STR)
 app.include_router(ads_router, prefix=settings.API_V1_STR)
 app.include_router(dashboard_router, prefix=settings.API_V1_STR)
 app.include_router(cases_router, prefix=settings.API_V1_STR)
@@ -76,6 +79,7 @@ app.include_router(network_router, prefix=settings.API_V1_STR)
 app.include_router(alerts_router, prefix=settings.API_V1_STR)
 app.include_router(reports_router, prefix=settings.API_V1_STR)
 app.include_router(settings_router, prefix=settings.API_V1_STR)
+app.include_router(scanner_router, prefix=settings.API_V1_STR)
 
 if __name__ == "__main__":
     import uvicorn

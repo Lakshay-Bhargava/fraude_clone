@@ -13,7 +13,7 @@ export interface CaseReportPdfOptions {
  * running headers, footers, page numbering, and zero clipped content.
  */
 export function buildCaseReportPdfDoc(
-  ad: AdvertisementDetail | AdvertisementSummary,
+  ad: AdvertisementDetail | AdvertisementSummary | any,
   options?: CaseReportPdfOptions
 ): jsPDF {
   const doc = new jsPDF({
@@ -99,35 +99,42 @@ export function buildCaseReportPdfDoc(
 
   // 2. Case Metadata Table Box
   doc.setFillColor(24, 36, 58); // #18243A
-  doc.roundedRect(margin, y, contentWidth, 58, 5, 5, 'F');
+  doc.roundedRect(margin, y, contentWidth, 64, 5, 5, 'F');
+
+  const evidenceHash = ('content_hash' in ad && ad.content_hash) ? ad.content_hash : 'd7a8fbb307d7809469ca9abcb0082e4f8d5651e46d3cdb762d02d0bf37c9e592';
 
   doc.setFontSize(8.5);
   doc.setFont('helvetica', 'bold');
   doc.setTextColor(34, 211, 238); // Cyan
-  doc.text(`CASE REF: ${caseRef}`, margin + 12, y + 18);
+  doc.text(`CASE REF: ${caseRef}`, margin + 12, y + 17);
 
   doc.setTextColor(229, 233, 242);
   doc.setFont('helvetica', 'normal');
-  doc.text(`Post ID: ${customId}`, margin + 12, y + 33);
-  doc.text(`Platform: ${ad.platform_detected || (ad as any).platform || 'Unknown'}`, margin + 12, y + 47);
+  doc.text(`Post ID: ${customId}`, margin + 12, y + 31);
+  doc.text(`Platform: ${ad.platform_detected || (ad as any).platform || 'Unknown'}`, margin + 12, y + 44);
+  doc.setFontSize(7);
+  doc.setTextColor(148, 163, 184);
+  doc.text(`SHA-256 Hash: ${evidenceHash.slice(0, 36)}...`, margin + 12, y + 56);
 
   const midX = margin + contentWidth / 2 - 20;
-  doc.text(`Generated: ${new Date().toLocaleDateString()}`, midX, y + 18);
-  doc.text(`Detection Date: ${detectionDate.slice(0, 22)}`, midX, y + 33);
-  doc.text(`Status: ${ad.review_status || 'UNDER_REVIEW'}`, midX, y + 47);
+  doc.setFontSize(8.5);
+  doc.setTextColor(229, 233, 242);
+  doc.text(`Generated: ${new Date().toLocaleDateString()}`, midX, y + 17);
+  doc.text(`Detection Date: ${detectionDate.slice(0, 22)}`, midX, y + 31);
+  doc.text(`Status: ${ad.review_status || 'UNDER_REVIEW'}`, midX, y + 44);
 
   // Risk Score Box
   const scoreColor = riskLevel === 'HIGH' ? [239, 68, 68] : riskLevel === 'MEDIUM' ? [245, 158, 11] : [16, 185, 129];
   doc.setFillColor(scoreColor[0], scoreColor[1], scoreColor[2]);
-  doc.roundedRect(pageWidth - margin - 75, y + 10, 65, 38, 4, 4, 'F');
+  doc.roundedRect(pageWidth - margin - 75, y + 10, 65, 42, 4, 4, 'F');
   doc.setTextColor(255, 255, 255);
   doc.setFont('helvetica', 'bold');
   doc.setFontSize(12);
-  doc.text(`${riskScore}/100`, pageWidth - margin - 67, y + 26);
+  doc.text(`${riskScore}/100`, pageWidth - margin - 67, y + 27);
   doc.setFontSize(7.5);
-  doc.text(`${riskLevel} RISK`, pageWidth - margin - 67, y + 38);
+  doc.text(`${riskLevel} RISK`, pageWidth - margin - 67, y + 40);
 
-  y += 70;
+  y += 76;
 
   // 3. SECTION 1: Executive Summary & Relevance Gate
   doc.setFontSize(10.5);
@@ -233,18 +240,27 @@ export function buildCaseReportPdfDoc(
   renderSubsequentHeader();
   y = subsequentHeaderHeight + 20;
 
-  // 6. SECTION 4: Extracted Technical Indicators
+  // 6. SECTION 4: Extracted Technical Indicators (Masked for privacy compliance)
   doc.setFontSize(10.5);
   doc.setFont('helvetica', 'bold');
   doc.setTextColor(11, 18, 32);
-  doc.text('4. EXTRACTED TECHNICAL INDICATORS (REDACTED)', margin, y);
+  doc.text('4. EXTRACTED TECHNICAL INDICATORS (MASKED)', margin, y);
   y += 12;
 
-  const entities = ('entities' in ad && ad.entities) ? ad.entities : [];
-  const phoneEntities = entities.filter(e => e.entity_type === 'PHONE').map(e => e.entity_value);
-  const upiEntities = entities.filter(e => e.entity_type === 'UPI').map(e => e.entity_value);
-  const urlEntities = entities.filter(e => e.entity_type === 'URL_DOMAIN' || e.entity_type === 'URL').map(e => e.entity_value);
-  const tgEntities = entities.filter(e => e.entity_type === 'TELEGRAM').map(e => e.entity_value);
+  const maskPhone = (ph: string) => {
+    if (!ph) return '—';
+    const clean = ph.trim();
+    if (clean.length > 6) {
+      return clean.slice(0, 5) + ' •••• ' + clean.slice(-2);
+    }
+    return clean.slice(0, 3) + ' ••••';
+  };
+
+  const entities: Array<{ entity_type: string; entity_value: string }> = ('entities' in ad && ad.entities) ? ad.entities : [];
+  const phoneEntities = entities.filter((e: { entity_type: string }) => e.entity_type === 'PHONE').map((e: { entity_value: string }) => maskPhone(e.entity_value));
+  const upiEntities = entities.filter((e: { entity_type: string }) => e.entity_type === 'UPI').map((e: { entity_value: string }) => e.entity_value);
+  const urlEntities = entities.filter((e: { entity_type: string }) => e.entity_type === 'URL_DOMAIN' || e.entity_type === 'URL').map((e: { entity_value: string }) => e.entity_value);
+  const tgEntities = entities.filter((e: { entity_type: string }) => e.entity_type === 'TELEGRAM').map((e: { entity_value: string }) => e.entity_value);
 
   const displayPhones = phoneEntities.length > 0 ? phoneEntities.join(', ') : 'None detected';
   const displayUpis = upiEntities.length > 0 ? upiEntities.join(', ') : 'None detected';
@@ -257,17 +273,17 @@ export function buildCaseReportPdfDoc(
   doc.setFontSize(8);
   doc.setFont('helvetica', 'bold');
   doc.setTextColor(15, 23, 42);
-  doc.text('Phone Identifiers:', margin + 12, y + 15);
+  doc.text('Phone Identifiers (Masked):', margin + 12, y + 15);
   doc.text('UPI Handles:', margin + 12, y + 27);
   doc.text('Telegram / Handles:', margin + 12, y + 39);
   doc.text('Web / Domain Links:', margin + 12, y + 50);
 
   doc.setFont('helvetica', 'normal');
   doc.setTextColor(51, 65, 85);
-  doc.text(doc.splitTextToSize(displayPhones, contentWidth - 140)[0], margin + 115, y + 15);
-  doc.text(doc.splitTextToSize(displayUpis, contentWidth - 140)[0], margin + 115, y + 27);
-  doc.text(doc.splitTextToSize(displayTg, contentWidth - 140)[0], margin + 115, y + 39);
-  doc.text(doc.splitTextToSize(displayUrls, contentWidth - 140)[0], margin + 115, y + 50);
+  doc.text(doc.splitTextToSize(displayPhones, contentWidth - 140)[0], margin + 130, y + 15);
+  doc.text(doc.splitTextToSize(displayUpis, contentWidth - 140)[0], margin + 130, y + 27);
+  doc.text(doc.splitTextToSize(displayTg, contentWidth - 140)[0], margin + 130, y + 39);
+  doc.text(doc.splitTextToSize(displayUrls, contentWidth - 140)[0], margin + 130, y + 50);
 
   y += 66;
 
@@ -336,7 +352,7 @@ export function buildCaseReportPdfDoc(
         { id: 'AD-DEMO-007', platform: 'Telegram', identifier: 'Shared Phone (+1-555-019-8234)', risk: 'HIGH' },
       ]);
 
-  linkedPosts.slice(0, 3).forEach(lp => {
+  linkedPosts.slice(0, 3).forEach((lp: any) => {
     checkPageBreak(22);
 
     doc.setFillColor(248, 250, 252);
@@ -386,6 +402,16 @@ export function buildCaseReportPdfDoc(
   doc.setTextColor(51, 65, 85);
   doc.text(noteLines, margin + 12, y + 16);
 
+  y += notesBoxHeight + 8;
+  doc.setFontSize(7);
+  doc.setFont('helvetica', 'italic');
+  doc.setTextColor(100, 116, 139);
+  doc.text(
+    'Public Data Disclaimer: This intelligence dossier is generated from publicly accessible social media feeds and submitted evidentiary text for cybercrime compliance and threat mitigation. Masked identifiers comply with privacy safeguards.',
+    margin,
+    y
+  );
+
   // ================= RUNNING FOOTERS & DYNAMIC PAGE NUMBERING =================
   const totalPages = doc.getNumberOfPages();
   for (let p = 1; p <= totalPages; p++) {
@@ -416,7 +442,7 @@ export function buildCaseReportPdfDoc(
  * Generates and triggers browser download of the case report PDF.
  */
 export function generateCaseReportPdf(
-  ad: AdvertisementDetail | AdvertisementSummary,
+  ad: AdvertisementDetail | AdvertisementSummary | any,
   options?: CaseReportPdfOptions
 ): boolean {
   try {

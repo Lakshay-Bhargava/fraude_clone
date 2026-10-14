@@ -10,55 +10,67 @@ export const StatusBadge: React.FC<StatusBadgeProps> = ({ status, size = 'md' })
 
   const config: Record<string, { label: string; bg: string; text: string; border: string }> = {
     NEW: {
-      label: 'NEW',
-      bg: 'bg-blue-500/10',
-      text: 'text-blue-400',
-      border: 'border-blue-500/30',
+      label: 'New',
+      bg: 'bg-[#D8EEF0]',
+      text: 'text-[#0F6E7A]',
+      border: 'border-[#B2DFE3]',
     },
     NEEDS_REVIEW: {
-      label: 'NEEDS REVIEW',
-      bg: 'bg-[#F4BC52]/10',
-      text: 'text-[#F4BC52]',
-      border: 'border-[#F4BC52]/30',
+      label: 'Needs review',
+      bg: 'bg-[#FEF3D6]',
+      text: 'text-[#8A5A00]',
+      border: 'border-[#FCD888]',
     },
     UNDER_INVESTIGATION: {
-      label: 'UNDER INVESTIGATION',
-      bg: 'bg-[#FF7547]/10',
-      text: 'text-[#FF7547]',
-      border: 'border-[#FF7547]/30',
+      label: 'Needs review',
+      bg: 'bg-[#FEF3D6]',
+      text: 'text-[#8A5A00]',
+      border: 'border-[#FCD888]',
+    },
+    REVIEWED: {
+      label: 'Reviewed',
+      bg: 'bg-[#E6F7F0]',
+      text: 'text-[#1D6B4F]',
+      border: 'border-[#A3E3CB]',
     },
     ESCALATED: {
-      label: 'ESCALATED',
-      bg: 'bg-[#FF5964]/10',
-      text: 'text-[#FF5964]',
-      border: 'border-[#FF5964]/30',
+      label: 'Escalated',
+      bg: 'bg-[#FDE8E8]',
+      text: 'text-[#A8341C]',
+      border: 'border-[#F8B4B6]',
     },
     CLOSED: {
-      label: 'CLOSED',
-      bg: 'bg-emerald-500/10',
-      text: 'text-emerald-400',
-      border: 'border-emerald-500/30',
+      label: 'Closed',
+      bg: 'bg-[#E6F7F0]',
+      text: 'text-[#1D6B4F]',
+      border: 'border-[#A3E3CB]',
+    },
+    DISMISSED: {
+      label: 'Dismissed',
+      bg: 'bg-[#F2ECDF]',
+      text: 'text-[#6F675B]',
+      border: 'border-[#D9CFBA]',
     },
     FALSE_POSITIVE: {
-      label: 'FALSE POSITIVE',
-      bg: 'bg-gray-500/10',
-      text: 'text-gray-400',
-      border: 'border-gray-500/30',
+      label: 'Dismissed',
+      bg: 'bg-[#F2ECDF]',
+      text: 'text-[#6F675B]',
+      border: 'border-[#D9CFBA]',
     },
   };
 
   const current = config[norm] || {
     label: norm,
-    bg: 'bg-gray-500/10',
-    text: 'text-gray-400',
-    border: 'border-gray-500/30',
+    bg: 'bg-[#FBF7EE]',
+    text: 'text-[#6F675B]',
+    border: 'border-[#D9CFBA]',
   };
 
-  const sizeClasses = size === 'sm' ? 'text-[10px] px-2 py-0.5' : 'text-xs px-2.5 py-0.5';
+  const sizeClasses = size === 'sm' ? 'text-[11px] px-2 py-0.5' : 'text-xs px-2.5 py-0.5';
 
   return (
     <span
-      className={`inline-flex items-center font-mono rounded border font-medium uppercase tracking-wider ${current.bg} ${current.border} ${current.text} ${sizeClasses}`}
+      className={`inline-flex items-center font-sans rounded-[var(--radius)] border font-medium ${current.bg} ${current.border} ${current.text} ${sizeClasses}`}
     >
       {current.label}
     </span>

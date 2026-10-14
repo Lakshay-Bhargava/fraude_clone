@@ -4,8 +4,9 @@ from datetime import datetime, timezone, timedelta
 from sqlalchemy.orm import Session
 from app.models.models import (
     Advertisement, AnalysisResult, Evidence, ExtractedEntity,
-    Case, CaseNote, Alert, AuditEvent, SystemSetting, case_advertisements
+    Case, CaseNote, Alert, AuditEvent, SystemSetting, case_advertisements, User
 )
+from app.core.security import hash_password
 from app.services.text_preprocessing import normalize_text, calculate_content_hash
 from app.services.entity_extraction import extract_entities
 from app.services.rule_engine import evaluate_rules
@@ -14,9 +15,23 @@ from app.services.risk_scoring import calculate_composite_risk
 
 def seed_database_if_empty(db: Session):
     """
-    Checks if the Advertisement table is empty. If so, loads deterministic
-    fictional data from data/sample_ads.csv and initializes investigation cases and alerts.
+    Ensures default administrative / demonstration user exists,
+    and loads sample advertisements if advertisement table is empty.
     """
+    # Seed default demonstration user if users table is empty
+    if db.query(User).count() == 0:
+        demo_user = User(
+            full_name="Lead Investigator",
+            email="investigator@fraudscope.local",
+            username="investigator",
+            password_hash=hash_password("Password123!"),
+            role="Investigator",
+            is_active=True,
+            created_at=datetime.now(timezone.utc)
+        )
+        db.add(demo_user)
+        db.commit()
+
     existing_count = db.query(Advertisement).count()
     if existing_count > 0:
         return

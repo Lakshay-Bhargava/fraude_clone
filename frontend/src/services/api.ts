@@ -6,19 +6,47 @@ import {
   ThreatNetworkData,
   CaseItem,
   AlertItem,
-  SystemSettings
+  SystemSettings,
+  User,
+  AuthResponse,
+  RegisterPayload,
+  LoginPayload
 } from '../types';
 
 const BASE_URL = import.meta.env.VITE_API_URL || '';
 
+let authToken: string | null = typeof window !== 'undefined' ? localStorage.getItem('fraudscope_token') : null;
+
+export const setAuthToken = (token: string | null) => {
+  authToken = token;
+  if (typeof window !== 'undefined') {
+    if (token) {
+      localStorage.setItem('fraudscope_token', token);
+    } else {
+      localStorage.removeItem('fraudscope_token');
+    }
+  }
+};
+
+export const getAuthToken = () => authToken;
+
 async function request<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
   const url = `${BASE_URL}${endpoint}`;
-  const headers = {
+  const headers: Record<string, string> = {
     'Content-Type': 'application/json',
-    ...(options.headers || {}),
+    ...((options.headers as Record<string, string>) || {}),
   };
 
-  const response = await fetch(url, { ...options, headers });
+  if (authToken) {
+    headers['Authorization'] = `Bearer ${authToken}`;
+  }
+
+  const response = await fetch(url, {
+    ...options,
+    headers,
+    credentials: 'include',
+  });
+
   if (!response.ok) {
     let errorMsg = `HTTP Error ${response.status}`;
     try {
@@ -32,12 +60,79 @@ async function request<T>(endpoint: string, options: RequestInit = {}): Promise<
   return response.json();
 }
 
+export const authApi = {
+  register: (payload: RegisterPayload) =>
+    request<User>('/api/auth/register', {
+      method: 'POST',
+      body: JSON.stringify(payload),
+    }),
+
+  login: async (payload: LoginPayload) => {
+    const res = await request<AuthResponse>('/api/auth/login', {
+      method: 'POST',
+      body: JSON.stringify(payload),
+    });
+    if (res.access_token) {
+      setAuthToken(res.access_token);
+    }
+    return res;
+  },
+
+  logout: async () => {
+    try {
+      await request<{ message: string }>('/api/auth/logout', {
+        method: 'POST',
+      });
+    } catch {
+      // Ignore network errors on logout
+    } finally {
+      setAuthToken(null);
+    }
+  },
+
+  getMe: () => request<User>('/api/auth/me'),
+};
+
+const listAdsRequest = (params: {
+  page?: number;
+  limit?: number;
+  search?: string;
+  platform?: string;
+  risk_level?: string;
+  review_status?: string;
+  is_demo?: boolean;
+  data_source?: string;
+  sort_by?: string;
+  sort_order?: string;
+} = {}) => {
+  const query = new URLSearchParams();
+  if (params.page) query.set('page', params.page.toString());
+  if (params.limit) query.set('limit', params.limit.toString());
+  if (params.search) query.set('search', params.search);
+  if (params.platform) query.set('platform', params.platform);
+  if (params.risk_level) query.set('risk_level', params.risk_level);
+  if (params.review_status) query.set('review_status', params.review_status);
+  if (params.is_demo !== undefined) query.set('is_demo', params.is_demo.toString());
+  if (params.data_source) query.set('data_source', params.data_source);
+  if (params.sort_by) query.set('sort_by', params.sort_by);
+  if (params.sort_order) query.set('sort_order', params.sort_order);
+
+  return request<{
+    items: AdvertisementSummary[];
+    total: number;
+    page: number;
+    limit: number;
+    pages: number;
+  }>(`/api/ads?${query.toString()}`);
+};
+
 export const api = {
   // Health
   checkHealth: () => request<{ status: string; database: string }>('/api/health'),
 
   // Dashboard
   getStats: (includeDemo: boolean = true) => request<DashboardStats>(`/api/dashboard/stats?include_demo=${includeDemo}`),
+  getDashboardStats: (includeDemo: boolean = true) => request<DashboardStats>(`/api/dashboard/stats?include_demo=${includeDemo}`),
   getActivity: () => request<DashboardActivity[]>('/api/dashboard/activity'),
   getTrends: (days: number = 7, includeDemo: boolean = true) => request<DashboardActivity[]>(`/api/dashboard/trends?days=${days}&include_demo=${includeDemo}`),
   getPlatforms: (includeDemo: boolean = true) => request<Array<{ platform: string; suspicious: number; total: number }>>(`/api/dashboard/platforms?include_demo=${includeDemo}`),
@@ -56,12 +151,21 @@ export const api = {
       method: 'POST',
       body: JSON.stringify({ content, source_type: sourceType, submitted_url: submittedUrl || null }),
     }),
+  analyzeText: (content: string, sourceType: string = 'text', submittedUrl?: string) =>
+    request<AdvertisementDetail>('/api/ads/analyze', {
+      method: 'POST',
+      body: JSON.stringify({ content, source_type: sourceType, submitted_url: submittedUrl || null }),
+    }),
 
   uploadOcrImage: async (file: File) => {
     const formData = new FormData();
     formData.append('file', file);
+    const headers: Record<string, string> = {};
+    if (authToken) headers['Authorization'] = `Bearer ${authToken}`;
     const response = await fetch(`${BASE_URL}/api/ads/ocr-upload`, {
       method: 'POST',
+      headers,
+      credentials: 'include',
       body: formData,
     });
     if (!response.ok) {
@@ -79,8 +183,12 @@ export const api = {
   bulkAnalyze: async (file: File) => {
     const formData = new FormData();
     formData.append('file', file);
+    const headers: Record<string, string> = {};
+    if (authToken) headers['Authorization'] = `Bearer ${authToken}`;
     const response = await fetch(`${BASE_URL}/api/ads/bulk-analyze`, {
       method: 'POST',
+      headers,
+      credentials: 'include',
       body: formData,
     });
     if (!response.ok) {
@@ -96,36 +204,8 @@ export const api = {
     }>;
   },
 
-  listAds: (params: {
-    page?: number;
-    limit?: number;
-    search?: string;
-    risk_level?: string;
-    review_status?: string;
-    is_demo?: boolean;
-    data_source?: string;
-    sort_by?: string;
-    sort_order?: string;
-  } = {}) => {
-    const query = new URLSearchParams();
-    if (params.page) query.set('page', params.page.toString());
-    if (params.limit) query.set('limit', params.limit.toString());
-    if (params.search) query.set('search', params.search);
-    if (params.risk_level) query.set('risk_level', params.risk_level);
-    if (params.review_status) query.set('review_status', params.review_status);
-    if (params.is_demo !== undefined) query.set('is_demo', params.is_demo.toString());
-    if (params.data_source) query.set('data_source', params.data_source);
-    if (params.sort_by) query.set('sort_by', params.sort_by);
-    if (params.sort_order) query.set('sort_order', params.sort_order);
-
-    return request<{
-      items: AdvertisementSummary[];
-      total: number;
-      page: number;
-      limit: number;
-      pages: number;
-    }>(`/api/ads?${query.toString()}`);
-  },
+  listAds: listAdsRequest,
+  listAdvertisements: listAdsRequest,
 
   getAdDetail: (id: number | string) => request<AdvertisementDetail>(`/api/ads/${id}`),
 
@@ -169,6 +249,24 @@ export const api = {
     request<{ id: number; case_id: number; note: string; actor: string; created_at: string }>(`/api/cases/${id}/notes`, {
       method: 'POST',
       body: JSON.stringify({ note, actor: actor || 'Analyst Alpha' }),
+    }),
+
+  deleteCase: (id: number | string) =>
+    request<{ message: string }>(`/api/cases/${id}`, {
+      method: 'DELETE',
+    }),
+
+  // Smart URL Scanner & Website X-Ray
+  scanUrl: (url: string, title?: string, saveAsCase?: boolean) =>
+    request<any>('/api/scanner/url', {
+      method: 'POST',
+      body: JSON.stringify({ url, title: title || null, save_as_case: !!saveAsCase }),
+    }),
+
+  inspectWebsiteXRay: (url: string, saveAsCase?: boolean) =>
+    request<any>('/api/scanner/xray', {
+      method: 'POST',
+      body: JSON.stringify({ url, save_as_case: !!saveAsCase }),
     }),
 
   // Alerts

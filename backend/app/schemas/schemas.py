@@ -46,7 +46,7 @@ class AnalysisResultSchema(BaseModel):
     near_duplicate_matches: List[Dict[str, Any]] = []
 
 class AdAnalyzeRequest(BaseModel):
-    content: str = Field(..., min_length=1, max_length=15000, description="Advertisement text or OCR extracted text")
+    content: str = Field(..., max_length=15000, description="Advertisement text or OCR extracted text")
     source_type: str = Field(default="text", description="text, url, screenshot, csv_batch")
     submitted_url: Optional[str] = Field(default=None, description="Optional URL string for safe static evaluation")
     platform: Optional[str] = Field(default=None, description="Optional platform source e.g. Telegram, Instagram, Facebook, X, Web")
@@ -166,6 +166,9 @@ class DashboardStatsResponse(BaseModel):
     model_version: Optional[str] = None
     last_trained_at: Optional[str] = None
     vocabulary_size: Optional[int] = None
+    roc_auc: Optional[float] = None
+    unseen_wording_test_accuracy: Optional[float] = None
+    unseen_wording_test_roc_auc: Optional[float] = None
 
 class DashboardActivityItem(BaseModel):
     date: str
@@ -220,3 +223,36 @@ class NetworkGraphResponse(BaseModel):
     nodes: List[NetworkNode]
     edges: List[NetworkEdge]
     stats: Dict[str, Any]
+
+
+class UserRegisterRequest(BaseModel):
+    full_name: str = Field(..., min_length=2, max_length=128, description="User full legal or analyst name")
+    email: str = Field(..., min_length=5, max_length=128, description="Valid email address")
+    username: str = Field(..., min_length=3, max_length=64, description="Unique username")
+    password: str = Field(..., min_length=8, max_length=128, description="Account password (min 8 characters)")
+    confirm_password: str = Field(..., min_length=8, max_length=128, description="Confirmation password")
+    role: Optional[str] = Field(default="Investigator", description="Account role: Investigator or Fraud Analyst")
+
+
+class UserLoginRequest(BaseModel):
+    username_or_email: str = Field(..., min_length=2, max_length=128, description="Username or email address")
+    password: str = Field(..., min_length=1, max_length=128, description="Account password")
+
+
+class UserResponse(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+    id: int
+    full_name: str
+    email: str
+    username: str
+    role: str
+    is_active: bool
+    created_at: datetime
+
+
+class AuthResponse(BaseModel):
+    access_token: str
+    token_type: str = "bearer"
+    user: UserResponse
+    message: str
+

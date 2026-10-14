@@ -128,6 +128,7 @@ SUSPICIOUS_RULES = [
         "patterns": [
             r"\bact\s+before\s+midnight\b",
             r"\blimited\s+slots\s+(?:left\s+)?today\b",
+            r"\blimited\s+slots?\b",
             r"\bonly\s+\d+\s+cards?\s+remaining\b",
             r"\bfreeze\s+within\s+\d+\s+hours?\b",
             r"\bdon't\s+miss\s+this\s+opportunity\b",
@@ -144,6 +145,7 @@ SUSPICIOUS_RULES = [
         "explanation": "Claims extraordinary guaranteed returns (e.g., >30% weekly) with purported zero investment risk.",
         "patterns": [
             r"\b\d+%\s+(?:daily|weekly)\s+returns?\b",
+            r"\bearn\s+daily\s+[₹$]?[\d,]+",
             r"\bcompletely\s+risk-?free\b",
             r"\bproprietary\s+ai\s+arbitrage\s+bot\b",
             r"\bprivate\s+signal\s+group\b",
@@ -160,6 +162,8 @@ SUSPICIOUS_RULES = [
             r"\bwire\s+transfer\s+or\s+crypto\s+payment\s+only\b",
             r"\boffshore\s+(?:bank\s+)?accounts?\b",
             r"\bcontact\s+@[\w_]+\s+on\s+telegram\b",
+            r"\bjoin\s+(?:now\s+)?(?:on\s+)?telegram\b",
+            r"\btelegram\s+@[\w_]+\b",
         ]
     }
 ]
@@ -176,7 +180,8 @@ BENIGN_WARNING_PATTERNS = [
     r"\bviolates\s+federal\s+law\b",
     r"\bcybersecurity\s+tip(?:\s+of\s+the\s+day)?\b",
     r"\bremember\s+that\s+no\s+legitimate\s+bank\b",
-    r"\bnever\s+(?:provide|share)\s+your\s+(?:one-time\s+passcode|otp|pin|password|cvv)\b",
+    r"\bnever\s+(?:provide|share)\s+(?:your\s+)?(?:netbanking\s+|online\s+banking\s+)?(?:one-time\s+passcode|otp|pin|password|cvv|credentials?)\b",
+    r"\b(?:rbi|sebi|police|government|official)\s+(?:official\s+)?(?:advisory|notice|warning|guideline|circular|portal|app)\b",
     r"\bfdic-?insured\b",
     r"\bsubject\s+to\s+credit\s+review\b",
     r"\bofficial\s+banking\s+portal\b",
@@ -188,7 +193,7 @@ BENIGN_WARNING_PATTERNS = [
     r"\bcyber\s*crime(?:\s+portal|\s+helpline)?\b",
     r"\b(?:call\s+)?1930\b",
     r"\bit\s+is\s+illegal\b",
-    r"\bbeware\s+of\s+(?:ads|fraud|scams|offers|fake)\b",
+    r"\bbeware\s+of\s+(?:ads|fraud(?:ulent)?|scams?|offers?|fake)\b",
     r"\breport\s+such\s+(?:posts|ads|messages)\b",
     r"\b(?:kho\s+gaya|gum\s+ho\s+gaya|chori\s+ho\s+gaya)\b",
     r"\blost\s+my\s+(?:atm|card|debit\s+card|phone|passbook)\b",

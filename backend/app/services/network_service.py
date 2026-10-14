@@ -37,6 +37,17 @@ def normalize_graph_identifier(entity_type: str, raw_value: str) -> Optional[Tup
         sanitized = sanitize_phone_number(raw_clean)
         if sanitized:
             return ("PHONE", sanitized, "STRONG")
+        # If raw_clean is an explicitly provided contact without placeholder masks
+        if "X" not in raw_clean and "x" not in raw_clean:
+            import re
+            cleaned = re.sub(r'[^\d]', '', raw_clean)
+            if cleaned.startswith("91") and len(cleaned) == 12:
+                cleaned = cleaned[2:]
+            elif cleaned.startswith("0") and len(cleaned) == 11:
+                cleaned = cleaned[1:]
+            if len(cleaned) == 10 and cleaned[0] in "6789":
+                if cleaned not in {"0000000000", "1111111111", "2222222222", "3333333333", "4444444444", "5555555555", "6666666666", "7777777777", "8888888888", "9999999999"}:
+                    return ("PHONE", cleaned, "STRONG")
         return None
 
     elif entity_type == "UPI_ID":
@@ -120,6 +131,9 @@ def build_threat_graph(
                 "status": ad.review_status,
                 "is_demo": ad.is_demo,
                 "data_source": ad.data_source,
+                "platform": ad.platform or "Unknown",
+                "matched_phrases": [e.matched_text for e in ad.evidence_items] if ad.evidence_items else (ad.analysis.suspicious_phrases if hasattr(ad.analysis, 'suspicious_phrases') else []),
+                "entities": [{"type": ent.entity_type, "value": ent.normalized_value or ent.entity_value} for ent in ad.entities] if ad.entities else [],
                 "url": ad.submitted_url or "",
                 "created_at": ad.created_at.strftime("%Y-%m-%d %H:%M") if ad.created_at else ""
             }

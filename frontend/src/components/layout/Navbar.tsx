@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Menu, X, ArrowUpRight } from 'lucide-react';
+import { Menu, X, ArrowUpRight, LogIn, UserPlus } from 'lucide-react';
 import { Logo } from '../ui/Logo';
+import { useAuth } from '../../context/AuthContext';
 
 export const Navbar: React.FC = () => {
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { isAuthenticated } = useAuth();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -16,9 +18,9 @@ export const Navbar: React.FC = () => {
   }, []);
 
   const navLinks = [
-    { label: 'Overview', href: '#overview' },
     { label: 'Capabilities', href: '#capabilities' },
-    { label: 'Workflow', href: '#workflow' },
+    { label: 'Detection Engine', href: '#engine' },
+    { label: 'Network Mapping', href: '#network' },
     { label: 'Methodology', href: '#methodology' },
   ];
 
@@ -26,12 +28,12 @@ export const Navbar: React.FC = () => {
     <nav
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         scrolled
-          ? 'bg-[#0B1220]/90 backdrop-blur-md border-b border-[rgba(148,163,184,0.15)] shadow-2xl shadow-black/60'
-          : 'bg-transparent border-b border-[rgba(148,163,184,0.06)]'
+          ? 'bg-[#FFFFFF]/95 backdrop-blur-md border-b border-[#E8DDB8] shadow-gold-sm'
+          : 'bg-[#FAF9F6]/90 backdrop-blur-sm border-b border-[#E8DDB8]/60'
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
-        {/* FinGuard AI Logo */}
+        {/* Official FRAUDSCOPE AI Logo */}
         <Link to="/" className="flex items-center">
           <Logo size="md" />
         </Link>
@@ -42,7 +44,7 @@ export const Navbar: React.FC = () => {
             <a
               key={link.label}
               href={link.href}
-              className="text-sm font-medium text-[#94A3B8] hover:text-[#E5E9F2] transition-colors tracking-wide"
+              className="text-xs font-semibold tracking-wider text-[#697386] hover:text-[#202124] transition-colors uppercase"
             >
               {link.label}
             </a>
@@ -50,64 +52,89 @@ export const Navbar: React.FC = () => {
         </div>
 
         {/* Action CTAs */}
-        <div className="hidden md:flex items-center gap-4">
-          <Link
-            to="/scanner"
-            className="text-xs font-mono tracking-wider text-[#94A3B8] hover:text-white px-3.5 py-2 transition-colors uppercase"
-          >
-            Scan Post
-          </Link>
-          <Link
-            to="/console"
-            className="btn-primary text-xs py-2 px-4 shadow-lg shadow-[#6366F1]/20"
-          >
-            <span>Open Dashboard</span>
-            <ArrowUpRight className="w-3.5 h-3.5" />
-          </Link>
+        <div className="hidden md:flex items-center gap-3">
+          {isAuthenticated ? (
+            <Link
+              to="/console"
+              className="btn-gold text-xs py-2 px-4 shadow-sm flex items-center gap-2"
+            >
+              <span>Investigator Console</span>
+              <ArrowUpRight className="w-3.5 h-3.5" />
+            </Link>
+          ) : (
+            <>
+              <Link
+                to="/login"
+                className="btn-secondary text-xs py-2 px-3.5 flex items-center gap-1.5"
+              >
+                <LogIn className="w-3.5 h-3.5 text-[#A67C00]" />
+                <span>Sign In</span>
+              </Link>
+              <Link
+                to="/register"
+                className="btn-gold text-xs py-2 px-4 flex items-center gap-1.5"
+              >
+                <UserPlus className="w-3.5 h-3.5" />
+                <span>Register</span>
+              </Link>
+            </>
+          )}
         </div>
 
         {/* Mobile menu button */}
         <div className="md:hidden">
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="p-2 rounded-lg text-[#94A3B8] hover:text-white bg-[#131C2E] border border-[rgba(148,163,184,0.15)]"
+            className="p-2 rounded-lg text-[#697386] hover:text-[#202124] bg-[#FFFDF7] border border-[#E8DDB8]"
             aria-label="Toggle menu"
           >
-            {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+            {mobileMenuOpen ? <X className="w-5 h-5 text-[#202124]" /> : <Menu className="w-5 h-5 text-[#202124]" />}
           </button>
         </div>
       </div>
 
       {/* Mobile Drawer */}
       {mobileMenuOpen && (
-        <div className="md:hidden bg-[#0E1728] border-b border-[rgba(148,163,184,0.15)] px-4 pt-4 pb-6 space-y-4 shadow-2xl">
+        <div className="md:hidden bg-[#FFFDF7] border-b border-[#E8DDB8] px-5 pt-4 pb-6 space-y-4 shadow-gold-md">
           <div className="flex flex-col space-y-2">
             {navLinks.map((link) => (
               <a
                 key={link.label}
                 href={link.href}
                 onClick={() => setMobileMenuOpen(false)}
-                className="text-sm font-medium text-[#94A3B8] hover:text-[#E5E9F2] py-2 border-b border-[rgba(148,163,184,0.08)]"
+                className="text-xs font-semibold tracking-wider text-[#697386] hover:text-[#202124] py-2 border-b border-[#E8DDB8]/40 uppercase"
               >
                 {link.label}
               </a>
             ))}
           </div>
-          <div className="pt-2 flex flex-col gap-3">
-            <Link
-              to="/scanner"
-              onClick={() => setMobileMenuOpen(false)}
-              className="btn-secondary text-center text-xs py-2.5"
-            >
-              Scan Advertisement
-            </Link>
-            <Link
-              to="/console"
-              onClick={() => setMobileMenuOpen(false)}
-              className="btn-primary text-center text-xs py-2.5"
-            >
-              Open Dashboard ↗
-            </Link>
+          <div className="pt-2 flex flex-col gap-2.5">
+            {isAuthenticated ? (
+              <Link
+                to="/console"
+                onClick={() => setMobileMenuOpen(false)}
+                className="btn-gold text-center text-xs py-2.5"
+              >
+                Open Investigator Console ↗
+              </Link>
+            ) : (
+              <>
+                <Link
+                  to="/login"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="btn-secondary text-center text-xs py-2.5"
+                >
+                  Sign In
+                </Link>
+                <Link
+                  to="/register"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="btn-gold text-center text-xs py-2.5"
+                >
+                  Create Account
+                </Link>
+              </>
+            )}
           </div>
         </div>
       )}

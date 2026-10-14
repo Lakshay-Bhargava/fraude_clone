@@ -4,7 +4,7 @@ from typing import List, Dict, Optional
 
 # Regex patterns for common financial threat vectors & contact channels
 PHONE_REGEX = re.compile(r'(?:\+?(\d{1,3})[-.\s]?)?\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}\b')
-INDIAN_PHONE_REGEX = re.compile(r'(?:\+91[-.\s]?)?[6-9]\d{9}\b')
+INDIAN_PHONE_REGEX = re.compile(r'(?:(?:\+91|0)[-.\s]*)?[6-9]\d{4}[-.\s]?\d{5}\b|(?:(?:\+91|0)[-.\s]*)?[6-9]\d{9}\b')
 TELEGRAM_REGEX = re.compile(r'(?:@([A-Za-z0-9_]{4,32})|t\.me/([A-Za-z0-9_]{4,32}))', re.IGNORECASE)
 WHATSAPP_REGEX = re.compile(r'(?:whatsapp|wa\.me)[\s/:+]+([0-9\-\s\(\)]{8,20})', re.IGNORECASE)
 UPI_REGEX = re.compile(r'\b([a-zA-Z0-9.\-_]{2,64}@(okhdfcbank|okaxis|oksbi|okicici|paytm|ybl|apl|upi|axl|ibl|barodampay|federal|kotak|sbi|postbank|jupiteraxis|fam|slice|airtel|fbl|icici|hdfcbank|fakeupi))\b', re.IGNORECASE)
@@ -113,6 +113,15 @@ def extract_entities(text: str, submitted_url: str = None) -> List[Dict[str, str
     for match in INDIAN_PHONE_REGEX.finditer(text):
         val = match.group(0)
         cleaned = sanitize_phone_number(val)
+        if not cleaned:
+            c_digits = re.sub(r'[^\d]', '', val)
+            if c_digits.startswith("91") and len(c_digits) == 12:
+                c_digits = c_digits[2:]
+            elif c_digits.startswith("0") and len(c_digits) == 11:
+                c_digits = c_digits[1:]
+            if len(c_digits) == 10 and c_digits[0] in "6789" and "X" not in val and "x" not in val:
+                if c_digits not in {"0000000000", "1111111111", "2222222222", "3333333333", "4444444444", "5555555555", "6666666666", "7777777777", "8888888888", "9999999999"}:
+                    cleaned = c_digits
         if cleaned:
             add_entity("PHONE", f"+91 {cleaned}", cleaned)
 
@@ -120,6 +129,15 @@ def extract_entities(text: str, submitted_url: str = None) -> List[Dict[str, str
     for match in PHONE_REGEX.finditer(text):
         val = match.group(0)
         cleaned = sanitize_phone_number(val)
+        if not cleaned:
+            c_digits = re.sub(r'[^\d]', '', val)
+            if c_digits.startswith("91") and len(c_digits) == 12:
+                c_digits = c_digits[2:]
+            elif c_digits.startswith("0") and len(c_digits) == 11:
+                c_digits = c_digits[1:]
+            if len(c_digits) == 10 and c_digits[0] in "6789" and "X" not in val and "x" not in val:
+                if c_digits not in {"0000000000", "1111111111", "2222222222", "3333333333", "4444444444", "5555555555", "6666666666", "7777777777", "8888888888", "9999999999"}:
+                    cleaned = c_digits
         if cleaned:
             add_entity("PHONE", f"+91 {cleaned}", cleaned)
 

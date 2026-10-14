@@ -247,3 +247,26 @@ def add_case_note(id: int, payload: CaseNoteCreateSchema, db: Session = Depends(
     db.commit()
     db.refresh(note)
     return note
+
+@router.delete("/{id}")
+def delete_case(id: int, db: Session = Depends(get_db)):
+    """
+    Deletes an investigation case record with audit trail recording.
+    """
+    c = db.query(Case).filter(Case.id == id).first()
+    if not c:
+        raise HTTPException(status_code=404, detail="Case not found.")
+
+    case_ref = c.case_ref
+    db.add(AuditEvent(
+        actor="Analyst Alpha",
+        action="DELETE_CASE",
+        entity_type="CASE",
+        entity_id=str(id),
+        details=f"Deleted case record {case_ref}",
+        created_at=datetime.now(timezone.utc)
+    ))
+    db.delete(c)
+    db.commit()
+    return {"message": f"Case {case_ref} successfully deleted."}
+

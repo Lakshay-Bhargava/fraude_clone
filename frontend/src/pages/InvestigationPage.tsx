@@ -633,7 +633,7 @@ export const InvestigationPage: React.FC = () => {
             <div className="p-3 rounded-lg bg-[#0E1522] border border-[rgba(185,200,220,0.08)] space-y-1">
               <span className="text-[10px] text-[#748197] uppercase block">Triggered Rule IDs</span>
               <div className="flex flex-wrap gap-1.5 pt-0.5">
-                {record.analysis?.triggered_rules.map((r) => (
+                {record.analysis?.triggered_rules?.map((r) => (
                   <span key={r.rule_id} className="px-2 py-0.5 rounded bg-[#141C2B] border border-white/10 text-white text-[11px]">
                     {r.rule_id} (weight: +{r.weight})
                   </span>

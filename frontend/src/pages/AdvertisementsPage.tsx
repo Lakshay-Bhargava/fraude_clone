@@ -8,28 +8,29 @@ import {
   RefreshCw,
   ChevronLeft,
   ChevronRight,
-  ScanSearch,
-  Trash2,
   X,
-  Calendar,
+  Eye,
+  CheckCircle2,
+  AlertTriangle,
+  ArrowUpDown,
   Send,
   Camera,
   Share2,
   Globe,
   Video,
-  Eye,
-  CheckCircle2,
-  AlertTriangle,
-  ArrowUpDown
+  Phone,
+  CreditCard
 } from 'lucide-react';
 import { api } from '../services/api';
 import { AdvertisementSummary } from '../types';
 import { RiskBadge } from '../components/ui/RiskBadge';
 import { StatusBadge } from '../components/ui/StatusBadge';
 import { EvidenceDrawer } from '../components/investigation/EvidenceDrawer';
+import { useLanguage } from '../context/LanguageContext';
 
 export const AdvertisementsPage: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
+  const { t } = useLanguage();
 
   const [ads, setAds] = useState<AdvertisementSummary[]>([]);
   const [total, setTotal] = useState(0);
@@ -49,7 +50,16 @@ export const AdvertisementsPage: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [selectedAd, setSelectedAd] = useState<AdvertisementSummary | null>(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
-  const [deleteConfirmId, setDeleteConfirmId] = useState<number | null>(null);
+
+  // Synchronize URL parameters if they change
+  useEffect(() => {
+    const urlRisk = searchParams.get('risk');
+    const urlPlatform = searchParams.get('platform');
+    const urlSearch = searchParams.get('search');
+    if (urlRisk !== null) setRiskFilter(urlRisk);
+    if (urlPlatform !== null) setPlatformFilter(urlPlatform);
+    if (urlSearch !== null) setSearch(urlSearch);
+  }, [searchParams]);
 
   // List of keywords to highlight in snippets
   const suspiciousKeywords = [
@@ -72,6 +82,7 @@ export const AdvertisementsPage: React.FC = () => {
     'merchant UPI',
     'debit card and account',
     'fresh current account required',
+    'mule account',
   ];
 
   // Helper to render text with highlighted keywords
@@ -114,7 +125,7 @@ export const AdvertisementsPage: React.FC = () => {
       chunk.highlight ? (
         <span
           key={idx}
-          className="bg-[#EF4444]/25 text-[#EF4444] px-1 py-0.5 rounded font-semibold border border-[#EF4444]/40"
+          className="bg-[#FDE8E8] text-[#A8341C] border border-[#F8B4B6] px-1 py-0.2 rounded font-semibold"
         >
           {chunk.text}
         </span>
@@ -124,41 +135,31 @@ export const AdvertisementsPage: React.FC = () => {
     );
   };
 
-  // Helper to get platform icon
   const getPlatformIcon = (platform?: string) => {
     const p = (platform || '').toLowerCase();
-    if (p.includes('telegram')) return <Send className="w-3.5 h-3.5 text-[#22D3EE]" />;
-    if (p.includes('instagram')) return <Camera className="w-3.5 h-3.5 text-[#E1306C]" />;
-    if (p.includes('facebook')) return <Share2 className="w-3.5 h-3.5 text-[#1877F2]" />;
-    if (p.includes('youtube')) return <Video className="w-3.5 h-3.5 text-[#EF4444]" />;
-    return <Globe className="w-3.5 h-3.5 text-[#6366F1]" />;
+    if (p.includes('telegram')) return <Send className="w-3.5 h-3.5 text-[#0F6E7A]" />;
+    if (p.includes('instagram')) return <Camera className="w-3.5 h-3.5 text-[#A8341C]" />;
+    if (p.includes('facebook')) return <Share2 className="w-3.5 h-3.5 text-[#2F4B45]" />;
+    if (p.includes('youtube')) return <Video className="w-3.5 h-3.5 text-[#E5484D]" />;
+    return <Globe className="w-3.5 h-3.5 text-[var(--muted)]" />;
   };
 
-  // Fetch advertisements
-  const fetchAds = async () => {
+  const loadAds = async () => {
+    setLoading(true);
     try {
-      const isDemoParam = provenanceFilter === 'live' ? false : provenanceFilter === 'demo' ? true : undefined;
-      const res = await api.listAds({
+      const res = await api.listAdvertisements({
         page,
         limit,
-        search: search.trim() || undefined,
         risk_level: riskFilter && riskFilter !== 'All' ? riskFilter : undefined,
-        review_status: statusFilter && statusFilter !== 'All' ? statusFilter : undefined,
-        is_demo: isDemoParam,
+        platform: platformFilter && platformFilter !== 'All' ? platformFilter : undefined,
+        review_status: statusFilter || undefined,
+        search: search.trim() || undefined,
         sort_by: sortBy,
         sort_order: sortOrder,
+        is_demo: provenanceFilter === 'live' ? false : (provenanceFilter === 'demo' ? true : undefined),
       });
 
-      let items = res.items;
-
-      // Filter by platform in client if specified
-      if (platformFilter && platformFilter !== 'All') {
-        items = items.filter(
-          item => (item.platform_detected || '').toLowerCase() === platformFilter.toLowerCase()
-        );
-      }
-
-      setAds(items);
+      setAds(res.items);
       setTotal(res.total);
       setPages(res.pages);
     } catch (err) {
@@ -169,39 +170,13 @@ export const AdvertisementsPage: React.FC = () => {
   };
 
   useEffect(() => {
-    // Keep in sync with URL search params from top nav
-    const querySearch = searchParams.get('search') || '';
-    const queryRisk = searchParams.get('risk') || '';
-    const queryPlatform = searchParams.get('platform') || '';
-
-    setSearch(querySearch);
-    setRiskFilter(queryRisk);
-    setPlatformFilter(queryPlatform);
-  }, [searchParams]);
-
-  useEffect(() => {
-    fetchAds();
-  }, [page, search, riskFilter, platformFilter, statusFilter, provenanceFilter, sortBy, sortOrder]);
+    loadAds();
+  }, [page, riskFilter, platformFilter, statusFilter, provenanceFilter, sortBy, sortOrder]);
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setPage(1);
-    fetchAds();
-  };
-
-  const handleResetFilters = () => {
-    setSearch('');
-    setRiskFilter('');
-    setPlatformFilter('');
-    setStatusFilter('');
-    setProvenanceFilter('All');
-    setSearchParams({});
-    setPage(1);
-  };
-
-  const openEvidenceModal = (ad: AdvertisementSummary) => {
-    setSelectedAd(ad);
-    setDrawerOpen(true);
+    loadAds();
   };
 
   const toggleSort = (field: string) => {
@@ -213,310 +188,287 @@ export const AdvertisementsPage: React.FC = () => {
     }
   };
 
-  const handleDelete = async (id: number) => {
-    try {
-      await api.deleteAd(id);
-      setDeleteConfirmId(null);
-      await fetchAds();
-    } catch (err: any) {
-      alert(err.message || 'Failed to delete record.');
-    }
+  const handleResetFilters = () => {
+    setSearch('');
+    setRiskFilter('');
+    setPlatformFilter('');
+    setStatusFilter('');
+    setProvenanceFilter('All');
+    setPage(1);
+    setSearchParams(new URLSearchParams());
   };
 
-  const hasActiveFilters = Boolean(search || (riskFilter && riskFilter !== 'All') || (platformFilter && platformFilter !== 'All') || statusFilter);
+  const hasActiveFilters = Boolean(
+    search || (riskFilter && riskFilter !== 'All') || (platformFilter && platformFilter !== 'All') || statusFilter || provenanceFilter !== 'All'
+  );
 
   return (
-    <div className="space-y-6 max-w-7xl mx-auto">
-      {/* 1. Header Section */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+    <div className="space-y-3.5 max-w-7xl mx-auto">
+      {/* 1. Header & Summary */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-2 border-b border-[var(--border)]">
         <div>
-          <div className="flex items-center gap-2">
-            <h1 className="text-2xl font-bold text-white tracking-tight">
-              Flagged Posts
-            </h1>
-            <span className="text-xs font-mono px-2 py-0.5 rounded-full bg-[#EF4444]/15 border border-[#EF4444]/30 text-[#EF4444] font-semibold">
-              Live Investigation
-            </span>
-          </div>
-          <p className="text-sm text-[#94A3B8] mt-0.5">
-            Monitor, inspect, and investigate suspicious financial advertisements across social media channels.
+          <h1 className="text-xl sm:text-2xl font-bold text-[var(--text)] tracking-tight">
+            {t('nav.flagged_posts', 'Flagged posts')}
+          </h1>
+          <p className="text-xs text-[var(--muted)] mt-0.5">
+            Surveillance ledger indexing suspicious investment lures, mule account recruitments, and linked indicators.
           </p>
         </div>
 
-        <div className="flex items-center gap-2.5">
+        <div className="flex items-center gap-2">
+          <span className="text-xs font-mono text-[var(--muted)]">
+            Total Records: <strong className="text-[var(--text)]">{total.toLocaleString()}</strong>
+          </span>
           <button
-            onClick={fetchAds}
-            className="p-2.5 rounded-xl bg-[#131C2E] border border-[rgba(148,163,184,0.15)] text-[#94A3B8] hover:text-white transition-colors"
-            title="Refresh flagged posts"
+            onClick={loadAds}
+            className="p-1.5 rounded-[var(--radius)] text-[var(--muted)] hover:text-[var(--text)] border border-[var(--border)] bg-[var(--card)] hover:bg-[var(--table-hover)] transition-colors ml-2"
+            title="Refresh Table"
           >
-            <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin text-[#6366F1]' : ''}`} />
+            <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin' : ''}`} />
           </button>
         </div>
       </div>
 
-      {/* 2. Search & Filters Bar */}
-      <div className="floating-card p-4 flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3">
-        {/* Search */}
-        <form onSubmit={handleSearchSubmit} className="relative flex-1 max-w-md">
+      {/* 2. Search & Filter Bar */}
+      <div className="p-3 rounded-[var(--radius)] bg-[var(--card)] border border-[var(--border)] flex flex-wrap items-center justify-between gap-2.5 text-xs">
+        <form onSubmit={handleSearchSubmit} className="relative flex-1 min-w-[240px] max-w-md">
+          <Search className="w-3.5 h-3.5 text-[var(--muted)] absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
           <input
             type="text"
-            placeholder="Search keywords, post IDs, phone numbers, UPI..."
+            placeholder="Search by ID, keyword, phone, or UPI handle..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-9 pr-3 py-2 text-xs input-surface placeholder-[#64748B]"
+            className="w-full pl-8 pr-3 py-1 text-xs input-surface"
           />
-          <Search className="w-4 h-4 text-[#64748B] absolute left-3 top-1/2 -translate-y-1/2" />
         </form>
 
-        {/* Filter Selects */}
-        <div className="flex flex-wrap items-center gap-2.5">
-          {/* Platform Filter */}
-          <select
-            value={platformFilter}
-            onChange={(e) => { setPlatformFilter(e.target.value); setPage(1); }}
-            className="py-2 px-3 text-xs input-surface text-[#94A3B8]"
-          >
-            <option value="">All Platforms</option>
-            <option value="Telegram">Telegram</option>
-            <option value="Instagram">Instagram</option>
-            <option value="Facebook">Facebook</option>
-            <option value="YouTube">YouTube</option>
-            <option value="X">X (Twitter)</option>
-          </select>
-
-          {/* Risk Level Filter */}
-          <select
-            value={riskFilter}
-            onChange={(e) => { setRiskFilter(e.target.value); setPage(1); }}
-            className="py-2 px-3 text-xs input-surface text-[#94A3B8]"
-          >
-            <option value="">All Risk Levels</option>
-            <option value="HIGH">High Risk</option>
-            <option value="MEDIUM">Medium Risk</option>
-            <option value="LOW">Low Risk</option>
-          </select>
-
+        <div className="flex flex-wrap items-center gap-2 font-mono text-xs">
           {/* Status Filter */}
           <select
             value={statusFilter}
             onChange={(e) => { setStatusFilter(e.target.value); setPage(1); }}
-            className="py-2 px-3 text-xs input-surface text-[#94A3B8]"
+            className="py-1 px-2.5 text-xs input-surface"
           >
             <option value="">All Statuses</option>
             <option value="NEW">New</option>
-            <option value="UNDER_REVIEW">Under Review</option>
-            <option value="CONFIRMED_FRAUD">Confirmed Fraud</option>
+            <option value="NEEDS_REVIEW">Needs review</option>
+            <option value="UNDER_REVIEW">Reviewed</option>
             <option value="ESCALATED">Escalated</option>
-            <option value="BENIGN">Benign</option>
+            <option value="FALSE_POSITIVE">Dismissed</option>
           </select>
 
           {/* Provenance Filter */}
           <select
             value={provenanceFilter}
             onChange={(e) => { setProvenanceFilter(e.target.value); setPage(1); }}
-            className="py-2 px-3 text-xs input-surface text-[#94A3B8] font-mono"
+            className="py-1 px-2.5 text-xs input-surface font-mono"
           >
-            <option value="All">All Provenance</option>
-            <option value="live">Live User Scans</option>
-            <option value="demo">Demo Benchmark Data</option>
+            <option value="All">All Sources</option>
+            <option value="live">Live Scans Only</option>
+            <option value="demo">Synthetic Dataset</option>
           </select>
 
           {hasActiveFilters && (
             <button
               onClick={handleResetFilters}
-              className="py-2 px-3 text-xs rounded-xl bg-[#0D182B] border border-[rgba(148,163,184,0.15)] text-[#6366F1] hover:text-[#818CF8] flex items-center gap-1 transition-colors"
+              className="py-1 px-2.5 text-xs rounded-[var(--radius)] bg-[var(--bg)] border border-[var(--border)] text-[var(--primary)] hover:bg-[var(--table-hover)] flex items-center gap-1 transition-colors"
               title="Reset all filters"
             >
-              <X className="w-3.5 h-3.5" />
+              <X className="w-3 h-3" />
               <span>Reset</span>
             </button>
           )}
         </div>
       </div>
 
-      {/* 3. Flagged Posts Investigation Table */}
-      <div className="floating-card p-0 overflow-hidden shadow-xl">
+      {/* 3. Flagged Posts Investigation Table (Phase 1 & Phase 4 Contrast Fix) */}
+      <div className="rounded-[var(--radius)] bg-[var(--card)] border border-[var(--border)] shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs">
-            <thead className="border-b border-[rgba(148,163,184,0.12)] text-[11px] font-mono text-[#64748B] uppercase bg-[#091426]">
+          <table className="w-full text-left text-xs border-collapse">
+            {/* Table Header: Sticky, WCAG AA compliant dark text on light cream card header */}
+            <thead className="border-b border-[var(--border)] bg-[#FFFFFF] text-[11px] font-mono text-[var(--muted)] uppercase sticky top-0 select-none">
               <tr>
-                <th className="py-3 px-4">Platform</th>
-                <th className="py-3 px-4 cursor-pointer hover:text-white" onClick={() => toggleSort('id')}>
+                <th className="py-2.5 px-3.5 font-semibold text-[var(--text)]">
+                  {t('table.platform', 'Platform')}
+                </th>
+                <th
+                  className="py-2.5 px-3.5 cursor-pointer hover:text-[var(--text)]"
+                  onClick={() => toggleSort('id')}
+                >
                   <div className="flex items-center gap-1">
-                    <span>Post ID</span>
-                    <ArrowUpDown className="w-3 h-3" />
+                    <span>{t('table.post_id', 'Post ID')}</span>
+                    <ArrowUpDown className="w-3 h-3 text-[var(--muted)]" />
                   </div>
                 </th>
-                <th className="py-3 px-4">Advertisement Snippet</th>
-                <th className="py-3 px-4 cursor-pointer hover:text-white" onClick={() => toggleSort('risk_score')}>
+                <th className="py-2.5 px-3.5 font-semibold text-[var(--text)] max-w-md">
+                  {t('table.snippet', 'Advertisement snippet')}
+                </th>
+                <th
+                  className="py-2.5 px-3.5 cursor-pointer hover:text-[var(--text)]"
+                  onClick={() => toggleSort('risk_score')}
+                >
                   <div className="flex items-center gap-1">
-                    <span>Risk Level & Score</span>
-                    <ArrowUpDown className="w-3 h-3" />
+                    <span>{t('table.risk_level', 'Risk level and score')}</span>
+                    <ArrowUpDown className="w-3 h-3 text-[var(--muted)]" />
                   </div>
                 </th>
-                <th className="py-3 px-4">Extracted Indicators</th>
-                <th className="py-3 px-4">Status</th>
-                <th className="py-3 px-4">Detection Date</th>
-                <th className="py-3 px-4 text-right">Evidence Action</th>
+                <th className="py-2.5 px-3.5 font-semibold text-[var(--text)]">
+                  {t('table.indicators', 'Extracted indicators')}
+                </th>
+                <th className="py-2.5 px-3.5 font-semibold text-[var(--text)]">
+                  {t('table.status', 'Status')}
+                </th>
+                <th className="py-2.5 px-3.5 font-semibold text-[var(--text)]">
+                  {t('table.date', 'Detection date')}
+                </th>
+                <th className="py-2.5 px-3.5 text-right font-semibold text-[var(--text)]">
+                  {t('table.evidence_action', 'Action')}
+                </th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-[rgba(148,163,184,0.08)] font-sans">
+
+            {/* Table Body: Crisp dark text, row hover = #EDE5D3, text colour stays dark and readable */}
+            <tbody className="divide-y divide-[var(--border)]">
               {loading ? (
                 <tr>
-                  <td colSpan={8} className="py-16 text-center text-[#64748B] font-mono">
-                    <div className="w-6 h-6 border-2 border-[#6366F1] border-t-transparent rounded-full animate-spin mx-auto mb-2" />
+                  <td colSpan={8} className="py-12 text-center text-[var(--muted)] font-mono">
+                    <div className="w-5 h-5 border-2 border-[var(--primary)] border-t-transparent rounded-full animate-spin mx-auto mb-2" />
                     Loading flagged advertisements...
                   </td>
                 </tr>
               ) : ads.length === 0 ? (
                 <tr>
-                  <td colSpan={8} className="py-16 text-center text-[#94A3B8]">
-                    No advertisements match the selected filters or search terms.
+                  <td colSpan={8} className="py-12 text-center text-[var(--muted)] font-mono">
+                    No advertisements match the selected filters.
                   </td>
                 </tr>
               ) : (
-                ads.map((ad) => (
-                  <tr key={ad.id} className="hover:bg-[#18243A]/50 transition-colors group">
-                    {/* Platform Icon & Name */}
-                    <td className="py-3.5 px-4 whitespace-nowrap">
-                      <div className="flex items-center gap-2">
-                        <div className="p-1.5 rounded-lg bg-[#0D182B] border border-[rgba(148,163,184,0.15)]">
-                          {getPlatformIcon(ad.platform_detected)}
+                ads.map((ad) => {
+                  const isLive = !ad.is_demo && ad.data_source !== 'SYNTHETIC_DATASET';
+                  return (
+                    <tr
+                      key={ad.id}
+                      onClick={() => {
+                        setSelectedAd(ad);
+                        setDrawerOpen(true);
+                      }}
+                      className="table-row-interactive cursor-pointer group"
+                    >
+                      {/* 1. Platform */}
+                      <td className="py-2.5 px-3.5 whitespace-nowrap">
+                        <div className="flex items-center gap-2">
+                          <div className="p-1 rounded-[var(--radius)] bg-[var(--bg)] border border-[var(--border)] text-[var(--text)]">
+                            {getPlatformIcon(ad.platform_detected)}
+                          </div>
+                          <span className="font-medium text-[var(--text)]">
+                            {ad.platform_detected || 'Telegram'}
+                          </span>
                         </div>
-                        <span className="font-medium text-[#E5E9F2]">
-                          {ad.platform_detected || 'Telegram'}
+                      </td>
+
+                      {/* 2. Post ID */}
+                      <td className="py-2.5 px-3.5 whitespace-nowrap font-mono">
+                        <div className="flex items-center gap-1.5">
+                          <span className="font-bold text-[var(--text)]">
+                            {ad.custom_id || `AD-${ad.id}`}
+                          </span>
+                          {/* Live tag only on genuinely live user-scanned rows */}
+                          {isLive && (
+                            <span className="px-1.5 py-0.2 rounded text-[9px] font-mono font-bold bg-[#E6F7F0] text-[#1D6B4F] border border-[#A3E3CB]">
+                              LIVE
+                            </span>
+                          )}
+                        </div>
+                      </td>
+
+                      {/* 3. Advertisement Snippet (2 lines max with ellipsis, full text tooltip) */}
+                      <td
+                        className="py-2.5 px-3.5 max-w-xs sm:max-w-md text-[var(--text)] leading-snug"
+                        title={ad.original_text}
+                      >
+                        <div className="line-clamp-2">
+                          {renderHighlightedSnippet(ad.original_text)}
+                        </div>
+                      </td>
+
+                      {/* 4. Risk Level and Score */}
+                      <td className="py-2.5 px-3.5 whitespace-nowrap">
+                        <RiskBadge level={ad.risk_level} score={ad.risk_score} size="sm" />
+                      </td>
+
+                      {/* 5. Extracted Indicators (darker chip text for contrast #0F6E7A on #D8EEF0) */}
+                      <td className="py-2.5 px-3.5 whitespace-nowrap font-mono text-[11px]">
+                        <span className="bg-[#D8EEF0] text-[#0F6E7A] border border-[#B2DFE3] px-2 py-0.5 rounded-[var(--radius)] font-medium inline-flex items-center gap-1">
+                          <Phone className="w-2.5 h-2.5" />
+                          <span>+91 98765 *** / UPI</span>
                         </span>
-                      </div>
-                    </td>
+                      </td>
 
-                    {/* Post ID & Provenance */}
-                    <td className="py-3.5 px-4 whitespace-nowrap">
-                      <div className="font-mono font-bold text-white">
-                        {ad.custom_id || `AD-${ad.id}`}
-                      </div>
-                      <div className="mt-1">
-                        {ad.is_demo || ad.data_source === 'SYNTHETIC_DATASET' ? (
-                          <span className="px-1.5 py-0.5 rounded text-[9px] font-mono font-bold bg-purple-500/15 text-purple-300 border border-purple-500/30">
-                            DEMO
-                          </span>
-                        ) : (
-                          <span className="px-1.5 py-0.5 rounded text-[9px] font-mono font-bold bg-emerald-500/15 text-emerald-300 border border-emerald-500/30">
-                            LIVE
-                          </span>
-                        )}
-                      </div>
-                    </td>
+                      {/* 6. Status Badge */}
+                      <td className="py-2.5 px-3.5 whitespace-nowrap">
+                        <StatusBadge status={ad.review_status} size="sm" />
+                      </td>
 
-                    {/* Advertisement Snippet with highlighted words */}
-                    <td className="py-3.5 px-4 max-w-xs sm:max-w-md text-[#E5E9F2] leading-relaxed">
-                      <div className="line-clamp-2">
-                        {renderHighlightedSnippet(ad.original_text)}
-                      </div>
-                    </td>
+                      {/* 7. Detection Date */}
+                      <td className="py-2.5 px-3.5 font-mono text-[var(--muted)] whitespace-nowrap text-[11px]">
+                        {new Date(ad.created_at).toLocaleDateString()}
+                      </td>
 
-                    {/* Risk Badge with 0-100 score */}
-                    <td className="py-3.5 px-4 whitespace-nowrap">
-                      <RiskBadge level={ad.risk_level} score={ad.risk_score} size="sm" />
-                    </td>
-
-                    {/* Extracted Indicators */}
-                    <td className="py-3.5 px-4 whitespace-nowrap font-mono text-[11px] text-[#22D3EE]">
-                      <span className="bg-[#22D3EE]/10 px-2 py-0.5 rounded border border-[#22D3EE]/20">
-                        +91 98765 *** / UPI
-                      </span>
-                    </td>
-
-                    {/* Status Badge */}
-                    <td className="py-3.5 px-4 whitespace-nowrap">
-                      <StatusBadge status={ad.review_status} size="sm" />
-                    </td>
-
-                    {/* Detection Date */}
-                    <td className="py-3.5 px-4 font-mono text-[#64748B] whitespace-nowrap text-[11px]">
-                      {new Date(ad.created_at).toLocaleDateString()}
-                    </td>
-
-                    {/* Actions: View Evidence Button */}
-                    <td className="py-3.5 px-4 text-right whitespace-nowrap">
-                      <div className="flex items-center justify-end gap-2">
+                      {/* 8. Action (Open Drawer) */}
+                      <td className="py-2.5 px-3.5 text-right whitespace-nowrap">
                         <button
-                          onClick={() => openEvidenceModal(ad)}
-                          className="px-3 py-1.5 rounded-lg bg-[#6366F1]/15 hover:bg-[#6366F1] text-[#818CF8] hover:text-white border border-[#6366F1]/30 hover:border-[#6366F1] font-semibold text-xs transition-all flex items-center gap-1.5"
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setSelectedAd(ad);
+                            setDrawerOpen(true);
+                          }}
+                          className="text-[11px] font-mono text-[var(--accent)] hover:underline flex items-center gap-1 ml-auto font-medium"
                         >
                           <Eye className="w-3.5 h-3.5" />
-                          <span>View Evidence</span>
+                          <span>{t('table.view_evidence', 'Inspect')}</span>
                         </button>
-                        <button
-                          onClick={() => setDeleteConfirmId(ad.id)}
-                          className="p-1.5 text-[#64748B] hover:text-[#EF4444] rounded hover:bg-[#131C2E] transition-colors"
-                          title="Delete Post"
-                          aria-label="Delete Post"
-                        >
-                          <Trash2 className="w-3.5 h-3.5" />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))
+                      </td>
+                    </tr>
+                  );
+                })
               )}
             </tbody>
           </table>
         </div>
 
-        {/* Pagination Bar */}
-        <div className="p-4 border-t border-[rgba(148,163,184,0.1)] bg-[#091426] flex items-center justify-between text-xs text-[#94A3B8]">
-          <span>
-            Showing {ads.length} of {total} flagged advertisements • Page {page} of {pages}
-          </span>
-          <div className="flex items-center gap-2">
+        {/* 4. Pagination Footer */}
+        <div className="px-4 py-2.5 border-t border-[var(--border)] bg-[#FFFFFF] flex flex-wrap items-center justify-between gap-3 text-xs font-mono text-[var(--muted)]">
+          <div>
+            Showing <strong className="text-[var(--text)]">{ads.length}</strong> of{' '}
+            <strong className="text-[var(--text)]">{total.toLocaleString()}</strong> posts
+          </div>
+
+          <div className="flex items-center gap-1.5">
             <button
               onClick={() => setPage((p) => Math.max(1, p - 1))}
               disabled={page <= 1}
-              className="p-1.5 rounded-lg bg-[#131C2E] border border-[rgba(148,163,184,0.15)] text-[#E5E9F2] disabled:opacity-40"
-              title="Previous Page"
+              className="p-1 px-2 rounded-[var(--radius)] bg-[var(--bg)] border border-[var(--border)] text-[var(--text)] disabled:opacity-40 disabled:cursor-not-allowed hover:bg-[var(--table-hover)] flex items-center gap-1"
             >
-              <ChevronLeft className="w-4 h-4" />
+              <ChevronLeft className="w-3.5 h-3.5" />
+              <span>Prev</span>
             </button>
-            <span className="font-mono px-2 text-white">{page}</span>
+            <span className="px-2 text-[var(--text)] font-bold">
+              Page {page} / {Math.max(1, pages)}
+            </span>
             <button
               onClick={() => setPage((p) => Math.min(pages, p + 1))}
               disabled={page >= pages}
-              className="p-1.5 rounded-lg bg-[#131C2E] border border-[rgba(148,163,184,0.15)] text-[#E5E9F2] disabled:opacity-40"
-              title="Next Page"
+              className="p-1 px-2 rounded-[var(--radius)] bg-[var(--bg)] border border-[var(--border)] text-[var(--text)] disabled:opacity-40 disabled:cursor-not-allowed hover:bg-[var(--table-hover)] flex items-center gap-1"
             >
-              <ChevronRight className="w-4 h-4" />
+              <span>Next</span>
+              <ChevronRight className="w-3.5 h-3.5" />
             </button>
           </div>
         </div>
       </div>
 
-      {/* Delete Confirmation Modal */}
-      {deleteConfirmId && (
-        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="floating-card max-w-sm w-full space-y-4 border-[#EF4444]/40 shadow-2xl">
-            <h3 className="text-base font-bold text-white">Delete Flagged Post Record?</h3>
-            <p className="text-xs text-[#94A3B8] leading-relaxed">
-              Are you sure you want to delete post record #{deleteConfirmId}? This will remove all associated forensic indicators and risk breakdown cache.
-            </p>
-            <div className="flex justify-end gap-3 pt-2">
-              <button
-                onClick={() => setDeleteConfirmId(null)}
-                className="btn-secondary text-xs py-2 px-3.5"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={() => handleDelete(deleteConfirmId)}
-                className="px-4 py-2 rounded-xl bg-[#EF4444] text-white text-xs font-semibold hover:bg-red-600 transition-colors"
-              >
-                Delete Record
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Slide-in Evidence Drawer */}
+      {/* Slide-in Evidence Detail Drawer */}
       <EvidenceDrawer
         isOpen={drawerOpen}
         onClose={() => setDrawerOpen(false)}
