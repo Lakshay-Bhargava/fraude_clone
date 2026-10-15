@@ -13,7 +13,7 @@ import {
   LoginPayload
 } from '../types';
 
-const BASE_URL = import.meta.env.VITE_API_URL || '';
+const BASE_URL = (import.meta.env.VITE_API_URL || '').replace(/\/+$/, '');
 
 let authToken: string | null = typeof window !== 'undefined' ? localStorage.getItem('fraudscope_token') : null;
 
@@ -50,7 +50,7 @@ async function request<T>(endpoint: string, options: RequestInit = {}): Promise<
     });
   } catch (err: any) {
     if (err.name === 'TypeError' && (err.message === 'Failed to fetch' || err.message?.includes('fetch'))) {
-      throw new Error(`Unable to reach FraudScope AI backend (${url}). Please check internet connection or backend status.`);
+      throw new Error(`Unable to reach FraudScope AI backend (${url}). The free backend instance may be waking from cold sleep or network is unreachable.`);
     }
     throw err;
   }
@@ -61,7 +61,9 @@ async function request<T>(endpoint: string, options: RequestInit = {}): Promise<
       const errJson = await response.json();
       errorMsg = errJson.detail || errJson.message || errorMsg;
     } catch {
-      // fallback
+      if (response.status === 502 || response.status === 503 || response.status === 504) {
+        errorMsg = `Backend server is starting up (HTTP ${response.status}). Please wait 20-30 seconds and retry.`;
+      }
     }
     throw new Error(errorMsg);
   }
@@ -166,13 +168,14 @@ export const api = {
     }),
 
   uploadOcrImage: async (file: File) => {
+    const url = `${BASE_URL}/api/ads/ocr-upload`;
     const formData = new FormData();
     formData.append('file', file);
     const headers: Record<string, string> = {};
     if (authToken) headers['Authorization'] = `Bearer ${authToken}`;
     let response: Response;
     try {
-      response = await fetch(`${BASE_URL}/api/ads/ocr-upload`, {
+      response = await fetch(url, {
         method: 'POST',
         headers,
         credentials: 'include',
@@ -180,13 +183,30 @@ export const api = {
       });
     } catch (err: any) {
       if (err.name === 'TypeError' && (err.message === 'Failed to fetch' || err.message?.includes('fetch'))) {
-        throw new Error(`Unable to reach backend OCR service (${BASE_URL || window.location.origin}/api/ads/ocr-upload). Please check server connection.`);
+        throw new Error(
+          `Unable to reach backend OCR service (${url || window.location.origin + '/api/ads/ocr-upload'}). The backend instance may be waking from cold sleep (takes ~30-45s) or blocked by network/ad-blocker. Please wait a moment and retry.`
+        );
       }
-      throw err;
+      throw new Error(`Network failure connecting to OCR service: ${err.message || 'Unknown network error'}`);
     }
+
     if (!response.ok) {
-      const err = await response.json().catch(() => ({ detail: 'OCR upload failed' }));
-      throw new Error(err.detail || 'OCR upload failed');
+      let detailMsg = `HTTP Error ${response.status}`;
+      try {
+        const errJson = await response.json();
+        detailMsg = errJson.detail || errJson.message || detailMsg;
+      } catch {
+        if (response.status === 502 || response.status === 503 || response.status === 504) {
+          detailMsg = `Backend server is spinning up (HTTP ${response.status} Gateway). Please allow 30 seconds for container startup and retry.`;
+        } else if (response.status === 413) {
+          detailMsg = 'Image file exceeds maximum upload size (10MB).';
+        } else if (response.status === 400) {
+          detailMsg = 'Uploaded file must be a valid image format (PNG, JPG, WEBP).';
+        } else if (response.status === 422) {
+          detailMsg = 'Image payload validation failed on backend.';
+        }
+      }
+      throw new Error(`[OCR Service ${response.status}] ${detailMsg}`);
     }
     return response.json() as Promise<{
       success: boolean;
