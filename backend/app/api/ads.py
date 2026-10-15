@@ -1,3 +1,7 @@
+import io
+import os
+import time
+import logging
 import re
 import uuid
 from typing import List, Optional
@@ -5,6 +9,7 @@ from datetime import datetime, timezone
 from fastapi import APIRouter, Depends, HTTPException, Query, UploadFile, File, Form, status
 from sqlalchemy.orm import Session
 from sqlalchemy import or_, desc, asc
+from PIL import Image
 
 from app.database.session import get_db
 from app.models.models import (
@@ -23,6 +28,10 @@ from app.services.similarity_service import check_exact_duplicate, find_near_dup
 from app.services.risk_scoring import calculate_composite_risk
 from app.services.ocr_service import extract_text_from_image
 from app.services.url_analysis import analyze_url
+
+logger = logging.getLogger("fraudscope.ads")
+
+VALID_IMAGE_EXTENSIONS = {".png", ".jpg", ".jpeg", ".webp", ".bmp", ".tiff", ".jfif", ".gif"}
 
 router = APIRouter(prefix="/ads", tags=["Advertisements"])
 
@@ -275,21 +284,46 @@ def analyze_advertisement(payload: AdAnalyzeRequest, db: Session = Depends(get_d
 @router.post("/ocr-upload")
 async def ocr_upload(file: UploadFile = File(...)):
     """
-    Accepts an image file (PNG, JPG, WEBP), performs safe OCR extraction,
-    and returns the extracted text for analyst review and scanning.
+    Accepts an image file (PNG, JPG, WEBP, etc.), validates its format and integrity,
+    performs high-performance forensic OCR extraction, and returns structured text.
     """
-    if not file.content_type.startswith("image/"):
-        raise HTTPException(status_code=400, detail="Uploaded file must be a valid image format.")
-    
+    filename = file.filename or "uploaded_image.png"
+    ext = os.path.splitext(filename)[1].lower()
+    content_type = (file.content_type or "").lower()
+
+    # 1. Accept standard image MIME types OR standard image extensions
+    if not (content_type.startswith("image/") or ext in VALID_IMAGE_EXTENSIONS or content_type == "application/octet-stream"):
+        raise HTTPException(status_code=400, detail="Uploaded file must be a valid image format (PNG, JPG, WEBP).")
+
     contents = await file.read()
+    if not contents or len(contents) == 0:
+        raise HTTPException(status_code=400, detail="Uploaded image file is empty.")
+
     if len(contents) > 10 * 1024 * 1024:
         raise HTTPException(status_code=400, detail="Image size exceeds 10MB limit.")
 
+    # 2. Validate image structure & decode via PIL
+    try:
+        test_img = Image.open(io.BytesIO(contents))
+        img_dims = f"{test_img.width}x{test_img.height}"
+        img_format = test_img.format or "UNKNOWN"
+    except Exception as e:
+        logger.warning("Corrupt or invalid image upload attempt: %s (error: %s)", filename, str(e))
+        raise HTTPException(status_code=400, detail="Uploaded file is corrupt or not a recognized image format.")
+
+    t0 = time.time()
+    logger.info("Forensic OCR processing started for %s (%s, %s, %d bytes)", filename, img_format, img_dims, len(contents))
+
+    # 3. Perform OCR extraction
     success, extracted_text, message = extract_text_from_image(contents)
+    elapsed = time.time() - t0
+
+    logger.info("Forensic OCR completed for %s in %.2fs: success=%s, extracted_chars=%d", filename, elapsed, success, len(extracted_text))
+
     return {
         "success": success,
         "extracted_text": extracted_text,
-        "filename": file.filename,
+        "filename": filename,
         "message": message
     }
 

@@ -41,8 +41,10 @@ export const ScannerPage: React.FC = () => {
 
   // OCR and File Upload
   const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [ocrFilename, setOcrFilename] = useState<string | null>(null);
   const [ocrStatus, setOcrStatus] = useState<string | null>(null);
   const [ocrLoading, setOcrLoading] = useState(false);
+  const [ocrSuccess, setOcrSuccess] = useState(false);
 
   // Status & Results
   const [scanning, setScanning] = useState(false);
@@ -125,8 +127,10 @@ export const ScannerPage: React.FC = () => {
         setErrorMsg('Image size exceeds 10MB limit.');
         return;
       }
+      setOcrFilename(file.name);
+      setOcrSuccess(false);
       setImagePreview(URL.createObjectURL(file));
-      setOcrStatus('Extracting text from image via OCR...');
+      setOcrStatus(`Extracting text from ${file.name} via forensic OCR...`);
       setOcrLoading(true);
       setErrorMsg(null);
 
@@ -135,16 +139,20 @@ export const ScannerPage: React.FC = () => {
         if (ocrRes.success && ocrRes.extracted_text && ocrRes.extracted_text.trim().length > 0) {
           const text = ocrRes.extracted_text.trim();
           setTextContent(text);
-          setOcrStatus(`✓ OCR completed: extracted ${text.length} characters. Review and edit the text below.`);
+          setOcrSuccess(true);
+          setOcrStatus(`✓ OCR extraction complete: recovered ${text.length} characters from ${file.name}. Review/edit text below or click Run Fraud Analysis.`);
           setErrorMsg(null);
         } else if (ocrRes.success) {
-          setOcrStatus(ocrRes.message || 'OCR processed successfully, but no legible text was recognized in the image. You can type or paste the text manually below.');
+          setOcrSuccess(false);
+          setOcrStatus(ocrRes.message || `OCR processed ${file.name} successfully, but no legible text was recognized. You can type or paste the ad text manually below.`);
         } else {
+          setOcrSuccess(false);
           setOcrStatus(ocrRes.message || 'OCR extraction failed on host system.');
           setErrorMsg(ocrRes.message || 'OCR engine unavailable or image processing error.');
         }
       } catch (err: any) {
-        setErrorMsg(err.message || 'OCR extraction unavailable on host.');
+        setOcrSuccess(false);
+        setErrorMsg(err.message || 'OCR extraction error.');
         setOcrStatus(err.message || 'OCR extraction unavailable on host. Please paste the ad text directly.');
       } finally {
         setOcrLoading(false);
@@ -180,7 +188,9 @@ export const ScannerPage: React.FC = () => {
     setResult(null);
     setErrorMsg(null);
     setImagePreview(null);
+    setOcrFilename(null);
     setOcrStatus(null);
+    setOcrSuccess(false);
     setSavedCaseRef(undefined);
   };
 
@@ -309,13 +319,21 @@ export const ScannerPage: React.FC = () => {
           {/* If Image Upload Tab: File Picker & Preview */}
           {activeInputTab === 'image' && (
             <div className="p-4 rounded-[var(--radius)] bg-[var(--bg)] border border-[var(--border)] space-y-3">
-              <label className="block text-xs font-bold text-[var(--text)] uppercase font-mono">
-                Upload Screenshot for OCR Text Extraction:
-              </label>
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
+                <label className="block text-xs font-bold text-[var(--text)] uppercase font-mono">
+                  Upload Screenshot for Forensic OCR Text Extraction:
+                </label>
+                {ocrFilename && (
+                  <span className="text-[11px] font-mono text-[var(--muted)]">
+                    Active File: <strong className="text-[var(--text)]">{ocrFilename}</strong>
+                  </span>
+                )}
+              </div>
+
               <div className="flex flex-col sm:flex-row items-center gap-4">
                 <input
                   type="file"
-                  accept="image/png,image/jpeg,image/webp"
+                  accept="image/png,image/jpeg,image/webp,image/jpg,image/bmp"
                   disabled={ocrLoading}
                   onChange={handleImageUpload}
                   className="text-xs text-[var(--muted)] file:mr-3 file:py-1.5 file:px-3 file:rounded-[var(--radius)] file:border file:border-[var(--border)] file:bg-[var(--card)] file:text-[var(--text)] file:text-xs hover:file:bg-[var(--table-hover)] cursor-pointer disabled:opacity-50"
@@ -323,14 +341,31 @@ export const ScannerPage: React.FC = () => {
                 {ocrLoading && (
                   <span className="text-xs font-mono text-[var(--primary)] flex items-center gap-1.5">
                     <RefreshCw className="w-3.5 h-3.5 animate-spin" />
-                    <span>Processing OCR...</span>
+                    <span>Processing forensic OCR...</span>
                   </span>
                 )}
               </div>
 
               {ocrStatus && (
-                <div className="text-xs font-mono text-[var(--muted)] bg-[var(--card)] p-2 rounded border border-[var(--border)]">
-                  {ocrStatus}
+                <div className={`text-xs font-mono p-3 rounded border transition-all ${
+                  ocrSuccess
+                    ? 'bg-emerald-50 text-emerald-800 border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-300 dark:border-emerald-800'
+                    : 'bg-[var(--card)] text-[var(--muted)] border-[var(--border)]'
+                }`}>
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <span className="leading-relaxed">{ocrStatus}</span>
+                    {ocrSuccess && textContent.trim() && (
+                      <button
+                        type="button"
+                        onClick={() => handleAnalyze()}
+                        disabled={scanning}
+                        className="btn-primary text-xs py-1.5 px-3.5 self-start sm:self-auto font-mono flex items-center gap-1.5 shrink-0 shadow-xs"
+                      >
+                        <ScanSearch className="w-3.5 h-3.5" />
+                        <span>Run Fraud Analysis</span>
+                      </button>
+                    )}
+                  </div>
                 </div>
               )}
 
@@ -340,7 +375,7 @@ export const ScannerPage: React.FC = () => {
                   <img
                     src={imagePreview}
                     alt="Screenshot preview"
-                    className="max-h-48 rounded border border-[var(--border)] object-contain shadow-2xs"
+                    className="max-h-52 rounded border border-[var(--border)] object-contain shadow-2xs bg-black/5"
                   />
                 </div>
               )}
@@ -404,7 +439,11 @@ export const ScannerPage: React.FC = () => {
             riskScore={result.analysis.risk_score}
             riskLevel={result.analysis.risk_level}
             verdictSummary={result.analysis.explanation}
-            sourceTarget={`${result.platform || 'Social Ad'} · ${result.custom_id || `AD-${result.id}`}`}
+            sourceTarget={
+              ocrFilename
+                ? `Screenshot OCR: ${ocrFilename} · ${result.platform || 'Social Ad'} · ${result.custom_id || `AD-${result.id}`}`
+                : `${result.platform || 'Social Ad'} · ${result.custom_id || `AD-${result.id}`}`
+            }
             ruleIndicators={(result.evidence_items || []).map((ev) => ({
               category: ev.evidence_type,
               severity: result.analysis?.risk_level || 'HIGH',
@@ -424,6 +463,7 @@ export const ScannerPage: React.FC = () => {
               detail: 'External commercial reputation feeds are unconfigured.',
             }}
             checksCompleted={[
+              ...(ocrFilename ? [{ check: 'Forensic OCR Ingestion', status: 'COMPLETED' as const, result: `Extracted from ${ocrFilename} (${textContent.length} chars)` }] : []),
               { check: 'Text Normalization & Tokenization', status: 'COMPLETED', result: `${result.normalized_text?.length || 0} normalized characters` },
               { check: 'Context-Aware ML Logistic Regression', status: 'COMPLETED', result: `Signal: ${((result.analysis.model_signal || 0) * 100).toFixed(1)}%` },
               { check: 'Financial Mule & Account Sale Rules', status: 'COMPLETED', result: `${result.evidence_items?.length || 0} matches` },

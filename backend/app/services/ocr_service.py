@@ -119,28 +119,29 @@ def preprocess_image_variations(orig_img: Image.Image) -> List[Tuple[str, Image.
     # 2. EXIF Auto-Orientation
     base_rgb = ImageOps.exif_transpose(base_rgb) or base_rgb
 
-    # 3. Dynamic Resolution Scaling (upscale small images for high OCR fidelity)
+    # 3. Dynamic Resolution Scaling (safely bounded to prevent CPU and RAM exhaustion)
     w, h = base_rgb.size
-    if w < 900 or h < 900:
-        factor = max(2, int(1400 / max(1, min(w, h))))
-        base_rgb = base_rgb.resize((w * factor, h * factor), Image.Resampling.LANCZOS)
+    if w > 1800 or h > 1800:
+        base_rgb.thumbnail((1800, 1800), Image.Resampling.LANCZOS)
+    elif max(w, h) < 600:
+        factor = min(2, int(900 / max(1, max(w, h))))
+        if factor > 1:
+            base_rgb = base_rgb.resize((w * factor, h * factor), Image.Resampling.LANCZOS)
 
     # 4. Grayscale & Contrast variations
     gray = base_rgb.convert("L")
-    contrast_enhanced = ImageEnhance.Contrast(gray).enhance(2.2)
+    contrast_enhanced = ImageEnhance.Contrast(gray).enhance(2.0)
 
     # 5. Dynamic binary thresholding
-    # Split text into bright on dark vs dark on bright
     bw = gray.point(lambda x: 255 if x > 130 else 0, "L")
     bw_inv = ImageOps.invert(bw)
 
     return [
-        ("contrast_psm11", contrast_enhanced, "--psm 11"),
         ("contrast_psm6", contrast_enhanced, "--psm 6"),
+        ("contrast_psm11", contrast_enhanced, "--psm 11"),
+        ("binary_inv_psm6", bw_inv, "--psm 6"),
         ("binary_psm11", bw, "--psm 11"),
-        ("binary_inv_psm11", bw_inv, "--psm 11"),
         ("base_rgb_psm11", base_rgb, "--psm 11"),
-        ("gray_psm6", gray, "--psm 6"),
     ]
 
 
@@ -187,8 +188,9 @@ def clean_and_deduplicate_ocr_lines(raw_lines: List[str]) -> str:
 def extract_text_from_image(image_bytes: bytes) -> Tuple[bool, str, str]:
     """
     Performs forensic Optical Character Recognition (OCR) on image bytes.
-    Automatically configures Tesseract, applies multi-strategy preprocessing,
-    and returns: (success: bool, extracted_text: str, diagnostic_message: str)
+    Automatically configures Tesseract, applies safe adaptive preprocessing,
+    executes fast-path multi-stage recognition, and returns:
+    (success: bool, extracted_text: str, diagnostic_message: str)
     """
     # 1. Check & Configure Tesseract Engine
     is_avail, bin_path, err_msg = configure_tesseract()
@@ -204,32 +206,79 @@ def extract_text_from_image(image_bytes: bytes) -> Tuple[bool, str, str]:
     except Exception as e:
         return False, "", f"Failed to open image file: {str(e)}"
 
-    # 3. Detect available language packs (eng + hin if installed)
+    # 3. Detect available language packs (prefer eng, fallback to eng+hin if installed)
     installed_langs = get_available_languages()
-    lang_str = "eng"
-    if "hin" in installed_langs:
-        lang_str = "eng+hin"
+    has_hin = "hin" in installed_langs
 
-    # 4. Multi-Strategy OCR Execution
-    raw_lines: List[str] = []
+    # 4. Normalize Image (transparency, EXIF, safe dimension bounding)
     try:
-        variations = preprocess_image_variations(orig_image)
-        for name, img_variant, psm in variations:
+        if orig_image.mode in ("RGBA", "LA") or (orig_image.mode == "P" and "transparency" in orig_image.info):
+            bg = Image.new("RGB", orig_image.size, (255, 255, 255))
+            rgba = orig_image.convert("RGBA")
+            bg.paste(rgba, mask=rgba.split()[3])
+            base_rgb = bg
+        else:
+            base_rgb = orig_image.convert("RGB")
+
+        base_rgb = ImageOps.exif_transpose(base_rgb) or base_rgb
+
+        w, h = base_rgb.size
+        if w > 1800 or h > 1800:
+            base_rgb.thumbnail((1800, 1800), Image.Resampling.LANCZOS)
+        elif max(w, h) < 600:
+            factor = min(2, int(900 / max(1, max(w, h))))
+            if factor > 1:
+                base_rgb = base_rgb.resize((w * factor, h * factor), Image.Resampling.LANCZOS)
+
+        gray = base_rgb.convert("L")
+        contrast_enhanced = ImageEnhance.Contrast(gray).enhance(2.0)
+
+        # 5. Staged Fast-Path OCR Execution
+        all_raw_lines: List[str] = []
+
+        # Stage 1: Fast Contrast Enhanced with PSM 11 (sparse titles/headers) and PSM 6 (body text blocks)
+        try:
+            chunk11 = pytesseract.image_to_string(contrast_enhanced, config="-l eng --psm 11")
+            all_raw_lines.extend(chunk11.splitlines())
+        except Exception:
+            pass
+
+        try:
+            chunk6 = pytesseract.image_to_string(contrast_enhanced, config="-l eng --psm 6")
+            all_raw_lines.extend(chunk6.splitlines())
+        except Exception:
+            pass
+
+        text_s1 = clean_and_deduplicate_ocr_lines(all_raw_lines)
+        has_entities_s1 = any(tok in text_s1 for tok in ["@", "+", "₹", "$", "http", "t.me", "wa.me", "upi"])
+        if len(text_s1) >= 25 or has_entities_s1:
+            char_count = len(text_s1)
+            return True, text_s1, f"OCR completed successfully: extracted {char_count} characters across forensic passes."
+
+        # Stage 3: Inverted Grayscale (Dark Mode / night theme / white text on dark cards)
+        try:
+            bw_inv = ImageOps.invert(gray)
+            bw_inv_contrast = ImageEnhance.Contrast(bw_inv).enhance(2.0)
+            chunk = pytesseract.image_to_string(bw_inv_contrast, config="-l eng --psm 6")
+            all_raw_lines.extend(chunk.splitlines())
+        except Exception:
+            pass
+
+        text_s3 = clean_and_deduplicate_ocr_lines(all_raw_lines)
+        if len(text_s3) >= 15:
+            char_count = len(text_s3)
+            return True, text_s3, f"OCR completed successfully: extracted {char_count} characters across forensic passes."
+
+        # Stage 4: Hindi Devanagari multilingual pass if available and text is still sparse
+        if has_hin:
             try:
-                config = f"-l {lang_str} {psm}"
-                extracted_chunk = pytesseract.image_to_string(img_variant, config=config)
-                raw_lines.extend(extracted_chunk.splitlines())
+                chunk = pytesseract.image_to_string(contrast_enhanced, config="-l eng+hin --psm 6")
+                all_raw_lines.extend(chunk.splitlines())
             except Exception:
-                # Fallback to pure english if combined language pack encounters an issue
-                try:
-                    extracted_chunk = pytesseract.image_to_string(img_variant, config=f"-l eng {psm}")
-                    raw_lines.extend(extracted_chunk.splitlines())
-                except Exception:
-                    pass
+                pass
 
-        # 5. Clean, Filter, and Merge
-        final_text = clean_and_deduplicate_ocr_lines(raw_lines)
-
+        # 6. Final Clean and Deduplicate
+        final_text = clean_and_deduplicate_ocr_lines(all_raw_lines)
         if not final_text:
             return True, "", "OCR processed successfully, but no legible text was recognized in this image."
 
