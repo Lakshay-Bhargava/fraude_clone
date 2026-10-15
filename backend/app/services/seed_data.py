@@ -32,13 +32,26 @@ def seed_database_if_empty(db: Session):
         db.add(demo_user)
         db.commit()
 
-    existing_count = db.query(Advertisement).count()
-    if existing_count > 0:
+    # Seed demonstration sample records if no demo advertisements exist
+    demo_count = db.query(Advertisement).filter(Advertisement.is_demo == True).count()
+    if demo_count > 0:
         return
 
-    csv_path = os.path.join(os.path.dirname(__file__), "..", "..", "..", "data", "sample_ads.csv")
-    if not os.path.exists(csv_path):
-        print(f"[SeedData] Warning: {csv_path} not found.")
+    candidate_paths = [
+        os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "data", "sample_ads.csv")),
+        os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "..", "data", "sample_ads.csv")),
+        os.path.abspath(os.path.join(os.getcwd(), "backend", "data", "sample_ads.csv")),
+        os.path.abspath(os.path.join(os.getcwd(), "data", "sample_ads.csv")),
+        "/app/data/sample_ads.csv"
+    ]
+    csv_path = None
+    for cp in candidate_paths:
+        if os.path.exists(cp):
+            csv_path = cp
+            break
+
+    if not csv_path:
+        print("[SeedData] Warning: sample_ads.csv not found in any candidate path.")
         return
 
     print("[SeedData] Seeding database with synthetic demonstration records...")
@@ -84,6 +97,11 @@ def seed_database_if_empty(db: Session):
                 status = "CLOSED"
             else:
                 status = "NEEDS_REVIEW"
+
+            existing_ad = db.query(Advertisement).filter(Advertisement.custom_id == custom_id).first()
+            if existing_ad:
+                ad_id_map[custom_id] = existing_ad
+                continue
 
             ad = Advertisement(
                 custom_id=custom_id,
@@ -173,69 +191,73 @@ def seed_database_if_empty(db: Session):
                 )
                 db.add(alert)
 
-    # Create Sample Demonstration Cases
-    case_1 = Case(
-        case_ref="CASE-2026-001",
-        title="Syndicate Campaign: Unchecked Accounts & Telegram Mule Ring",
-        description="Investigation into coordinated financial account sales and mule recruiting operating via Telegram handle @FastCashDrop and WhatsApp +1-555-014-9981.",
-        priority="CRITICAL",
-        status="IN_PROGRESS",
-        assigned_to="Senior Analyst Fox",
-        created_at=now - timedelta(days=2),
-        updated_at=now - timedelta(hours=1)
-    )
-    db.add(case_1)
-    db.flush()
+    # Create Sample Demonstration Cases if they do not exist
+    case_1 = db.query(Case).filter(Case.case_ref == "CASE-2026-001").first()
+    if not case_1:
+        case_1 = Case(
+            case_ref="CASE-2026-001",
+            title="Syndicate Campaign: Unchecked Accounts & Telegram Mule Ring",
+            description="Investigation into coordinated financial account sales and mule recruiting operating via Telegram handle @FastCashDrop and WhatsApp +1-555-014-9981.",
+            priority="CRITICAL",
+            status="IN_PROGRESS",
+            assigned_to="Senior Analyst Fox",
+            created_at=now - timedelta(days=2),
+            updated_at=now - timedelta(hours=1)
+        )
+        db.add(case_1)
+        db.flush()
 
-    # Link ads to case 1
-    for cid in ["AD-DEMO-001", "AD-DEMO-004", "AD-DEMO-006", "AD-DEMO-007"]:
-        if cid in ad_id_map:
-            db.execute(case_advertisements.insert().values(
-                case_id=case_1.id,
-                advertisement_id=ad_id_map[cid].id
-            ))
+        # Link ads to case 1
+        for cid in ["AD-DEMO-001", "AD-DEMO-004", "AD-DEMO-006", "AD-DEMO-007"]:
+            if cid in ad_id_map:
+                db.execute(case_advertisements.insert().values(
+                    case_id=case_1.id,
+                    advertisement_id=ad_id_map[cid].id
+                ))
 
-    # Notes for case 1
-    db.add(CaseNote(
-        case_id=case_1.id,
-        note="Initial triage confirmed repeated advertisements with identical contact info and KYC bypass promises. Graph correlation indicates multi-channel operation.",
-        actor="Senior Analyst Fox",
-        created_at=now - timedelta(days=2, hours=1)
-    ))
-    db.add(CaseNote(
-        case_id=case_1.id,
-        note="Identified near-duplicate variations in AD-DEMO-007. Phone number +1-555-019-8234 verified across 3 distinct posts.",
-        actor="Analyst Echo",
-        created_at=now - timedelta(days=1)
-    ))
+        # Notes for case 1
+        db.add(CaseNote(
+            case_id=case_1.id,
+            note="Initial triage confirmed repeated advertisements with identical contact info and KYC bypass promises. Graph correlation indicates multi-channel operation.",
+            actor="Senior Analyst Fox",
+            created_at=now - timedelta(days=2, hours=1)
+        ))
+        db.add(CaseNote(
+            case_id=case_1.id,
+            note="Identified near-duplicate variations in AD-DEMO-007. Phone number +1-555-019-8234 verified across 3 distinct posts.",
+            actor="Analyst Echo",
+            created_at=now - timedelta(days=1)
+        ))
 
     # Case 2
-    case_2 = Case(
-        case_ref="CASE-2026-002",
-        title="ShadowVault Pre-loaded ATM Cards & Fake Pin Drops",
-        description="Investigation into dark-web style card cloning services advertised on shadowvault-drop.xyz with alleged PIN guarantees.",
-        priority="HIGH",
-        status="OPEN",
-        assigned_to="Analyst Vega",
-        created_at=now - timedelta(days=1),
-        updated_at=now - timedelta(hours=4)
-    )
-    db.add(case_2)
-    db.flush()
+    case_2 = db.query(Case).filter(Case.case_ref == "CASE-2026-002").first()
+    if not case_2:
+        case_2 = Case(
+            case_ref="CASE-2026-002",
+            title="ShadowVault Pre-loaded ATM Cards & Fake Pin Drops",
+            description="Investigation into dark-web style card cloning services advertised on shadowvault-drop.xyz with alleged PIN guarantees.",
+            priority="HIGH",
+            status="OPEN",
+            assigned_to="Analyst Vega",
+            created_at=now - timedelta(days=1),
+            updated_at=now - timedelta(hours=4)
+        )
+        db.add(case_2)
+        db.flush()
 
-    for cid in ["AD-DEMO-002", "AD-DEMO-013"]:
-        if cid in ad_id_map:
-            db.execute(case_advertisements.insert().values(
-                case_id=case_2.id,
-                advertisement_id=ad_id_map[cid].id
-            ))
+        for cid in ["AD-DEMO-002", "AD-DEMO-013"]:
+            if cid in ad_id_map:
+                db.execute(case_advertisements.insert().values(
+                    case_id=case_2.id,
+                    advertisement_id=ad_id_map[cid].id
+                ))
 
-    db.add(CaseNote(
-        case_id=case_2.id,
-        note="Card drop pattern detected. Domain shadowvault-drop.xyz appears on multiple distinct card dump solicitations.",
-        actor="Analyst Vega",
-        created_at=now - timedelta(hours=12)
-    ))
+        db.add(CaseNote(
+            case_id=case_2.id,
+            note="Card drop pattern detected. Domain shadowvault-drop.xyz appears on multiple distinct card dump solicitations.",
+            actor="Analyst Vega",
+            created_at=now - timedelta(hours=12)
+        ))
 
     # Audit Events
     db.add(AuditEvent(

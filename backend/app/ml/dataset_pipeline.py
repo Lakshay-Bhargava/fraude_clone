@@ -22,7 +22,20 @@ import numpy as np
 from sklearn.model_selection import StratifiedShuffleSplit
 from rapidfuzz import fuzz
 
-DATA_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "..", "data"))
+def _resolve_data_dir() -> str:
+    candidates = [
+        os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "data")),
+        os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "..", "data")),
+        os.path.abspath(os.path.join(os.getcwd(), "backend", "data")),
+        os.path.abspath(os.path.join(os.getcwd(), "data")),
+        "/app/data"
+    ]
+    for d in candidates:
+        if os.path.exists(os.path.join(d, "uploaded_dataset.csv")):
+            return d
+    return candidates[0]
+
+DATA_DIR = _resolve_data_dir()
 RAW_DATASET_PATH = os.path.join(DATA_DIR, "uploaded_dataset.csv")
 TRAIN_PATH = os.path.join(DATA_DIR, "train.csv")
 VAL_PATH = os.path.join(DATA_DIR, "val.csv")

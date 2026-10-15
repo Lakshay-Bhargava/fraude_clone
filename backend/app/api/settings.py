@@ -81,3 +81,27 @@ def update_system_settings(payload: SettingsUpdatePayload, db: Session = Depends
 
     db.commit()
     return {"message": "Settings updated successfully."}
+
+@router.post("/seed-demo")
+def trigger_seed_demo(db: Session = Depends(get_db)):
+    """
+    Manually triggers idempotent seeding of demonstration advertisements, cases, and alerts.
+    """
+    from app.services.seed_data import seed_database_if_empty
+    seed_database_if_empty(db)
+    return {"status": "success", "message": "Demonstration records seeded successfully."}
+
+@router.post("/import-dataset")
+def trigger_import_dataset(
+    max_records: int = 100,
+    db: Session = Depends(get_db)
+):
+    """
+    Imports up to max_records from the benchmark Indian financial scam dataset into the database.
+    """
+    from app.ml.import_dataset_to_db import import_dataset
+    try:
+        res = import_dataset(db, max_records=max_records)
+        return {"status": "success", "imported": res.get("imported", 0), "skipped": res.get("skipped", 0)}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Dataset import failed: {str(e)}")

@@ -25,7 +25,20 @@ from app.services.rule_engine import evaluate_rules
 from app.services.model_service import predict_risk
 from app.services.risk_scoring import calculate_composite_risk
 
-DATASET_CSV_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "..", "data", "uploaded_dataset.csv"))
+def _resolve_dataset_path() -> str:
+    candidate_paths = [
+        os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "data", "uploaded_dataset.csv")),
+        os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "..", "data", "uploaded_dataset.csv")),
+        os.path.abspath(os.path.join(os.getcwd(), "backend", "data", "uploaded_dataset.csv")),
+        os.path.abspath(os.path.join(os.getcwd(), "data", "uploaded_dataset.csv")),
+        "/app/data/uploaded_dataset.csv"
+    ]
+    for cp in candidate_paths:
+        if os.path.exists(cp):
+            return cp
+    return candidate_paths[0]
+
+DATASET_CSV_PATH = _resolve_dataset_path()
 
 
 def import_dataset(db: Session, max_records: int = None) -> dict:

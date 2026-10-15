@@ -52,7 +52,7 @@ class AnalysisResult(Base):
     model_version = Column(String(64), nullable=True) # e.g. fraudscope-tfidf-lr-v1.0
     model_class = Column(String(32), nullable=True) # safe or suspicious
     explanation = Column(Text, nullable=False)
-    recommended_review_action = Column(String(128), nullable=False)
+    recommended_review_action = Column(Text, nullable=False)
     created_at = Column(DateTime, default=utc_now)
 
     advertisement = relationship("Advertisement", back_populates="analysis")

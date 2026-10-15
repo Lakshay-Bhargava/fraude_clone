@@ -23,6 +23,15 @@ from app.api.scanner import router as scanner_router
 async def lifespan(app: FastAPI):
     # Startup: Ensure tables exist
     Base.metadata.create_all(bind=engine)
+
+    # Automatically widen column type if running against existing PostgreSQL instance
+    try:
+        with engine.connect() as conn:
+            conn.execute(text("ALTER TABLE analysis_results ALTER COLUMN recommended_review_action TYPE TEXT;"))
+            conn.commit()
+    except Exception:
+        # SQLite or other DB engines that do not require or support ALTER COLUMN TYPE
+        pass
     
     # Train or load ML baseline
     get_or_train_model()

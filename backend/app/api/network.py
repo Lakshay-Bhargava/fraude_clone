@@ -49,8 +49,20 @@ def get_cluster_evaluation():
     (cluster_id C01 through C14 in the benchmark dataset).
     Reports cluster coverage, purity, false merges, and missed connections.
     """
-    dataset_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "..", "data", "uploaded_dataset.csv"))
-    if not os.path.exists(dataset_path):
+    candidate_paths = [
+        os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "data", "uploaded_dataset.csv")),
+        os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "..", "data", "uploaded_dataset.csv")),
+        os.path.abspath(os.path.join(os.getcwd(), "backend", "data", "uploaded_dataset.csv")),
+        os.path.abspath(os.path.join(os.getcwd(), "data", "uploaded_dataset.csv")),
+        "/app/data/uploaded_dataset.csv"
+    ]
+    dataset_path = None
+    for cp in candidate_paths:
+        if os.path.exists(cp):
+            dataset_path = cp
+            break
+
+    if not dataset_path:
         return {"error": "Benchmark dataset not found on disk."}
 
     return evaluate_cluster_detection(dataset_path)

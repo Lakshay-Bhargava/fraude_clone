@@ -31,7 +31,20 @@ from sklearn.metrics import (
 
 from app.services.model_service import tokenize_with_context, reload_model_cache
 
-DATA_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "..", "data"))
+def _resolve_data_dir() -> str:
+    candidates = [
+        os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "data")),
+        os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "..", "data")),
+        os.path.abspath(os.path.join(os.getcwd(), "backend", "data")),
+        os.path.abspath(os.path.join(os.getcwd(), "data")),
+        "/app/data"
+    ]
+    for d in candidates:
+        if os.path.exists(os.path.join(d, "train.csv")):
+            return d
+    return candidates[0]
+
+DATA_DIR = _resolve_data_dir()
 TRAIN_PATH = os.path.join(DATA_DIR, "train.csv")
 VAL_PATH = os.path.join(DATA_DIR, "val.csv")
 TEST_PATH = os.path.join(DATA_DIR, "test.csv")

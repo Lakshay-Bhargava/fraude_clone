@@ -192,8 +192,15 @@ def analyze_advertisement(payload: AdAnalyzeRequest, db: Session = Depends(get_d
         created_at=now
     ))
 
-    db.commit()
-    db.refresh(ad)
+    try:
+        db.commit()
+        db.refresh(ad)
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(
+            status_code=500,
+            detail=f"Database persistence error: {str(e)}"
+        )
 
     # Find related ads (near duplicates and shared entities)
     near_dups = find_near_duplicates(db, norm_text, exclude_id=ad.id)
