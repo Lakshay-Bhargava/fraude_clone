@@ -167,27 +167,65 @@ export const api = {
       body: JSON.stringify({ content, source_type: sourceType, submitted_url: submittedUrl || null }),
     }),
 
-  uploadOcrImage: async (file: File) => {
+  uploadOcrImage: async (file: File, onStatusUpdate?: (status: string) => void) => {
     const url = `${BASE_URL}/api/ads/ocr-upload`;
     const formData = new FormData();
     formData.append('file', file);
     const headers: Record<string, string> = {};
     if (authToken) headers['Authorization'] = `Bearer ${authToken}`;
+
+    const controller = new AbortController();
+    const timeoutTimer = setTimeout(() => {
+      controller.abort();
+    }, 60000);
+
+    const coldStartTimer = setTimeout(() => {
+      if (onStatusUpdate) {
+        onStatusUpdate('Connecting to backend... Free Render container may be warming up from idle sleep (~30-45s). Please wait.');
+      }
+    }, 4000);
+
     let response: Response;
     try {
       response = await fetch(url, {
         method: 'POST',
         headers,
-        credentials: 'include',
+        credentials: 'same-origin',
         body: formData,
+        signal: controller.signal,
       });
     } catch (err: any) {
-      if (err.name === 'TypeError' && (err.message === 'Failed to fetch' || err.message?.includes('fetch'))) {
+      clearTimeout(timeoutTimer);
+      clearTimeout(coldStartTimer);
+
+      if (err.name === 'AbortError') {
+        throw new Error('OCR request timed out after 60 seconds. The backend container may still be starting up. Please click Retry.');
+      }
+
+      // Check if backend is waking up via health check probe
+      let backendWaking = false;
+      try {
+        const healthRes = await fetch(`${BASE_URL}/api/health`, { method: 'GET', signal: AbortSignal.timeout(4000) });
+        if (!healthRes.ok) backendWaking = true;
+      } catch {
+        backendWaking = true;
+      }
+
+      if (backendWaking) {
         throw new Error(
-          `Unable to reach backend OCR service (${url || window.location.origin + '/api/ads/ocr-upload'}). The backend instance may be waking from cold sleep (takes ~30-45s) or blocked by network/ad-blocker. Please wait a moment and retry.`
+          'Backend server is waking up from idle sleep (Render free tier takes ~30-45s). Please wait 15 seconds and click Retry.'
         );
       }
-      throw new Error(`Network failure connecting to OCR service: ${err.message || 'Unknown network error'}`);
+
+      if (err.name === 'TypeError' && (err.message === 'Failed to fetch' || err.message?.includes('fetch'))) {
+        throw new Error(
+          `Unable to reach backend OCR service (${url}). Connection refused or blocked. Please verify network access.`
+        );
+      }
+      throw new Error(`OCR network error: ${err.message || 'Unknown network error'}`);
+    } finally {
+      clearTimeout(timeoutTimer);
+      clearTimeout(coldStartTimer);
     }
 
     if (!response.ok) {
@@ -197,17 +235,18 @@ export const api = {
         detailMsg = errJson.detail || errJson.message || detailMsg;
       } catch {
         if (response.status === 502 || response.status === 503 || response.status === 504) {
-          detailMsg = `Backend server is spinning up (HTTP ${response.status} Gateway). Please allow 30 seconds for container startup and retry.`;
+          detailMsg = `Backend server is spinning up (HTTP ${response.status} Gateway). Please allow 30 seconds for container startup and click Retry.`;
         } else if (response.status === 413) {
-          detailMsg = 'Image file exceeds maximum upload size (10MB).';
+          detailMsg = 'Uploaded image file exceeds server limit (10MB).';
         } else if (response.status === 400) {
           detailMsg = 'Uploaded file must be a valid image format (PNG, JPG, WEBP).';
         } else if (response.status === 422) {
-          detailMsg = 'Image payload validation failed on backend.';
+          detailMsg = 'Payload validation failed on backend.';
         }
       }
       throw new Error(`[OCR Service ${response.status}] ${detailMsg}`);
     }
+
     return response.json() as Promise<{
       success: boolean;
       extracted_text: string;

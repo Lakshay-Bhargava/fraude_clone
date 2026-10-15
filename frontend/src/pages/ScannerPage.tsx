@@ -45,6 +45,7 @@ export const ScannerPage: React.FC = () => {
   const [ocrStatus, setOcrStatus] = useState<string | null>(null);
   const [ocrLoading, setOcrLoading] = useState(false);
   const [ocrSuccess, setOcrSuccess] = useState(false);
+  const [selectedOcrFile, setSelectedOcrFile] = useState<File | null>(null);
 
   // Status & Results
   const [scanning, setScanning] = useState(false);
@@ -119,7 +120,42 @@ export const ScannerPage: React.FC = () => {
     }
   };
 
-  // Handle OCR screenshot upload with editable review
+  // Execute OCR screenshot extraction with cold-start feedback and error classification
+  const executeOcr = async (file: File) => {
+    setOcrFilename(file.name);
+    setOcrSuccess(false);
+    setImagePreview(URL.createObjectURL(file));
+    setOcrStatus(`Extracting text from ${file.name} via forensic OCR...`);
+    setOcrLoading(true);
+    setErrorMsg(null);
+
+    try {
+      const ocrRes = await api.uploadOcrImage(file, (statusUpdate) => {
+        setOcrStatus(statusUpdate);
+      });
+      if (ocrRes.success && ocrRes.extracted_text && ocrRes.extracted_text.trim().length > 0) {
+        const text = ocrRes.extracted_text.trim();
+        setTextContent(text);
+        setOcrSuccess(true);
+        setOcrStatus(`✓ OCR extraction complete: recovered ${text.length} characters from ${file.name}. Review/edit text below or click Run Fraud Analysis.`);
+        setErrorMsg(null);
+      } else if (ocrRes.success) {
+        setOcrSuccess(false);
+        setOcrStatus(ocrRes.message || `OCR processed ${file.name} successfully, but no legible text was recognized. You can type or paste the ad text manually below.`);
+      } else {
+        setOcrSuccess(false);
+        setOcrStatus(ocrRes.message || 'OCR extraction failed on host system.');
+        setErrorMsg(ocrRes.message || 'OCR engine unavailable or image processing error.');
+      }
+    } catch (err: any) {
+      setOcrSuccess(false);
+      setErrorMsg(err.message || 'OCR extraction error.');
+      setOcrStatus(err.message || 'OCR extraction unavailable on host. Please paste the ad text directly or click Retry.');
+    } finally {
+      setOcrLoading(false);
+    }
+  };
+
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
@@ -127,36 +163,8 @@ export const ScannerPage: React.FC = () => {
         setErrorMsg('Image size exceeds 10MB limit.');
         return;
       }
-      setOcrFilename(file.name);
-      setOcrSuccess(false);
-      setImagePreview(URL.createObjectURL(file));
-      setOcrStatus(`Extracting text from ${file.name} via forensic OCR...`);
-      setOcrLoading(true);
-      setErrorMsg(null);
-
-      try {
-        const ocrRes = await api.uploadOcrImage(file);
-        if (ocrRes.success && ocrRes.extracted_text && ocrRes.extracted_text.trim().length > 0) {
-          const text = ocrRes.extracted_text.trim();
-          setTextContent(text);
-          setOcrSuccess(true);
-          setOcrStatus(`✓ OCR extraction complete: recovered ${text.length} characters from ${file.name}. Review/edit text below or click Run Fraud Analysis.`);
-          setErrorMsg(null);
-        } else if (ocrRes.success) {
-          setOcrSuccess(false);
-          setOcrStatus(ocrRes.message || `OCR processed ${file.name} successfully, but no legible text was recognized. You can type or paste the ad text manually below.`);
-        } else {
-          setOcrSuccess(false);
-          setOcrStatus(ocrRes.message || 'OCR extraction failed on host system.');
-          setErrorMsg(ocrRes.message || 'OCR engine unavailable or image processing error.');
-        }
-      } catch (err: any) {
-        setOcrSuccess(false);
-        setErrorMsg(err.message || 'OCR extraction error.');
-        setOcrStatus(err.message || 'OCR extraction unavailable on host. Please paste the ad text directly.');
-      } finally {
-        setOcrLoading(false);
-      }
+      setSelectedOcrFile(file);
+      await executeOcr(file);
     }
   };
 
@@ -191,6 +199,7 @@ export const ScannerPage: React.FC = () => {
     setOcrFilename(null);
     setOcrStatus(null);
     setOcrSuccess(false);
+    setSelectedOcrFile(null);
     setSavedCaseRef(undefined);
   };
 
@@ -354,17 +363,29 @@ export const ScannerPage: React.FC = () => {
                 }`}>
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                     <span className="leading-relaxed">{ocrStatus}</span>
-                    {ocrSuccess && textContent.trim() && (
-                      <button
-                        type="button"
-                        onClick={() => handleAnalyze()}
-                        disabled={scanning}
-                        className="btn-primary text-xs py-1.5 px-3.5 self-start sm:self-auto font-mono flex items-center gap-1.5 shrink-0 shadow-xs"
-                      >
-                        <ScanSearch className="w-3.5 h-3.5" />
-                        <span>Run Fraud Analysis</span>
-                      </button>
-                    )}
+                    <div className="flex items-center gap-2 self-start sm:self-auto shrink-0">
+                      {!ocrSuccess && !ocrLoading && selectedOcrFile && (
+                        <button
+                          type="button"
+                          onClick={() => executeOcr(selectedOcrFile)}
+                          className="btn-secondary text-xs py-1.5 px-3 font-mono flex items-center gap-1.5 shadow-2xs"
+                        >
+                          <RefreshCw className="w-3.5 h-3.5" />
+                          <span>Retry Upload</span>
+                        </button>
+                      )}
+                      {ocrSuccess && textContent.trim() && (
+                        <button
+                          type="button"
+                          onClick={() => handleAnalyze()}
+                          disabled={scanning}
+                          className="btn-primary text-xs py-1.5 px-3.5 font-mono flex items-center gap-1.5 shadow-xs"
+                        >
+                          <ScanSearch className="w-3.5 h-3.5" />
+                          <span>Run Fraud Analysis</span>
+                        </button>
+                      )}
+                    </div>
                   </div>
                 </div>
               )}
