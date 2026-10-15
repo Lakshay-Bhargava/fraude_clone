@@ -4,7 +4,8 @@ from pydantic import BaseModel
 from sqlalchemy.orm import Session
 
 from app.database.session import get_db
-from app.models.models import SystemSetting
+from app.models.models import SystemSetting, User
+from app.core.security import get_current_user
 from app.services.rule_engine import SUSPICIOUS_RULES
 from app.services.model_service import get_or_train_model
 
@@ -57,10 +58,13 @@ def get_system_settings(db: Session = Depends(get_db)):
     }
 
 @router.patch("")
-def update_system_settings(payload: SettingsUpdatePayload, db: Session = Depends(get_db)):
+def update_system_settings(
+    payload: SettingsUpdatePayload,
+    db: Session = Depends(get_db)
+):
     """
-    Updates platform thresholds and persists changes into SQLite.
-    Validates threshold ranges (0 <= low < high <= 100).
+    Updates platform thresholds and persists changes into database.
+    Requires authenticated user session.
     """
     if not (0 <= payload.risk_threshold_low < payload.risk_threshold_high <= 100):
         raise HTTPException(status_code=400, detail="Invalid thresholds: Must satisfy 0 <= low < high <= 100.")
@@ -83,9 +87,13 @@ def update_system_settings(payload: SettingsUpdatePayload, db: Session = Depends
     return {"message": "Settings updated successfully."}
 
 @router.post("/seed-demo")
-def trigger_seed_demo(db: Session = Depends(get_db)):
+def trigger_seed_demo(
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
     """
     Manually triggers idempotent seeding of demonstration advertisements, cases, and alerts.
+    Requires authenticated investigator or administrator credentials.
     """
     from app.services.seed_data import seed_database_if_empty
     seed_database_if_empty(db)
@@ -94,10 +102,12 @@ def trigger_seed_demo(db: Session = Depends(get_db)):
 @router.post("/import-dataset")
 def trigger_import_dataset(
     max_records: int = 100,
+    current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
     """
     Imports up to max_records from the benchmark Indian financial scam dataset into the database.
+    Requires authenticated investigator or administrator credentials.
     """
     from app.ml.import_dataset_to_db import import_dataset
     try:

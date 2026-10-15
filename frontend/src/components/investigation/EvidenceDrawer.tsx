@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import {
   X,
   ShieldAlert,
@@ -333,11 +334,58 @@ export const EvidenceDrawer: React.FC<EvidenceDrawerProps> = ({
               {renderHighlightedSnippet(currentAd.original_text)}
             </div>
 
+            {/* Submitted URL if present */}
+            {currentAd.submitted_url && (
+              <div className="p-2.5 rounded-[var(--radius)] bg-[var(--bg)] border border-[var(--border)] text-xs font-mono flex items-center justify-between">
+                <div className="flex items-center gap-1.5 truncate">
+                  <Globe className="w-3.5 h-3.5 text-[var(--accent)] shrink-0" />
+                  <span className="truncate text-[var(--text)]">{currentAd.submitted_url}</span>
+                </div>
+                <a
+                  href={currentAd.submitted_url}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-[var(--primary)] hover:underline flex items-center gap-1 text-[11px] shrink-0 ml-2 font-medium"
+                >
+                  <span>Open URL</span>
+                  <ExternalLink className="w-3 h-3" />
+                </a>
+              </div>
+            )}
+
+            {/* Source & Provenance Tags */}
+            <div className="flex flex-wrap items-center gap-2 text-[11px] font-mono">
+              <span className="px-2 py-0.5 rounded bg-[var(--card)] border border-[var(--border)] text-[var(--muted)]">
+                Source: <strong className="text-[var(--text)]">{currentAd.source_type}</strong>
+              </span>
+              <span className="px-2 py-0.5 rounded bg-[var(--card)] border border-[var(--border)] text-[var(--muted)]">
+                Provenance: <strong className="text-[var(--text)]">{currentAd.data_source || (currentAd.is_demo ? 'SYNTHETIC_DATASET' : 'LIVE_SCAN')}</strong>
+              </span>
+              {detail?.analysis?.model_signal !== undefined && detail?.analysis?.model_signal !== null && (
+                <span className="px-2 py-0.5 rounded bg-[#E6F7F0] border border-[#A3E3CB] text-[#1D6B4F] font-bold">
+                  Model Signal: {((detail.analysis.model_signal ?? 0) * 100).toFixed(1)}%
+                </span>
+              )}
+              {detail?.analysis?.model_version && (
+                <span className="px-2 py-0.5 rounded bg-[var(--card)] border border-[var(--border)] text-[var(--muted)]">
+                  Model: {detail.analysis.model_version}
+                </span>
+              )}
+            </div>
+
             {/* Explanation box */}
             {detail?.analysis?.explanation && (
               <div className="p-2.5 rounded-[var(--radius)] bg-[var(--card)] border border-[var(--border)] text-xs text-[var(--muted)] leading-relaxed">
-                <span className="font-mono font-bold text-[var(--text)] block mb-0.5">Model Reasoning:</span>
+                <span className="font-mono font-bold text-[var(--text)] block mb-0.5">Model Reasoning & Scam Indicators:</span>
                 {detail.analysis.explanation}
+              </div>
+            )}
+
+            {/* Recommended Review Action */}
+            {detail?.analysis?.recommended_review_action && (
+              <div className="p-2.5 rounded-[var(--radius)] bg-[#FDF4E7] border border-[#F5D8A5] text-xs text-[#8A5A00] leading-relaxed">
+                <span className="font-mono font-bold text-[#6B4600] block mb-0.5">Recommended Action:</span>
+                {detail.analysis.recommended_review_action}
               </div>
             )}
           </div>
@@ -467,12 +515,21 @@ export const EvidenceDrawer: React.FC<EvidenceDrawerProps> = ({
           <span className="font-mono text-[11px] text-[var(--muted)]">
             Evidence Record #{currentAd.id}
           </span>
-          <button
-            onClick={onClose}
-            className="btn-secondary text-xs py-1 px-3"
-          >
-            Close Dossier
-          </button>
+          <div className="flex items-center gap-2">
+            <Link
+              to={`/investigations/${currentAd.id}`}
+              className="text-[var(--primary)] hover:underline flex items-center gap-1 font-medium font-mono text-[11px]"
+            >
+              <Eye className="w-3.5 h-3.5" />
+              <span>Full Dossier Page</span>
+            </Link>
+            <button
+              onClick={onClose}
+              className="btn-secondary text-xs py-1 px-3"
+            >
+              Close Dossier
+            </button>
+          </div>
         </div>
       </div>
     </div>

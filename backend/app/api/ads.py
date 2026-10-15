@@ -258,6 +258,7 @@ def analyze_advertisement(payload: AdAnalyzeRequest, db: Session = Depends(get_d
         source_type=ad.source_type,
         submitted_url=ad.submitted_url,
         platform=ad.platform or "Unknown",
+        platform_detected=ad.platform or "Unknown",
         is_demo=ad.is_demo,
         data_source=ad.data_source,
         content_hash=ad.content_hash,
@@ -371,7 +372,8 @@ def list_advertisements(
             or_(
                 Advertisement.custom_id.ilike(search_pattern),
                 Advertisement.original_text.ilike(search_pattern),
-                Advertisement.submitted_url.ilike(search_pattern)
+                Advertisement.submitted_url.ilike(search_pattern),
+                Advertisement.entities.any(ExtractedEntity.entity_value.ilike(search_pattern))
             )
         )
 
@@ -411,6 +413,7 @@ def list_advertisements(
             "source_type": ad.source_type,
             "submitted_url": ad.submitted_url,
             "platform": ad.platform or "Unknown",
+            "platform_detected": ad.platform or "Unknown",
             "is_demo": ad.is_demo,
             "data_source": ad.data_source or ("DATASET_IMPORT" if ad.is_demo else "LIVE_SCAN"),
             "risk_score": ad.analysis.risk_score if ad.analysis else None,
@@ -418,7 +421,8 @@ def list_advertisements(
             "review_status": ad.review_status,
             "created_at": ad.created_at,
             "entities_count": len(ad.entities),
-            "cases_count": len(ad.cases)
+            "cases_count": len(ad.cases),
+            "indicators": [f"{e.entity_type}: {e.entity_value}" for e in ad.entities[:3]]
         })
 
     return {
@@ -520,6 +524,7 @@ def get_advertisement_detail(id: str, db: Session = Depends(get_db)):
         source_type=ad.source_type,
         submitted_url=ad.submitted_url,
         platform=ad.platform or "Unknown",
+        platform_detected=ad.platform or "Unknown",
         is_demo=ad.is_demo,
         data_source=ad.data_source or ("DATASET_IMPORT" if ad.is_demo else "LIVE_SCAN"),
         content_hash=ad.content_hash,

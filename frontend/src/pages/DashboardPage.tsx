@@ -24,7 +24,16 @@ import {
   FastForward,
   Radio,
   CheckCircle2,
-  FolderOpen
+  FolderOpen,
+  Eye,
+  Send,
+  Camera,
+  Globe,
+  Share2,
+  Video,
+  Briefcase,
+  Bell,
+  Plus
 } from 'lucide-react';
 import {
   AreaChart,
@@ -47,7 +56,10 @@ import {
   DashboardPlatform,
   DashboardAuditActivity,
   AdvertisementSummary,
-  ThreatNetworkData
+  ThreatNetworkData,
+  DashboardCluster,
+  CaseItem,
+  AlertItem
 } from '../types';
 import { RiskBadge } from '../components/ui/RiskBadge';
 import { StatusBadge } from '../components/ui/StatusBadge';
@@ -82,6 +94,9 @@ export const DashboardPage: React.FC = () => {
   const [platforms, setPlatforms] = useState<DashboardPlatform[]>([]);
   const [activities, setActivities] = useState<DashboardAuditActivity[]>([]);
   const [recentAds, setRecentAds] = useState<AdvertisementSummary[]>([]);
+  const [priorityClusters, setPriorityClusters] = useState<DashboardCluster[]>([]);
+  const [recentCases, setRecentCases] = useState<CaseItem[]>([]);
+  const [recentAlerts, setRecentAlerts] = useState<AlertItem[]>([]);
   const [networkData, setNetworkData] = useState<ThreatNetworkData | null>(null);
 
   const [loading, setLoading] = useState(true);
@@ -112,13 +127,26 @@ export const DashboardPage: React.FC = () => {
       setRefreshing(true);
       setErrorMsg(null);
       const days = getDaysCount(dateRange);
-      const [statsData, trendsData, platformsData, activityData, adsData, networkRes] = await Promise.all([
+      const [
+        statsData,
+        trendsData,
+        platformsData,
+        activityData,
+        adsData,
+        networkRes,
+        clustersRes,
+        casesRes,
+        alertsRes
+      ] = await Promise.all([
         api.getStats(includeDemo),
         api.getTrends(days, includeDemo),
         api.getPlatforms(includeDemo),
         api.getAuditActivity(8),
         api.listAds({ limit: 6, sort_by: 'created_at', sort_order: 'desc' }),
         api.getThreatNetwork().catch(() => null),
+        api.getClusters(5).catch(() => []),
+        api.listCases({ status: 'OPEN' }).catch(() => []),
+        api.listAlerts({ reviewed: false }).catch(() => []),
       ]);
       setStats(statsData);
       setTrends(trendsData);
@@ -126,6 +154,9 @@ export const DashboardPage: React.FC = () => {
       setActivities(activityData);
       setRecentAds(adsData.items);
       setNetworkData(networkRes);
+      setPriorityClusters(clustersRes);
+      setRecentCases(casesRes);
+      setRecentAlerts(alertsRes);
     } catch (err: any) {
       console.error('Failed to load dashboard data', err);
       setErrorMsg(err.message || 'Unable to connect to the backend service.');
@@ -267,14 +298,85 @@ export const DashboardPage: React.FC = () => {
     total: p.total,
   }));
 
-  // Priority Queue: Top 5 Syndicates / Clusters (Phase 6 requirement #5)
-  const priorityClusters = [
-    { id: 'CL-UPI-01', name: 'Syndicate Vajra (Yes Bank VPA)', highCount: 14, platform: 'Telegram / Instagram', growth: '+18% this week' },
-    { id: 'CL-PH-02', name: 'Hotline Ring #98765 (Delhi NCR)', highCount: 9, platform: 'WhatsApp / Web', growth: '+12% this week' },
-    { id: 'CL-DOM-03', name: 'Fast-Income Phishing Hub', highCount: 7, platform: 'Facebook Ads', growth: '+6% this week' },
-    { id: 'CL-MULE-04', name: 'ICICI Rapid Sweep Layer', highCount: 6, platform: 'Telegram Channels', growth: '+4% this week' },
-    { id: 'CL-TG-05', name: '@instant_cash_india_bot', highCount: 5, platform: 'Telegram Bot', growth: '+2% this week' },
+  // Keywords to highlight in recent scan snippets
+  const suspiciousKeywords = [
+    'account for rent',
+    'bank account rent',
+    'current account available',
+    'fresh current',
+    'ATM card',
+    'card + PIN',
+    'card aur PIN',
+    'linked SIM',
+    'account kiraye pe',
+    'rent par',
+    'urgent buyers',
+    'urgent buyers only',
+    'guaranteed returns',
+    'UPI access',
+    'UPI ID for rent',
+    'merchant UPI',
+    'debit card and account',
+    'mule account',
   ];
+
+  const renderHighlightedSnippet = (text: string) => {
+    if (!text) return 'No text snippet';
+    let parts: { text: string; highlight: boolean }[] = [{ text, highlight: false }];
+
+    suspiciousKeywords.forEach((kw) => {
+      const nextParts: { text: string; highlight: boolean }[] = [];
+      parts.forEach((part) => {
+        if (part.highlight) {
+          nextParts.push(part);
+          return;
+        }
+        const lowerPart = part.text.toLowerCase();
+        const lowerKw = kw.toLowerCase();
+        let startIdx = 0;
+        let foundIdx = lowerPart.indexOf(lowerKw, startIdx);
+
+        if (foundIdx === -1) {
+          nextParts.push(part);
+        } else {
+          while (foundIdx !== -1) {
+            if (foundIdx > startIdx) {
+              nextParts.push({ text: part.text.slice(startIdx, foundIdx), highlight: false });
+            }
+            nextParts.push({ text: part.text.slice(foundIdx, foundIdx + kw.length), highlight: true });
+            startIdx = foundIdx + kw.length;
+            foundIdx = lowerPart.indexOf(lowerKw, startIdx);
+          }
+          if (startIdx < part.text.length) {
+            nextParts.push({ text: part.text.slice(startIdx), highlight: false });
+          }
+        }
+      });
+      parts = nextParts;
+    });
+
+    return parts.map((chunk, idx) =>
+      chunk.highlight ? (
+        <span
+          key={idx}
+          className="bg-[#FDE8E8] text-[#A8341C] border border-[#F8B4B6] px-1 py-0.2 rounded font-semibold"
+        >
+          {chunk.text}
+        </span>
+      ) : (
+        <span key={idx}>{chunk.text}</span>
+      )
+    );
+  };
+
+  const getPlatformIcon = (platform?: string) => {
+    const p = (platform || '').toLowerCase();
+    if (p.includes('telegram')) return <Send className="w-3.5 h-3.5 text-[#0F6E7A]" />;
+    if (p.includes('instagram')) return <Camera className="w-3.5 h-3.5 text-[#A8341C]" />;
+    if (p.includes('facebook')) return <Share2 className="w-3.5 h-3.5 text-[#2F4B45]" />;
+    if (p.includes('youtube')) return <Video className="w-3.5 h-3.5 text-[#E5484D]" />;
+    return <Globe className="w-3.5 h-3.5 text-[var(--muted)]" />;
+  };
 
   return (
     <div className="space-y-4 max-w-7xl mx-auto">
@@ -495,7 +597,7 @@ export const DashboardPage: React.FC = () => {
               <Network className="w-5 h-5 text-[var(--muted)] group-hover:text-[var(--text)] transition-colors" />
             </div>
             <div className="text-3xl sm:text-4xl lg:text-5xl font-bold font-mono text-[var(--text)] my-2 tracking-tight">
-              {loading ? '—' : (stats?.active_clusters_count ?? 39).toLocaleString()}
+              {loading ? '—' : (stats?.active_clusters_count ?? 0).toLocaleString()}
             </div>
           </div>
           <div className="pt-3 flex items-center justify-between border-t border-[var(--border)] text-xs font-mono text-[var(--muted)]">
@@ -523,7 +625,7 @@ export const DashboardPage: React.FC = () => {
               <Phone className="w-5 h-5 text-[var(--muted)] group-hover:text-[var(--text)] transition-colors" />
             </div>
             <div className="text-3xl sm:text-4xl lg:text-5xl font-bold font-mono text-[var(--text)] my-2 tracking-tight">
-              {loading ? '—' : (stats?.total_entities_tracked ?? 719).toLocaleString()}
+              {loading ? '—' : (stats?.total_entities_tracked ?? 0).toLocaleString()}
             </div>
           </div>
           <div className="pt-3 flex items-center justify-between border-t border-[var(--border)] text-xs font-mono text-[var(--muted)]">
@@ -763,40 +865,340 @@ export const DashboardPage: React.FC = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-5 gap-2.5">
-          {priorityClusters.map((cluster, i) => (
-            <div
-              key={cluster.id}
-              className="p-3 rounded-[var(--radius)] bg-[#FFFFFF] border border-[var(--border)] hover:border-[var(--accent)] transition-all flex flex-col justify-between text-xs space-y-2"
-            >
-              <div>
-                <div className="flex items-center justify-between font-mono text-[10px] text-[var(--muted)] mb-1">
-                  <span>#{i + 1} {cluster.id}</span>
-                  <span className="text-[#A8341C] font-semibold">{cluster.highCount} High</span>
-                </div>
-                <h4 className="font-bold text-[var(--text)] text-xs truncate" title={cluster.name}>
-                  {cluster.name}
-                </h4>
-                <p className="text-[11px] text-[var(--muted)] truncate mt-0.5">{cluster.platform}</p>
-              </div>
-
-              <div className="pt-2 border-t border-[var(--border)] flex items-center justify-between">
-                <span className="text-[10px] font-mono text-[#1D6B4F]">{cluster.growth}</span>
-                <button
-                  type="button"
-                  onClick={() => navigate('/network')}
-                  className="text-[11px] font-medium text-[var(--primary)] hover:underline flex items-center gap-0.5"
-                >
-                  <span>Open case</span>
-                  <FolderOpen className="w-3 h-3" />
-                </button>
-              </div>
+          {priorityClusters.length === 0 ? (
+            <div className="col-span-full py-8 text-center text-xs font-mono text-[var(--muted)] bg-[#FFFFFF] rounded-[var(--radius)] border border-[var(--border)]">
+              No multi-advertisement syndicate clusters detected yet. When multiple advertisements share phone numbers, UPI VPAs, or Telegram handles, they will cluster here automatically.
             </div>
-          ))}
+          ) : (
+            priorityClusters.map((cluster, i) => (
+              <div
+                key={cluster.cluster_id}
+                onClick={() => navigate(`/flagged-posts?search=${encodeURIComponent(cluster.entity_value)}`)}
+                className="p-3 rounded-[var(--radius)] bg-[#FFFFFF] border border-[var(--border)] hover:border-[var(--accent)] hover:shadow-xs transition-all flex flex-col justify-between text-xs space-y-2 cursor-pointer group"
+              >
+                <div>
+                  <div className="flex items-center justify-between font-mono text-[10px] text-[var(--muted)] mb-1">
+                    <span>#{i + 1} {cluster.cluster_id}</span>
+                    <span className="text-[#A8341C] font-semibold">{cluster.advertisements_count} Ads</span>
+                  </div>
+                  <h4 className="font-bold text-[var(--text)] text-xs truncate group-hover:text-[var(--primary)] transition-colors" title={cluster.entity_value}>
+                    {cluster.entity_value}
+                  </h4>
+                  <p className="text-[11px] text-[var(--muted)] truncate mt-0.5 font-mono">{cluster.cluster_type}</p>
+                </div>
+
+                <div className="pt-2 border-t border-[var(--border)] flex items-center justify-between">
+                  <RiskBadge level={cluster.highest_risk_level} size="sm" />
+                  <span className="text-[11px] font-medium text-[var(--primary)] group-hover:underline flex items-center gap-0.5 font-mono">
+                    <span>View ads</span>
+                    <ArrowRight className="w-3 h-3" />
+                  </span>
+                </div>
+              </div>
+            ))
+          )}
         </div>
       </div>
 
       {/* =========================================================================
-          7. PLATFORM BREAKDOWN & AUDIT TRAIL
+          7. RECENT FORENSIC SCANS (Surveillance Feed Table)
+         ========================================================================= */}
+      <div className="rounded-[var(--radius)] bg-[var(--card)] border border-[var(--border)] p-4 space-y-3">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2 border-b border-[var(--border)]">
+          <div>
+            <h2 className="text-sm font-bold text-[var(--text)] flex items-center gap-2">
+              <Activity className="w-4 h-4 text-[var(--primary)]" />
+              <span>Recent Forensic Scans</span>
+              <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-[#E6F7F0] text-[#1D6B4F] border border-[#A3E3CB] font-bold">
+                LIVE SURVEILLANCE
+              </span>
+            </h2>
+            <p className="text-xs text-[var(--muted)]">
+              Latest suspicious advertisements, investment lures, and OCR screenshot analyses indexed in database
+            </p>
+          </div>
+
+          <div className="flex items-center gap-3">
+            <Link
+              to="/scanner"
+              className="text-xs font-mono font-semibold text-[var(--primary)] hover:underline flex items-center gap-1"
+            >
+              <Plus className="w-3.5 h-3.5" />
+              <span>New Scan</span>
+            </Link>
+            <Link
+              to="/flagged-posts"
+              className="text-xs font-mono font-semibold text-[var(--accent)] hover:underline flex items-center gap-1"
+            >
+              <span>View All Flagged Posts ({stats?.total_analyzed ?? recentAds.length})</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </Link>
+          </div>
+        </div>
+
+        <div className="overflow-x-auto rounded-[var(--radius)] border border-[var(--border)] bg-[#FFFFFF]">
+          <table className="w-full text-left text-xs border-collapse">
+            <thead className="border-b border-[var(--border)] bg-[#FAF8F5] text-[11px] font-mono text-[var(--muted)] uppercase">
+              <tr>
+                <th className="py-2.5 px-3.5 font-semibold text-[var(--text)]">Platform</th>
+                <th className="py-2.5 px-3.5 font-semibold text-[var(--text)]">Scan ID</th>
+                <th className="py-2.5 px-3.5 font-semibold text-[var(--text)] max-w-sm">Content Snippet</th>
+                <th className="py-2.5 px-3.5 font-semibold text-[var(--text)]">Risk Verdict</th>
+                <th className="py-2.5 px-3.5 font-semibold text-[var(--text)]">Extracted Indicators</th>
+                <th className="py-2.5 px-3.5 font-semibold text-[var(--text)]">Status</th>
+                <th className="py-2.5 px-3.5 font-semibold text-[var(--text)]">Detected</th>
+                <th className="py-2.5 px-3.5 text-right font-semibold text-[var(--text)]">Action</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-[var(--border)] font-sans">
+              {loading ? (
+                <tr>
+                  <td colSpan={8} className="py-12 text-center text-[var(--muted)] font-mono">
+                    <div className="w-5 h-5 border-2 border-[var(--primary)] border-t-transparent rounded-full animate-spin mx-auto mb-2" />
+                    Loading recent forensic scans...
+                  </td>
+                </tr>
+              ) : recentAds.length === 0 ? (
+                <tr>
+                  <td colSpan={8} className="py-12 text-center text-[var(--muted)] font-mono space-y-2">
+                    <p>No advertisements recorded in the surveillance feed yet.</p>
+                    <button
+                      type="button"
+                      onClick={() => navigate('/scanner')}
+                      className="btn-primary text-xs py-1.5 px-3 inline-flex items-center gap-1"
+                    >
+                      <Plus className="w-3.5 h-3.5" />
+                      <span>Scan Your First Ad</span>
+                    </button>
+                  </td>
+                </tr>
+              ) : (
+                recentAds.map((ad) => {
+                  const isLive = !ad.is_demo && ad.data_source !== 'SYNTHETIC_DATASET';
+                  return (
+                    <tr
+                      key={ad.id}
+                      onClick={() => openEvidence(ad)}
+                      className="table-row-interactive cursor-pointer group hover:bg-[var(--table-hover)] transition-colors"
+                    >
+                      {/* Platform */}
+                      <td className="py-2.5 px-3.5 whitespace-nowrap">
+                        <div className="flex items-center gap-1.5">
+                          <div className="p-1 rounded-[var(--radius)] bg-[var(--bg)] border border-[var(--border)] text-[var(--text)]">
+                            {getPlatformIcon(ad.platform || ad.platform_detected)}
+                          </div>
+                          <span className="font-medium text-[var(--text)]">
+                            {ad.platform || ad.platform_detected || 'Unknown'}
+                          </span>
+                        </div>
+                      </td>
+
+                      {/* Scan ID */}
+                      <td className="py-2.5 px-3.5 whitespace-nowrap font-mono">
+                        <div className="flex items-center gap-1.5">
+                          <span className="font-bold text-[var(--text)]">
+                            {ad.custom_id || `AD-${ad.id}`}
+                          </span>
+                          {isLive && (
+                            <span className="px-1.5 py-0.2 rounded text-[9px] font-mono font-bold bg-[#E6F7F0] text-[#1D6B4F] border border-[#A3E3CB]">
+                              LIVE
+                            </span>
+                          )}
+                        </div>
+                      </td>
+
+                      {/* Content Snippet */}
+                      <td className="py-2.5 px-3.5 max-w-xs text-[var(--text)] leading-snug" title={ad.original_text}>
+                        <div className="line-clamp-2 text-xs">
+                          {renderHighlightedSnippet(ad.original_text)}
+                        </div>
+                      </td>
+
+                      {/* Risk */}
+                      <td className="py-2.5 px-3.5 whitespace-nowrap">
+                        <RiskBadge level={ad.risk_level} score={ad.risk_score} size="sm" />
+                      </td>
+
+                      {/* Indicators */}
+                      <td className="py-2.5 px-3.5 whitespace-nowrap font-mono text-[11px]">
+                        {ad.indicators && ad.indicators.length > 0 ? (
+                          <div className="flex items-center gap-1 flex-wrap">
+                            <span className="bg-[#D8EEF0] text-[#0F6E7A] border border-[#B2DFE3] px-2 py-0.5 rounded-[var(--radius)] font-medium inline-flex items-center gap-1 max-w-[150px] truncate" title={ad.indicators[0]}>
+                              {ad.indicators[0].startsWith('PHONE') ? <Phone className="w-2.5 h-2.5 shrink-0" /> : <Layers className="w-2.5 h-2.5 shrink-0" />}
+                              <span className="truncate">{ad.indicators[0]}</span>
+                            </span>
+                            {ad.indicators.length > 1 && (
+                              <span className="text-[10px] text-[var(--muted)] px-1 py-0.5 rounded bg-[var(--bg)] border border-[var(--border)]">
+                                +{ad.indicators.length - 1}
+                              </span>
+                            )}
+                          </div>
+                        ) : ad.entities_count > 0 ? (
+                          <span className="bg-[#D8EEF0] text-[#0F6E7A] border border-[#B2DFE3] px-2 py-0.5 rounded-[var(--radius)] font-medium inline-flex items-center gap-1">
+                            <Layers className="w-2.5 h-2.5" />
+                            <span>{ad.entities_count} entities</span>
+                          </span>
+                        ) : (
+                          <span className="text-[var(--muted)]">None</span>
+                        )}
+                      </td>
+
+                      {/* Status */}
+                      <td className="py-2.5 px-3.5 whitespace-nowrap">
+                        <StatusBadge status={ad.review_status} size="sm" />
+                      </td>
+
+                      {/* Detection Time */}
+                      <td className="py-2.5 px-3.5 font-mono text-[var(--muted)] whitespace-nowrap text-[11px]">
+                        {formatRelativeTime(ad.created_at)}
+                      </td>
+
+                      {/* Action */}
+                      <td className="py-2.5 px-3.5 text-right whitespace-nowrap">
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            openEvidence(ad);
+                          }}
+                          className="btn-secondary text-[11px] py-1 px-2.5 inline-flex items-center gap-1 font-mono"
+                        >
+                          <Eye className="w-3 h-3 text-[var(--accent)]" />
+                          <span>Inspect Evidence</span>
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      {/* =========================================================================
+          8. ACTIVE CASES & THREAT ALERTS
+         ========================================================================= */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        {/* Active Investigation Cases */}
+        <div className="rounded-[var(--radius)] bg-[var(--card)] border border-[var(--border)] p-4 space-y-3">
+          <div className="pb-2 border-b border-[var(--border)] flex items-center justify-between">
+            <div>
+              <h2 className="text-sm font-bold text-[var(--text)] flex items-center gap-2">
+                <Briefcase className="w-4 h-4 text-[var(--primary)]" />
+                <span>Active Investigation Cases</span>
+                <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-[var(--bg)] border border-[var(--border)] text-[var(--muted)] font-bold">
+                  {recentCases.length} OPEN
+                </span>
+              </h2>
+              <p className="text-xs text-[var(--muted)]">Forensic case dossiers assigned for analyst triage</p>
+            </div>
+            <Link to="/cases" className="text-xs text-[var(--primary)] hover:underline font-mono font-semibold flex items-center gap-1">
+              <span>View all cases</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </Link>
+          </div>
+
+          <div className="space-y-2 max-h-56 overflow-y-auto pr-1">
+            {recentCases.length === 0 ? (
+              <div className="py-8 text-center text-xs font-mono text-[var(--muted)] space-y-1">
+                <p>No open investigation cases currently.</p>
+                <Link to="/cases" className="text-[var(--primary)] hover:underline block font-semibold">
+                  Create a new case
+                </Link>
+              </div>
+            ) : (
+              recentCases.slice(0, 4).map((c) => (
+                <div
+                  key={c.id}
+                  onClick={() => navigate('/cases')}
+                  className="p-2.5 rounded-[var(--radius)] bg-[#FFFFFF] border border-[var(--border)] hover:bg-[var(--table-hover)] transition-colors cursor-pointer flex items-center justify-between text-xs"
+                >
+                  <div className="truncate mr-2">
+                    <div className="flex items-center gap-1.5 mb-0.5">
+                      <span className="font-mono font-bold text-[var(--text)]">{c.case_ref}</span>
+                      <span className={`text-[9px] font-mono px-1.5 py-0.2 rounded font-bold uppercase ${
+                        c.priority === 'HIGH' || c.priority === 'CRITICAL'
+                          ? 'bg-[#FDE8E8] text-[#A8341C] border border-[#F8B4B6]'
+                          : 'bg-[#FEF3D6] text-[#8A5A00] border border-[#F5D8A5]'
+                      }`}>
+                        {c.priority}
+                      </span>
+                    </div>
+                    <p className="text-[11px] text-[var(--muted)] truncate font-medium">{c.title}</p>
+                  </div>
+                  <div className="text-right shrink-0">
+                    <span className="text-[10px] font-mono text-[var(--muted)] block">
+                      {c.ad_count ?? c.advertisements_count ?? 0} ads linked
+                    </span>
+                    <span className="text-[10px] font-mono text-[var(--primary)] font-semibold">
+                      {c.assigned_to || 'Analyst'}
+                    </span>
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
+        </div>
+
+        {/* Security Threat Alerts */}
+        <div className="rounded-[var(--radius)] bg-[var(--card)] border border-[var(--border)] p-4 space-y-3">
+          <div className="pb-2 border-b border-[var(--border)] flex items-center justify-between">
+            <div>
+              <h2 className="text-sm font-bold text-[var(--text)] flex items-center gap-2">
+                <Bell className="w-4 h-4 text-[#E5484D]" />
+                <span>Security Threat Alerts</span>
+                <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-[#FDE8E8] text-[#A8341C] border border-[#F8B4B6] font-semibold">
+                  {recentAlerts.length} PENDING
+                </span>
+              </h2>
+              <p className="text-xs text-[var(--muted)]">Automated detections exceeding risk thresholds</p>
+            </div>
+            <Link to="/alerts" className="text-xs text-[#A8341C] hover:underline font-mono font-semibold flex items-center gap-1">
+              <span>View all alerts</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </Link>
+          </div>
+
+          <div className="space-y-2 max-h-56 overflow-y-auto pr-1">
+            {recentAlerts.length === 0 ? (
+              <div className="py-8 text-center text-xs font-mono text-[var(--muted)]">
+                No unreviewed security alerts pending.
+              </div>
+            ) : (
+              recentAlerts.slice(0, 4).map((alt) => (
+                <div
+                  key={alt.id}
+                  onClick={() => navigate(alt.advertisement_id ? `/investigations/${alt.advertisement_id}` : '/alerts')}
+                  className="p-2.5 rounded-[var(--radius)] bg-[#FFFFFF] border border-[var(--border)] hover:bg-[var(--table-hover)] transition-colors cursor-pointer flex items-center justify-between text-xs"
+                >
+                  <div className="truncate mr-2">
+                    <div className="flex items-center gap-1.5 mb-0.5">
+                      <span className={`text-[9px] font-mono px-1.5 py-0.2 rounded font-bold uppercase ${
+                        alt.severity === 'HIGH' || alt.severity === 'CRITICAL'
+                          ? 'bg-[#FDE8E8] text-[#A8341C] border border-[#F8B4B6]'
+                          : 'bg-[#FEF3D6] text-[#8A5A00] border border-[#F5D8A5]'
+                      }`}>
+                        {alt.severity}
+                      </span>
+                      <span className="font-mono font-bold text-[var(--text)] text-[11px] truncate">
+                        {alt.title || alt.alert_type}
+                      </span>
+                    </div>
+                    <p className="text-[11px] text-[var(--muted)] truncate">{alt.message}</p>
+                  </div>
+                  <span className="text-[10px] font-mono text-[var(--muted)] shrink-0">
+                    {formatRelativeTime(alt.created_at)}
+                  </span>
+                </div>
+              ))
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* =========================================================================
+          9. PLATFORM BREAKDOWN & AUDIT TRAIL
          ========================================================================= */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {/* Platform Breakdown */}

@@ -19,7 +19,8 @@ import {
   Globe,
   Video,
   Phone,
-  CreditCard
+  CreditCard,
+  Layers
 } from 'lucide-react';
 import { api } from '../services/api';
 import { AdvertisementSummary } from '../types';
@@ -358,10 +359,10 @@ export const AdvertisementsPage: React.FC = () => {
                       <td className="py-2.5 px-3.5 whitespace-nowrap">
                         <div className="flex items-center gap-2">
                           <div className="p-1 rounded-[var(--radius)] bg-[var(--bg)] border border-[var(--border)] text-[var(--text)]">
-                            {getPlatformIcon(ad.platform_detected)}
+                            {getPlatformIcon(ad.platform || ad.platform_detected)}
                           </div>
                           <span className="font-medium text-[var(--text)]">
-                            {ad.platform_detected || 'Telegram'}
+                            {ad.platform || ad.platform_detected || 'Unknown'}
                           </span>
                         </div>
                       </td>
@@ -396,12 +397,28 @@ export const AdvertisementsPage: React.FC = () => {
                         <RiskBadge level={ad.risk_level} score={ad.risk_score} size="sm" />
                       </td>
 
-                      {/* 5. Extracted Indicators (darker chip text for contrast #0F6E7A on #D8EEF0) */}
+                      {/* 5. Extracted Indicators */}
                       <td className="py-2.5 px-3.5 whitespace-nowrap font-mono text-[11px]">
-                        <span className="bg-[#D8EEF0] text-[#0F6E7A] border border-[#B2DFE3] px-2 py-0.5 rounded-[var(--radius)] font-medium inline-flex items-center gap-1">
-                          <Phone className="w-2.5 h-2.5" />
-                          <span>+91 98765 *** / UPI</span>
-                        </span>
+                        {ad.indicators && ad.indicators.length > 0 ? (
+                          <div className="flex items-center gap-1.5 flex-wrap">
+                            <span className="bg-[#D8EEF0] text-[#0F6E7A] border border-[#B2DFE3] px-2 py-0.5 rounded-[var(--radius)] font-medium inline-flex items-center gap-1 max-w-[170px] truncate" title={ad.indicators[0]}>
+                              {ad.indicators[0].startsWith('PHONE') ? <Phone className="w-2.5 h-2.5 shrink-0" /> : <Layers className="w-2.5 h-2.5 shrink-0" />}
+                              <span className="truncate">{ad.indicators[0]}</span>
+                            </span>
+                            {ad.indicators.length > 1 && (
+                              <span className="text-[10px] text-[var(--muted)] px-1 py-0.5 rounded bg-[var(--bg)] border border-[var(--border)]">
+                                +{ad.indicators.length - 1}
+                              </span>
+                            )}
+                          </div>
+                        ) : ad.entities_count > 0 ? (
+                          <span className="bg-[#D8EEF0] text-[#0F6E7A] border border-[#B2DFE3] px-2 py-0.5 rounded-[var(--radius)] font-medium inline-flex items-center gap-1">
+                            <Layers className="w-2.5 h-2.5" />
+                            <span>{ad.entities_count} entities</span>
+                          </span>
+                        ) : (
+                          <span className="text-[var(--muted)]">None</span>
+                        )}
                       </td>
 
                       {/* 6. Status Badge */}

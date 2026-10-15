@@ -59,6 +59,7 @@ class AdSummarySchema(BaseModel):
     source_type: str
     submitted_url: Optional[str]
     platform: Optional[str] = "Unknown"
+    platform_detected: Optional[str] = None
     risk_score: Optional[float]
     risk_level: Optional[str]
     review_status: str
@@ -67,6 +68,7 @@ class AdSummarySchema(BaseModel):
     created_at: datetime
     entities_count: int = 0
     cases_count: int = 0
+    indicators: List[str] = []
 
 class AdDetailSchema(BaseModel):
     model_config = ConfigDict(from_attributes=True)
@@ -77,6 +79,7 @@ class AdDetailSchema(BaseModel):
     source_type: str
     submitted_url: Optional[str]
     platform: Optional[str] = "Unknown"
+    platform_detected: Optional[str] = None
     is_demo: bool = False
     data_source: str = "LIVE_SCAN"
     content_hash: str
@@ -142,6 +145,7 @@ class AlertSchema(BaseModel):
     advertisement_id: Optional[int]
     custom_id: Optional[str] = None
     alert_type: str
+    title: Optional[str] = None
     severity: str
     message: str
     reviewed: bool

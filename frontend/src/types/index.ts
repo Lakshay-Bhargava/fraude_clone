@@ -65,6 +65,7 @@ export interface AdvertisementSummary {
   created_at: string;
   entities_count: number;
   cases_count: number;
+  indicators?: string[];
 }
 
 export interface AdvertisementDetail {
