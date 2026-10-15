@@ -5,6 +5,7 @@ from sqlalchemy import text
 
 from app.core.config import settings
 from app.database.session import engine, Base, SessionLocal
+import app.models.models  # Ensure all SQLAlchemy models are registered before create_all
 from app.services.seed_data import seed_database_if_empty
 from app.services.model_service import get_or_train_model
 

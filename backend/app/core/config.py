@@ -18,16 +18,30 @@ DEFAULT_DEV_ORIGINS = [
 def _normalize_database_url(raw_url: Optional[str]) -> str:
     """
     Normalizes database connection URLs:
-    - Replaces deprecated postgres:// scheme with postgresql:// for SQLAlchemy 2.0.
-    - Preserves valid sqlite:/// schemes.
+    - Enforces the postgresql+psycopg2:// driver scheme for all PostgreSQL URLs
+      to match the installed psycopg2-binary driver.
+    - Handles Render URLs beginning with postgres:// and plain postgresql://.
+    - Handles explicit postgresql+psycopg:// by converting to postgresql+psycopg2://.
+    - Preserves valid sqlite:/// schemes for local development.
     - Safely defaults to local SQLite if unspecified.
     - Never logs database credentials.
     """
     if not raw_url or not raw_url.strip():
         return f"sqlite:///{_db_file}"
     url = raw_url.strip()
+
+    # 1. Normalize explicit psycopg (v3) URL to installed psycopg2 driver
+    if url.startswith("postgresql+psycopg://"):
+        return "postgresql+psycopg2://" + url[len("postgresql+psycopg://"):]
+
+    # 2. Normalize Render legacy postgres:// prefix
     if url.startswith("postgres://"):
-        return "postgresql://" + url[len("postgres://"):]
+        return "postgresql+psycopg2://" + url[len("postgres://"):]
+
+    # 3. Normalize plain postgresql:// prefix (where SQLAlchemy 2.0 defaults to psycopg v3)
+    if url.startswith("postgresql://"):
+        return "postgresql+psycopg2://" + url[len("postgresql://"):]
+
     return url
 
 
