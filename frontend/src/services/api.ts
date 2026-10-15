@@ -41,11 +41,19 @@ async function request<T>(endpoint: string, options: RequestInit = {}): Promise<
     headers['Authorization'] = `Bearer ${authToken}`;
   }
 
-  const response = await fetch(url, {
-    ...options,
-    headers,
-    credentials: 'include',
-  });
+  let response: Response;
+  try {
+    response = await fetch(url, {
+      ...options,
+      headers,
+      credentials: 'include',
+    });
+  } catch (err: any) {
+    if (err.name === 'TypeError' && (err.message === 'Failed to fetch' || err.message?.includes('fetch'))) {
+      throw new Error(`Unable to reach FraudScope AI backend (${url}). Please check internet connection or backend status.`);
+    }
+    throw err;
+  }
 
   if (!response.ok) {
     let errorMsg = `HTTP Error ${response.status}`;
@@ -162,12 +170,20 @@ export const api = {
     formData.append('file', file);
     const headers: Record<string, string> = {};
     if (authToken) headers['Authorization'] = `Bearer ${authToken}`;
-    const response = await fetch(`${BASE_URL}/api/ads/ocr-upload`, {
-      method: 'POST',
-      headers,
-      credentials: 'include',
-      body: formData,
-    });
+    let response: Response;
+    try {
+      response = await fetch(`${BASE_URL}/api/ads/ocr-upload`, {
+        method: 'POST',
+        headers,
+        credentials: 'include',
+        body: formData,
+      });
+    } catch (err: any) {
+      if (err.name === 'TypeError' && (err.message === 'Failed to fetch' || err.message?.includes('fetch'))) {
+        throw new Error(`Unable to reach backend OCR service (${BASE_URL || window.location.origin}/api/ads/ocr-upload). Please check server connection.`);
+      }
+      throw err;
+    }
     if (!response.ok) {
       const err = await response.json().catch(() => ({ detail: 'OCR upload failed' }));
       throw new Error(err.detail || 'OCR upload failed');

@@ -48,9 +48,8 @@ def _normalize_database_url(raw_url: Optional[str]) -> str:
 def _parse_cors_origins(env_cors: Optional[str], frontend_url: Optional[str], environment: str) -> List[str]:
     """
     Safely resolves allowed CORS origins:
-    - Outside production: includes default localhost ports plus any custom configured origins.
-    - In production: strictly includes explicitly provided FRONTEND_URL and CORS_ORIGINS.
-    - Normalizes formatting and removes trailing slashes.
+    - Includes default localhost ports plus Netlify production origin.
+    - Normalizes formatting and registers both with and without trailing slash.
     - Does not trust arbitrary wildcard origins.
     """
     origins: List[str] = []
@@ -61,6 +60,12 @@ def _parse_cors_origins(env_cors: Optional[str], frontend_url: Optional[str], en
         if cleaned and cleaned not in seen:
             seen.add(cleaned)
             origins.append(cleaned)
+        # Also register with trailing slash to prevent preflight rejection if client passes trailing slash
+        if cleaned:
+            slashed = cleaned + "/"
+            if slashed not in seen:
+                seen.add(slashed)
+                origins.append(slashed)
 
     # 1. Parse CORS_ORIGINS (comma-separated or JSON array)
     if env_cors and env_cors.strip():
@@ -83,11 +88,11 @@ def _parse_cors_origins(env_cors: Optional[str], frontend_url: Optional[str], en
     if frontend_url and frontend_url.strip():
         add_origin(frontend_url)
 
-    # 3. Environment-aware defaults
-    is_prod = environment.lower() == "production"
-    if not is_prod:
-        for dev_orig in DEFAULT_DEV_ORIGINS:
-            add_origin(dev_orig)
+    # 3. Always include verified dev origins (localhost & 127.0.0.1 on ports 5173/3000) and deployed Netlify
+    for dev_orig in DEFAULT_DEV_ORIGINS:
+        add_origin(dev_orig)
+
+    add_origin("https://lovely-figolla-46aae7.netlify.app")
 
     return origins
 
